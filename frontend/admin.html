@@ -1,0 +1,962 @@
+<!doctype html>
+<html lang="zh-CN" data-page-node-id="dtflOPa8Xvhd7gefrYPGTN">
+<head data-page-node-id="m1EulDvjCX9hPIy7xhgQRF">
+  <meta charset="utf-8" data-page-node-id="Oa3y5G0ee3dJGyOAgesSeP">
+  <meta name="viewport" content="width=device-width, initial-scale=1" data-page-node-id="dcTMDBWz0HiYnoXq5LG2Kh">
+  <title>采购管理台</title>
+  <style>
+    :root { --bg:#f6f2e9; --surface:#fffdfa; --ink:#25312d; --muted:#7a837e; --line:#e5ddd0; --line-soft:#f0ece5; --green:#28725a; --green-dark:#205e49; --green-bg:#e4f0e8; --amber:#966209; --amber-bg:#fff0d5; --blue:#336fa9; --blue-bg:#e8f0f8; --red:#a3463f; --red-bg:#f8e7e4; }
+    * { box-sizing:border-box; } body { margin:0; min-width:320px; background:var(--bg); color:var(--ink); font:14px/1.45 Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif; }
+    button,input,select { font:inherit; } button { cursor:pointer; } .page { max-width:1450px; margin:auto; padding:32px 28px 48px; }
+    header { display:flex; align-items:center; justify-content:space-between; gap:16px; margin-bottom:28px; } .brand { font-size:18px; font-weight:800; } .brand span { color:var(--green); } .admin { display:flex; gap:10px; align-items:center; color:var(--muted); font-size:13px; } .avatar { width:31px; height:31px; display:grid; place-items:center; border-radius:50%; background:#dcebe2; color:var(--green); font-size:11px; font-weight:800; } .logout { border:1px solid var(--line); background:#fff; color:var(--muted); border-radius:4px; padding:6px 12px; font-weight:700; } .logout:hover { color:var(--red); border-color:var(--red); }
+    h1 { margin:0; font-size:27px; line-height:1.2; } .sub { margin:7px 0 0; color:var(--muted); } .head { display:flex; align-items:end; justify-content:space-between; gap:20px; margin-bottom:21px; }
+    .summary { display:flex; gap:8px; align-items:center; color:var(--muted); font-size:12px; } .summary b { color:var(--ink); } .filters { display:flex; align-items:center; gap:8px; margin-bottom:19px; } .filters input,.filters select { height:37px; border:1px solid var(--line); border-radius:5px; background:var(--surface); padding:0 10px; color:var(--ink); outline:none; } .filters input { flex:1; min-width:130px; max-width:370px; } .filters input:focus,.filters select:focus { border-color:var(--green); box-shadow:0 0 0 3px rgba(40,114,90,.1); } .edit-toggle { display:flex; align-items:center; gap:8px; margin-left:auto; color:var(--muted); font-size:12px; font-weight:700; white-space:nowrap; } .edit-toggle input { appearance:none; width:34px; height:19px; margin:0; border-radius:999px; background:#cbd2cc; position:relative; transition:.18s; } .edit-toggle input::after { content:""; position:absolute; width:13px; height:13px; left:3px; top:3px; border-radius:50%; background:#fff; transition:.18s; } .edit-toggle input:checked { background:var(--green); } .edit-toggle input:checked::after { transform:translateX(15px); } .edit-toggle b { color:var(--amber); } .edit-toggle input:checked + b { color:var(--green); }
+    .board { column-count:3; column-gap:17px; } .card { break-inside:avoid; overflow:hidden; margin:0 0 17px; border:1px solid var(--line); border-radius:8px; background:var(--surface); } .card-head { display:flex; align-items:center; gap:10px; padding:16px 16px 12px; } .person { width:34px; height:34px; display:grid; place-items:center; border-radius:50%; background:#e6ede8; color:#416151; font-size:11px; font-weight:800; } .name { font-weight:800; } .email { color:var(--muted); font-size:11px; } .badge { margin-left:auto; border-radius:999px; padding:4px 8px; font-size:11px; font-weight:750; white-space:nowrap; } .submitted { color:var(--blue); background:var(--blue-bg); } .locked { color:var(--amber); background:var(--amber-bg); } .success { color:var(--green); background:var(--green-bg); } .failed { color:var(--red); background:var(--red-bg); }
+    .status-row { padding:0 16px 13px; border-bottom:1px solid var(--line); } .status-row label { display:flex; align-items:center; justify-content:space-between; gap:9px; color:var(--muted); font-size:12px; } .status-row select { min-width:118px; border:1px solid var(--line); border-radius:4px; background:#fff; color:var(--ink); padding:6px; } .status-row .terminal { color:var(--muted); font-size:12px; }
+    .items { padding:2px 0; } .item { display:grid; grid-template-columns:30px 1fr auto auto; align-items:center; gap:9px; padding:12px 16px; border-bottom:1px solid var(--line-soft); } .item:last-child { border-bottom:0; } .icon { width:30px; height:30px; display:grid; place-items:center; border-radius:5px; background:#edf0eb; color:#486355; font-size:9px; font-weight:800; } .item-name { font-size:12px; font-weight:750; } .item-meta { color:var(--muted); font-size:11px; margin-top:1px; } .amount { display:flex; align-items:center; gap:4px; } .qty { min-width:21px; text-align:center; color:var(--muted); font-size:12px; } .mini { width:21px; height:21px; padding:0; border:1px solid #d8ddd9; border-radius:3px; background:#fff; color:#4d5d55; line-height:1; } .mini:hover { border-color:var(--green); color:var(--green); } .remove { color:#9d615a; }
+    .purchased { display:flex; align-items:center; gap:6px; padding:3px 6px 3px 3px; color:var(--muted); font-size:11px; white-space:nowrap; cursor:pointer; user-select:none; } .purchased input { appearance:none; width:17px; height:17px; margin:0; border:1.5px solid #c9d2cc; border-radius:4px; background:#fff; position:relative; cursor:pointer; transition:.15s; flex:none; } .purchased input:hover { border-color:var(--green); } .purchased input:checked { background:var(--green); border-color:var(--green); } .purchased input:checked::after { content:"✓"; position:absolute; left:3.5px; top:-1px; color:#fff; font-size:11px; font-weight:800; } .purchased.on { color:var(--green); font-weight:700; } .item-checks { display:flex; flex-direction:column; gap:3px; align-items:flex-end; } .purchased.conf input:checked { background:var(--blue); border-color:var(--blue); } .purchased.conf.on { color:var(--blue); } .color-chip { display:inline-block; padding:1px 7px; border-radius:999px; background:#eef1ec; color:#496258; font-size:10px; font-weight:700; white-space:nowrap; } .item-note { color:#7d6a3c; font-size:11px; margin-top:3px; line-height:1.5; word-break:break-all; } .pg { margin:10px 12px; border:1px solid var(--line); border-radius:8px; overflow:hidden; } .pg-head { display:grid; grid-template-columns:34px minmax(0,1fr) auto; gap:9px; align-items:center; padding:10px 12px; background:#fbf8f0; border-bottom:1px dashed var(--line); } .g-thumb { width:34px; height:34px; display:grid; place-items:center; border-radius:5px; background:#edf0eb; color:#486355; font-size:9px; font-weight:800; overflow:hidden; } .g-thumb img { width:100%; height:100%; object-fit:cover; display:block; } .pg-total { text-align:right; white-space:nowrap; } .pg-total .cny { font-size:10px; color:var(--muted); } .pg-row { display:grid; grid-template-columns:minmax(0,1fr) auto auto; gap:8px; align-items:center; padding:8px 12px; border-bottom:1px solid var(--line-soft); } .pg-row:last-child { border-bottom:0; } .vcell { display:flex; align-items:center; gap:6px; min-width:0; } .vcell b { font-size:12px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; } .vdot { width:12px; height:12px; border-radius:3px; border:1px solid rgba(0,0,0,.12); flex:none; } .vqty { color:var(--muted); font-size:10.5px; white-space:nowrap; }
+    .card-foot { display:flex; align-items:center; justify-content:space-between; padding:13px 16px; background:#fffdf9; border-top:1px solid var(--line); } .card-foot span { color:var(--muted); font-size:12px; } .card-foot b { font-size:16px; } .edit-control:disabled { cursor:not-allowed; opacity:.38; } .notice { position:fixed; right:22px; bottom:22px; padding:11px 14px; background:#28463a; color:#fff; border-radius:5px; opacity:0; transform:translateY(8px); pointer-events:none; transition:opacity .2s ease, transform .2s ease; z-index:10; } .notice.show { opacity:1; transform:translateY(0); }
+    .empty { padding:34px 16px; text-align:center; color:var(--muted); font-size:13px; } .loading { padding:34px 16px; text-align:center; color:var(--muted); font-size:13px; }
+    .parse-card { margin-bottom:19px; border:1px solid var(--line); border-radius:8px; background:var(--surface); padding:14px 16px; } .parse-head { font-weight:800; font-size:13px; margin-bottom:10px; } .parse-tip { color:var(--muted); font-weight:400; font-size:12px; margin-left:8px; } .parse-row { display:flex; gap:8px; } .parse-row input { flex:1; min-width:0; height:37px; border:1px solid var(--line); border-radius:5px; background:#fff; padding:0 10px; color:var(--ink); outline:none; } .parse-row input:focus { border-color:var(--green); box-shadow:0 0 0 3px rgba(40,114,90,.1); } .parse-btn { border:none; background:var(--green); color:#fff; border-radius:5px; padding:0 16px; font-weight:700; white-space:nowrap; } .parse-btn:hover { background:var(--green-dark); } .parse-btn:disabled { opacity:.5; cursor:not-allowed; } .parse-result { display:flex; gap:14px; align-items:center; margin-top:13px; padding:12px; border:1px solid var(--line-soft); border-radius:6px; background:#fffdf9; } .parse-result img { width:64px; height:64px; object-fit:contain; border:1px solid var(--line-soft); border-radius:5px; background:#fff; flex:none; } .parse-result .p-name { font-weight:800; font-size:13px; } .parse-result .p-meta { color:var(--muted); font-size:12px; margin-top:3px; } .parse-result .p-price { font-size:18px; font-weight:800; color:var(--green); margin-left:auto; white-space:nowrap; } .parse-err { margin-top:10px; color:var(--red); font-size:12px; } .icon { overflow:hidden; } .icon img { width:100%; height:100%; object-fit:cover; display:block; }
+    .tabs { display:flex; gap:4px; margin-bottom:19px; border-bottom:1px solid var(--line); } .tab { border:none; background:none; padding:10px 16px; font-weight:750; color:var(--muted); border-bottom:2px solid transparent; margin-bottom:-1px; transition:color .15s ease, background-color .15s ease; } .tab:hover { color:var(--ink); background:#f2f6f1; } .tab.active { color:var(--green); border-bottom-color:var(--green); background:var(--green-bg); }
+    .prod-list { display:flex; flex-direction:column; gap:9px; } .prod-item { display:grid; grid-template-columns:20px 44px minmax(0,1fr) auto auto; align-items:center; gap:13px; padding:12px 14px; border:1px solid var(--line); border-radius:8px; background:var(--surface); } .p-thumb { width:44px; height:44px; display:grid; place-items:center; border-radius:5px; background:#edf0eb; color:#486355; font-size:10px; font-weight:800; overflow:hidden; } .p-thumb img { width:100%; height:100%; object-fit:cover; display:block; } .p-name { font-weight:750; font-size:13px; } .p-meta { color:var(--muted); font-size:11px; margin-top:2px; } .p-price { font-weight:800; white-space:nowrap; } .p-actions { display:flex; gap:6px; } .p-btn { border:1px solid var(--line); background:#fff; border-radius:4px; padding:5px 10px; font-size:12px; font-weight:700; color:var(--ink); } .p-btn:hover { border-color:var(--green); color:var(--green); } .p-btn.danger { color:var(--red); } .p-btn.danger:hover { border-color:var(--red); color:var(--red); } .p-btn.tax { color:var(--amber); } .p-btn.tax.on { color:var(--green); border-color:var(--green); } .cny-equiv { color:var(--muted); font-size:11px; font-weight:500; }
+    .settings-card { margin-bottom:19px; border:1px solid var(--line); border-radius:8px; background:var(--surface); padding:14px 16px; } .settings-head { font-weight:800; font-size:13px; margin-bottom:11px; } .settings-tip { color:var(--muted); font-weight:400; font-size:12px; margin-left:8px; } .settings-row { display:flex; gap:12px; align-items:flex-end; flex-wrap:wrap; } .settings-row label { display:flex; flex-direction:column; gap:5px; font-size:12px; color:var(--muted); } .settings-row input { height:34px; width:150px; border:1px solid var(--line); border-radius:5px; background:#fff; padding:0 9px; color:var(--ink); outline:none; } .settings-row input:focus { border-color:var(--green); box-shadow:0 0 0 3px rgba(40,114,90,.1); } .settings-row select { height:34px; border:1px solid var(--line); border-radius:5px; background:#fff; padding:0 8px; color:var(--ink); outline:none; }
+    .batch-card { border:1px solid var(--line); border-radius:8px; background:var(--surface); padding:14px 16px; margin-bottom:10px; } .batch-row { display:flex; align-items:center; justify-content:space-between; gap:12px; } .batch-items { color:var(--muted); font-size:12px; margin-top:8px; line-height:1.6; } .batch-assign { display:flex; gap:8px; margin-top:12px; align-items:center; } .batch-assign select { flex:1; min-width:0; height:34px; border:1px solid var(--line); border-radius:5px; background:#fff; padding:0 8px; color:var(--ink); outline:none; } .user-list { display:flex; flex-direction:column; gap:7px; } .user-row { display:flex; align-items:center; justify-content:space-between; gap:10px; font-size:13px; } .user-row select { height:30px; border:1px solid var(--line); border-radius:5px; background:#fff; padding:0 6px; color:var(--ink); }
+    .user-grid { display:flex; flex-direction:column; gap:7px; }
+    .user-line { display:flex; align-items:center; gap:10px; padding:9px 11px; border:1px solid var(--line-soft); border-radius:6px; background:#fff; flex-wrap:wrap; }
+    .user-line .u-main { min-width:0; flex:1 1 220px; }
+    .user-line select { height:30px; border:1px solid var(--line); border-radius:5px; background:#fff; padding:0 6px; color:var(--ink); max-width:150px; }
+    .tag { border-radius:999px; padding:2px 9px; font-size:11px; font-weight:700; white-space:nowrap; }
+    .tag.admin { color:#fff; background:var(--blue); } .tag.off { color:var(--muted); background:#e7e5e0; }
+    .group-line { display:grid; grid-template-columns:minmax(150px,1fr) 150px 170px auto auto auto; align-items:end; gap:10px; padding:10px 0; border-bottom:1px dashed var(--line-soft); }
+    .group-line:last-of-type { border-bottom:0; }
+    .group-line label { display:flex; flex-direction:column; gap:4px; font-size:11px; color:var(--muted); min-width:0; }
+    .group-line input { height:32px; width:100%; border:1px solid var(--line); border-radius:5px; padding:0 8px; color:var(--ink); outline:none; }
+    .group-line input:focus { border-color:var(--green); box-shadow:0 0 0 3px rgba(40,114,90,.1); }
+    .group-line > div:first-child { min-width:0; }
+    .group-line > div:first-child .p-meta { display:block; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .group-line .p-btn { white-space:nowrap; }
+    .price-stack { display:inline-flex; flex-direction:column; align-items:flex-end; gap:2px; min-width:150px; }
+    .price-stack > span { display:block; font-size:11px; line-height:1.35; white-space:nowrap; }
+    .price-stack > span:nth-child(2) { color:var(--green-dark); }
+    .price-stack > span:nth-child(3) { color:#7d5a16; }
+    .gdef { color:var(--amber); font-weight:750; }
+    @media(max-width:760px) { .group-line { grid-template-columns:minmax(130px,1fr) 125px 145px auto; } .group-line > div:first-child { grid-column:1 / -1; } .group-line label:first-of-type { grid-column:1 / 2; } }
+    @media(max-width:520px) { .group-line { grid-template-columns:1fr 1fr; } .group-line label, .group-line > div:first-child, .group-line .p-meta { grid-column:1 / -1; } .group-line .p-btn { width:100%; } }
+    /* 出游采购组：管理员建组表单 / 拉人面板 / 行内改标题日期 */
+    .create-card { border:1px solid var(--line); border-radius:8px; background:var(--surface); padding:14px 16px; margin-bottom:12px; } .cc-head { font-weight:800; font-size:13px; margin-bottom:6px; } .cc-tip { color:var(--muted); font-size:12px; margin:0 0 12px; } .cc-row { display:flex; flex-wrap:wrap; gap:11px; align-items:flex-end; } .cc-row label { display:flex; flex-direction:column; gap:5px; font-size:11.5px; color:var(--muted); } .cc-row input { height:34px; min-width:150px; border:1px solid var(--line); border-radius:5px; background:#fff; padding:0 9px; color:var(--ink); outline:none; } .cc-row input:focus { border-color:var(--green); box-shadow:0 0 0 3px rgba(40,114,90,.1); } .cc-row input#ag-title { min-width:210px; }
+    .g-btn { border:1px solid var(--line); background:#fff; color:var(--muted); border-radius:5px; padding:7px 12px; font-size:12px; font-weight:700; white-space:nowrap; } .g-btn:hover { border-color:var(--green); color:var(--green); } .g-btn.primary { background:var(--green); border-color:var(--green); color:#fff; } .g-btn.primary:hover { background:var(--green-dark); color:#fff; } .g-btn.danger { color:var(--red); } .g-btn.danger:hover { border-color:var(--red); color:var(--red); }
+    .pull-panel { border-top:1px dashed var(--line-soft); margin-top:12px; padding:11px 19px 13px; } .pull-head { font-size:12px; color:var(--muted); margin-bottom:8px; font-weight:700; } .pull-opts { display:flex; flex-wrap:wrap; gap:7px; max-height:130px; overflow:auto; } .opt-chip { display:inline-flex; align-items:center; gap:6px; padding:5px 10px; border:1px solid var(--line); border-radius:999px; background:#fff; color:var(--ink); font-size:12px; cursor:pointer; user-select:none; } .opt-chip:hover { border-color:var(--green); } .opt-chip.sel { background:var(--green-bg); border-color:var(--green); color:var(--green-dark); font-weight:700; } .opt-chip input { position:absolute; width:1px; height:1px; opacity:0; } .opt-chip:focus-within { border-color:var(--green); box-shadow:0 0 0 3px rgba(40,114,90,.1); } .pull-bar { display:flex; gap:9px; align-items:center; flex-wrap:wrap; margin-top:10px; } .pull-tip { color:var(--muted); font-size:11.5px; }
+    .g-edit { border:1px dashed var(--line); border-radius:7px; background:#fbfaf6; padding:11px 13px; margin:10px 19px 0; } .g-edit-row { display:flex; flex-wrap:wrap; gap:11px; align-items:flex-end; } .g-edit-row label { display:flex; flex-direction:column; gap:5px; font-size:11.5px; color:var(--muted); } .g-edit-row input { height:34px; min-width:150px; border:1px solid var(--line); border-radius:5px; background:#fff; padding:0 9px; color:var(--ink); outline:none; } .g-edit-row input:focus { border-color:var(--green); box-shadow:0 0 0 3px rgba(40,114,90,.1); } .g-edit-row input#ge-title { min-width:210px; } .g-edit-acts { display:flex; gap:8px; margin-top:10px; }
+    @media(max-width:720px) { .prod-item { grid-template-columns:20px 40px minmax(0,1fr) auto auto; } }
+    @media(max-width:1050px) { .board { column-count:2; } } @media(max-width:620px) { .page { padding:23px 16px 36px; } .head { display:block; } .summary { margin-top:12px; } .filters { flex-wrap:wrap; } .filters input { max-width:none; flex-basis:100%; } .board { column-count:1; } }
+  </style>
+  <style>
+    .sel-col { width:20px; display:grid; place-items:center; flex:none; }
+    /* 头像可点击查看用户清单 */
+    .avatar-btn { width:34px; height:34px; display:grid; place-items:center; border-radius:50%; background:#e6ede8; color:#416151; font-size:11px; font-weight:800; border:0; cursor:pointer; transition:background-color .15s ease, transform .15s ease; }
+    .avatar-btn:hover { background:var(--green); color:#fff; transform:scale(1.06); }
+    .avatar-btn + .person { display:none; }
+    /* 用户清单弹窗 */
+    .ucm-mask { position:fixed; inset:0; background:rgba(20,26,23,.44); z-index:60; display:none; align-items:flex-start; justify-content:center; padding:40px 18px; }
+    .ucm-mask.show { display:flex; }
+    .ucm-panel { width:min(760px,100%); max-height:82vh; overflow:auto; background:var(--surface); border:1px solid var(--line); border-radius:10px; box-shadow:0 20px 50px rgba(20,26,23,.25); }
+    .ucm-head { position:sticky; top:0; z-index:2; display:flex; align-items:center; gap:12px; padding:16px 20px; border-bottom:1px solid var(--line); background:var(--surface); }
+    .ucm-head h2 { margin:0; font-size:17px; } .ucm-head .sub { margin:0; }
+    .ucm-close { margin-left:auto; border:0; background:none; font-size:22px; line-height:1; color:var(--muted); cursor:pointer; padding:2px 6px; } .ucm-close:hover { color:var(--red); }
+    .ucm-body { padding:18px 20px 24px; }
+    .ucm-cart { margin-bottom:15px; border:1px solid var(--line); border-radius:8px; background:#fff; overflow:hidden; }
+    .ucm-cart .card-head { padding:12px 16px 10px; }
+    .ucm-cart .items { padding:0 16px 12px; }
+    .ucm-foot { padding:0 16px 14px; }
+
+    .cb { appearance:none; width:16px; height:16px; margin:0; border:1.5px solid #c9d2cc; border-radius:4px; background:#fff; position:relative; cursor:pointer; transition:.15s; flex:none; }
+    .cb:hover { border-color:var(--green); }
+    .cb:checked { background:var(--green); border-color:var(--green); }
+    .cb:checked::after { content:"✓"; position:absolute; left:2px; top:-2.5px; color:#fff; font-size:11px; font-weight:800; }
+    .cb:disabled { opacity:.25; cursor:not-allowed; }
+    .cb.indet { border-color:var(--green); }
+    .cb.indet::after { content:""; position:absolute; left:3px; top:6px; width:8px; height:2px; background:var(--green); }
+    .batch-bar { display:flex; align-items:center; gap:10px; margin:0 0 10px; }
+    .batch-bar .sel-all { display:flex; align-items:center; gap:7px; font-size:12px; color:var(--muted); font-weight:700; cursor:pointer; user-select:none; white-space:nowrap; }
+    .batch-bar .sel-count { font-size:12px; color:var(--muted); }
+    .batch-bar .spacer { flex:1; }
+    .batch-bar .p-btn:disabled { opacity:.4; cursor:not-allowed; }
+  </style>
+  <style>
+    /* —— 出游采购组：管理台只读总览 —— */
+    .gcard { margin-bottom:12px; border:1px solid var(--line); border-radius:8px; background:var(--surface); padding:14px 16px 8px; }
+    .grow { display:flex; align-items:flex-start; justify-content:space-between; gap:12px; }
+    .gtitle { font-weight:800; font-size:14px; } .gmeta { color:var(--muted); font-size:11.5px; margin-top:3px; line-height:1.7; }
+    .badge.gopen { color:var(--amber); background:var(--amber-bg); } .badge.gdone { color:var(--green); background:var(--green-bg); }
+    .gcode { display:inline-flex; align-items:center; gap:7px; margin-top:7px; padding:4px 10px; border-radius:6px; background:var(--amber-bg); color:#7d5a16; font-size:12px; font-weight:700; } .gcode code { font-size:15px; letter-spacing:2px; color:#5d3f00; font-weight:900; } .gcode button { border:0; background:transparent; color:var(--amber); font-weight:800; cursor:pointer; padding:0 2px; }
+    .gmems { display:flex; flex-wrap:wrap; gap:5px; margin-top:8px; } .gmchip { padding:2px 9px; border-radius:999px; background:#eef1ec; color:#496258; font-size:11px; font-weight:700; } a.gmchip { text-decoration:none; cursor:pointer; transition:background-color .15s ease, transform .15s ease; } a.gmchip:hover { background:#d5e2da; color:var(--green-dark); box-shadow:0 0 0 1px rgba(40,114,90,.25); }
+    .gsec { margin-top:10px; border-top:1px dashed var(--line-soft); } .gsec-t { font-size:11px; color:var(--muted); font-weight:700; margin:9px 2px 6px; } .gempty { padding:14px 2px; color:var(--muted); font-size:12px; }
+    .grow2 { display:grid; grid-template-columns:36px minmax(0,1fr) auto; gap:10px; align-items:center; padding:7px 2px; border-bottom:1px solid var(--line-soft); } .grow2:last-child { border-bottom:0; }
+    .gthumb { width:36px; height:36px; display:grid; place-items:center; border-radius:5px; background:#edf0eb; color:#486355; font-size:9px; font-weight:800; overflow:hidden; } .gthumb img { width:100%; height:100%; object-fit:cover; display:block; }
+    .gi-name { font-size:12.5px; font-weight:750; } .gi-name .color-chip { margin-left:5px; } .gi-meta { color:var(--muted); font-size:11px; margin-top:2px; line-height:1.6; } .gi-note { color:#7d6a3c; font-size:11px; margin-top:3px; line-height:1.5; word-break:break-all; }
+    .gi-check { display:flex; flex-direction:column; gap:3px; align-items:flex-end; } .gi-remark { margin-top:5px; } .gi-remark textarea { width:100%; max-width:420px; min-height:30px; padding:5px 8px; border:1px dashed var(--line); border-radius:5px; background:#fffdfa; color:var(--ink); font-size:12px; line-height:1.4; resize:vertical; outline:none; } .gi-remark textarea:focus { border-style:solid; border-color:var(--green); box-shadow:0 0 0 3px rgba(40,114,90,.08); }
+    .gg { margin:8px 0; border:1px solid var(--line); border-radius:8px; overflow:hidden; } .gg-head { display:grid; grid-template-columns:36px minmax(0,1fr) auto; gap:10px; align-items:center; padding:9px 11px; background:#fbf8f0; } .gg-total { text-align:right; white-space:nowrap; font-size:12.5px; font-weight:800; } .gg-total .cny { font-size:10px; color:var(--muted); font-weight:500; } .gg-sub { display:grid; grid-template-columns:minmax(0,1fr) auto; gap:8px; align-items:center; padding:8px 11px; border-top:1px solid var(--line-soft); }
+    .gfoot { display:flex; align-items:center; justify-content:space-between; margin-top:8px; border-top:1px solid var(--line-soft); padding-top:9px; } .gacts { display:flex; gap:6px; justify-content:flex-end; flex-wrap:wrap; }
+  </style>
+  <link rel="stylesheet" href="responsive.css">
+</head>
+<body class="pg-admin" data-page-node-id="Lf77BFUUFIrpoBt9N2Yt8p">
+  <div class="page" data-page-node-id="2t0YOXHxh4wUd8rIiH31pn">
+    <header data-page-node-id="xoSk6K7zDg8iXvGW3XpaBG"><div class="brand" data-page-node-id="FBFDjCUz3szMxomxgmTRQC"><svg class="brand-ico" viewBox="0 0 40 40" fill="none" aria-hidden="true"><defs><linearGradient id="bgrad" x1="2" y1="2" x2="38" y2="38" gradientUnits="userSpaceOnUse"><stop stop-color="#33a97c"/><stop offset="1" stop-color="#185f49"/></linearGradient></defs><g><animateTransform attributeName="transform" type="rotate" from="0 20 20" to="360 20 20" dur="26s" repeatCount="indefinite"/><circle cx="20" cy="20" r="16" stroke="url(#bgrad)" stroke-width="2.4" stroke-dasharray="13 6 5 6" stroke-linecap="round"/></g><circle cx="20" cy="20" r="16" stroke="#2fa377" stroke-opacity=".25" stroke-width="1.3"/><path d="M20 26.2 V16.4" stroke="url(#bgrad)" stroke-width="3" stroke-linecap="round"/><path d="M14.6 19.7 L20 13.6 L25.4 19.7 L20 16.8 Z" fill="url(#bgrad)"/><g><animateTransform attributeName="transform" type="rotate" from="0 20 20" to="360 20 20" dur="3.2s" repeatCount="indefinite"/><circle cx="36" cy="20" r="2.2" fill="#f0b429"/></g></svg><span class="brand-txt">买办</span></div><div class="admin" data-page-node-id="ZrU1AjZY7iRo36izzMBNuU"><span data-page-node-id="W5TxSliwT6iB6L89w4tpBC">管理员</span><span class="avatar" id="avatar" data-page-node-id="POLwoOK5Qfg3mwUfcCSw3D">…</span><button class="logout" onclick="logout()" data-page-node-id="MsA8BFjuvrxUyjA1LELgGX">退出</button></div></header>
+    <main data-page-node-id="8H2nB1Krho0KdXD3gEdfGP">
+      <nav class="tabs" role="tablist" data-page-node-id="dDIGfTuSdywLGZXF4E8Vbg">
+        <button class="tab active" id="tab-carts" role="tab" aria-selected="true" onclick="switchView('carts')" data-page-node-id="wF1nbcgGwSKjiZfntENGVY">采购清单</button>
+        <button class="tab" id="tab-products" role="tab" aria-selected="false" onclick="switchView('products')" data-page-node-id="CXpoVmJvoqRBUQzKnNi018">商品库</button>
+        <button class="tab" id="tab-batches" role="tab" aria-selected="false" onclick="switchView('batches')" data-page-node-id="tAUDyBWesCtVu5IuRlUCPW">出游采购组</button>
+        <button class="tab" id="tab-users" role="tab" aria-selected="false" onclick="switchView('users')" data-page-node-id="cTuZbtcMXICJtADUMjTEuG">用户与设置</button>
+      </nav>
+      <div id="view-carts" data-page-node-id="CUEdpWFIz4ohHNDbQVkKdn">
+      <div class="head" data-page-node-id="CfzgMrgFy4ceAjiWU8heEy"><div data-page-node-id="TxLrYrBUCCqP3nr6FtGT3L"><h1 data-page-node-id="BBAHwjAHOUnZK9Q1Wz0Zpz">用户采购清单</h1><p class="sub" data-page-node-id="YUXb8gjuTfmyfzEMoVwK2c">按用户分组处理提交的商品，并维护采购状态。</p></div><div class="summary" data-page-node-id="HS1Lvlpoxk5ljdu8ZTxXXl"><span data-page-node-id="T8NfsjSOtVHkiOP2pQuFri">共 <b id="user-total" data-page-node-id="mudQ71JI5w18Ut5wqtfli3">0</b> 位用户</span><span data-page-node-id="U9n67sKzHLQv1ndX3kuB2q">·</span><span data-page-node-id="rhHhQ3FOHMQUMFrEKDzBL8"><b id="item-total" data-page-node-id="eS2c6F8YCvJNb51xdU3Zcc">0</b> 件待处理商品</span></div></div>
+      <section class="parse-card" data-page-node-id="75IOXDUtSGdgkQG3W8xSvA">
+        <div class="parse-head" data-page-node-id="Pz4hcoX0DlcFJSfmNOfaBh">链接解析<span class="parse-tip" data-page-node-id="dQ1DvVRBb5BXyLWqWFr9Tf">粘贴 kakaku.com 或北村相机（kitamuracamera.jp /buy/item/）商品详情页链接，自动解析名称 / 价格 / 缩略图</span></div>
+        <div class="parse-row" data-page-node-id="xSIji0FAzGy2pL9aiKqxER"><input id="parse-url" placeholder="粘贴 kakaku.com 或北村相机商品详情链接" onkeydown="if(event.key==='Enter')parseUrl()" data-page-node-id="QzkoAepcDNdCsuqX3SJuRy"><button class="parse-btn" id="parse-btn" onclick="parseUrl()" data-page-node-id="brwrs5899HqQUJ4xhzqoB5">解析</button></div>
+        <div id="parse-result" data-page-node-id="N8VsQAXe8SoDG1d67Ln00D"></div>
+      </section>
+      <div class="filters" data-page-node-id="JvH5ro18oepVifnFimLdwx"><input id="search" placeholder="搜索用户或商品" oninput="render()" data-page-node-id="oUf62XnP29Ih1xUz7TO7gk"><select id="filter" onchange="render()" data-page-node-id="JDdiTR5Y7tupbIoktnTicT"><option value="all" data-page-node-id="h5xhrTkhttgZAlT1kHPAEE">全部采购状态</option><option value="submitted" data-page-node-id="YBSY5mGFHIyS6v288jslfO">待处理</option><option value="locked" data-page-node-id="cRgHHh6me1mE7GCyBTn35V">采购锁定</option><option value="success" data-page-node-id="7Y4yyL26EzbcTRR9O2frgQ">采购成功</option><option value="failed" data-page-node-id="LzEmqQvcF4oVOqrkzTO57l">采购失败</option></select><label class="edit-toggle" data-page-node-id="kEU8aDbH1xTEzUiWFKzvbh"><input id="edit-mode" type="checkbox" onchange="setEditMode()" data-page-node-id="jhtcOzVqWoAtUKn3AuY27t"><b id="edit-label" data-page-node-id="rXG3chYE4DeiSGWIiwCjNL">调整已关闭</b></label></div>
+      <section class="board" id="board" data-page-node-id="TL6DoGmGuYVu6Km0wOEsXE"><div class="loading" data-page-node-id="liWvkPOwsOrsEUBoyxIIxC">加载中…</div></section>
+      </div>
+      <div id="view-products" style="display:none" data-page-node-id="vutW32hJi74fgJ16ibkqTM">
+        <div class="head" data-page-node-id="BsXi6OT4WPMQXzYKhS9rvA"><div data-page-node-id="6aQfeWTp9rsTMVNHO8s9n9"><h1 data-page-node-id="eRWWE0mem9e7XGXUECNDIa">商品库</h1><p class="sub" data-page-node-id="N9RYA9ihM65FEN8pjjmOvP">查看、改价或删除已入库的商品；商品原价按税前口径录入，含税价与人民币价由价格分组参数自动计算。</p></div><div class="summary" data-page-node-id="6EXVOd07s6h8yH00wrj0PC"><span data-page-node-id="5TyReO1ke9KF3lN4DfdbHb">共 <b id="prod-total" data-page-node-id="8R1kWBVzXMocgFqhNeff5p">0</b> 件商品</span></div></div>
+        <section class="settings-card" data-page-node-id="G9pUdskcBA1DBHJX8iq3KY">
+          <div class="settings-head" data-page-node-id="p3ZJLOzwf52d5r3dCMFkzd">默认组价格参数<span class="settings-tip" data-page-node-id="N60W0GCsX4siehhhiML1Tf">用于商品库与未指派组的用户；更多价格分组请到「用户与设置」维护</span></div>
+          <div class="settings-row" data-page-node-id="uLIMNo8cikCLJf2EdMZcNu">
+            <label data-page-node-id="SwK37Y3MPbgzqHw0dJAFbV">税率（%）<input id="set-tax" type="number" step="0.1" min="0" max="100" value="10" data-page-node-id="FzigTTDCfFAvyIiXuGT8of"></label>
+            <label data-page-node-id="VnYXLlrBMCfH5ygm9yinmq">汇率（1 日元 = 人民币元）<input id="set-rate" type="number" step="0.0001" min="0.0001" value="0.048" data-page-node-id="uTh0VjzmgbAQT3iqeJnbAs"></label>
+            <button class="parse-btn" id="save-settings" onclick="saveSettings()" data-page-node-id="8YePopBIbezfyHNCmj9pwA">保存</button>
+          </div>
+        </section>
+        <div class="filters" data-page-node-id="saROmAqhFrkq4FeV0m75I0"><input id="prod-search" placeholder="搜索商品名称或来源" oninput="renderProducts()" data-page-node-id="2DAAwGHGUaJYxuihQmaZcW"></div>
+        <div class="batch-bar" id="prod-batch-bar">
+          <label class="sel-all" title="全选当前列表商品"><input type="checkbox" class="cb" id="prod-sel-all" onchange="toggleAllProducts(this.checked)">全选</label>
+          <span class="sel-count" id="prod-sel-count">已选 0 件</span>
+          <span class="spacer"></span>
+          <button class="p-btn danger" id="prod-batch-del" onclick="batchDeleteProducts()" disabled>删除选中</button>
+        </div>
+        <section class="prod-list" id="prod-list" data-page-node-id="xEgJFmQR1p4ns5Avmvk8YN"><div class="loading" data-page-node-id="DMOpDRzzIMM3v0XWFGRUfb">加载中…</div></section>
+      </div>
+      <div id="view-batches" style="display:none">
+        <div class="head"><div><h1>出游采购组</h1><p class="sub">管理员拥有最高权限：可自行建组，也能代管任意组（改标题 / 改日期 / 拉人 / 标记完成 / 删除）。组内成员与已提交条目在此汇总。</p></div><div class="summary"><span>共 <b id="grp-total">0</b> 个组</span><span>·</span><span>进行中 <b id="grp-open">0</b> 个</span><span>·</span><span>条目 <b id="grp-items">0</b> 件</span></div></div>
+        <section class="create-card">
+          <div class="cc-head">新建出游采购组</div>
+          <p class="cc-tip">管理员代建组不受「每个采购员累计 3 个」的配额限制；建组后由你担任该组采购员，可拉人、勾选采购、标记完成。</p>
+          <div class="cc-row">
+            <label>组标题<input id="ag-title" placeholder="例如：9月东京代购"></label>
+            <label>开始日期<input id="ag-start" type="date"></label>
+            <label>结束日期<input id="ag-end" type="date" autocomplete="off"></label>
+            <button class="g-btn primary" onclick="adminCreateGroup()">创建出游组</button>
+          </div>
+        </section>
+        <div class="filters"><input id="grp-search" placeholder="搜索组标题 / 采购员 / 成员" oninput="renderGroups()"><select id="grp-status" onchange="renderGroups()"><option value="all">全部状态</option><option value="open">进行中</option><option value="completed">已完成</option></select></div>
+        <section class="prod-list" id="group-list"><div class="loading">加载中…</div></section>
+      </div>
+    </main>
+  </div>
+  <div class="notice" id="notice" role="status" aria-live="polite" aria-atomic="true" data-page-node-id="5Gb3BmT9b9RtFshlI9raS1">已更新</div>
+      <div id="view-users" style="display:none">
+        <div class="head"><div><h1>用户与设置</h1><p class="sub">创建账号、管理角色与价格组、重置密码、启停账号；删除用户会连同其全部清单一并彻底删除（不可恢复）。</p></div></div>
+        <section class="settings-card">
+          <div class="settings-head">添加用户<span class="settings-tip">创建后即可用该邮箱与初始密码登录</span></div>
+          <div class="settings-row">
+            <label>邮箱<input id="nu-email" type="email" autocomplete="email" placeholder="name@example.com"></label>
+            <label>姓名<input id="nu-name" placeholder="姓名"></label>
+            <label>初始密码<input id="nu-pass" type="password" autocomplete="new-password" placeholder="至少 6 位"></label>
+            <label>角色<select id="nu-role"><option value="user">普通用户</option><option value="purchaser">采购人</option></select></label>
+            <label>价格组<select id="nu-group" autocomplete="off"></select></label>
+            <button class="parse-btn" onclick="createUser()">创建用户</button>
+          </div>
+        </section>
+        
+        <section class="settings-card">
+          <div class="settings-head">价格算法分组<span class="settings-tip">每组一套税率 / 汇率；用户清单按其归属组折算，未指派 = 默认组。默认组不可删除，有成员的分组需先调整归属</span></div>
+          <div id="price-group-list"></div>
+          <div class="settings-row" style="margin-top:10px;border-top:1px dashed var(--line-soft);padding-top:10px">
+            <label>组名<input id="ng-name" placeholder="如：海外直采组"></label>
+            <label>税率（%）<input id="ng-tax" type="number" step="0.1" min="0" max="100" value="10"></label>
+            <label>汇率（1 日元 = 元）<input id="ng-rate" type="number" step="0.0001" min="0.0001" value="0.048" inputmode="decimal"></label>
+            <button class="parse-btn" onclick="addGroup()">添加分组</button>
+          </div>
+        </section>
+        <section class="settings-card">
+          <div class="settings-head">系统设置<span class="settings-tip">关闭后登录页不再提供注册，账号一律由管理员在后台创建</span></div>
+          <label style="display:flex;align-items:center;gap:9px;color:var(--muted);font-size:13px;cursor:pointer"><input type="checkbox" id="reg-open" style="width:17px;height:17px" onchange="saveReg(this.checked)"> 允许用户自助注册</label>
+        </section>
+<section class="settings-card">
+          <div class="settings-head">用户列表<span class="settings-tip">角色 / 归属价格组可直接下拉调整；停用后无法登录，数据保留可再启用</span></div>
+          <div class="filters" style="margin-bottom:10px"><input id="u-search" placeholder="搜索姓名或邮箱" oninput="renderUsers()"><select id="u-status" onchange="renderUsers()"><option value="all">全部状态</option><option value="active">正常</option><option value="stopped">已停用</option></select></div>
+          <div class="batch-bar" id="user-batch-bar">
+            <label class="sel-all" title="全选当前列表可选用户"><input type="checkbox" class="cb" id="user-sel-all" onchange="toggleAllUsers(this.checked)">全选</label>
+            <span class="sel-count" id="user-sel-count">已选 0 人</span>
+            <span class="spacer"></span>
+            <button class="p-btn danger" id="user-batch-del" onclick="batchDeleteUsers()" disabled>删除选中</button>
+          </div>
+          <div class="user-grid" id="user-grid"><div class="loading">加载中…</div></div>
+        </section>
+      </div>
+  <script src="auth.js"></script>
+  <script>
+    // 与后端 /api/admin/carts/{id}/status 保持一致的状态机（仅管理员视角）
+    const TRANSITIONS = {
+      draft: ["submitted"],
+      submitted: ["draft", "locked", "failed"],
+      locked: ["submitted", "success", "failed"],
+      success: [],
+      failed: ["draft"],
+    };
+    const VERBS = { draft: "退回草稿", submitted: "回到待处理", locked: "锁定", success: "标记成功", failed: "标记失败" };
+    let carts = [];
+    let editMode = false;
+    const noticeEl = document.getElementById("notice");
+    function notify(message) { noticeEl.textContent = message; noticeEl.classList.add("show"); setTimeout(() => noticeEl.classList.remove("show"), 2000); }
+    const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+
+    let lastParsed = null;
+
+    async function parseUrl() {
+      const url = document.getElementById("parse-url").value.trim();
+      const box = document.getElementById("parse-result");
+      const btn = document.getElementById("parse-btn");
+      if (!url) { box.innerHTML = '<div class="parse-err">请先粘贴商品详情页链接</div>'; return; }
+      btn.disabled = true; btn.textContent = "解析中…";
+      box.innerHTML = '<div class="loading">正在解析链接…</div>';
+      try {
+        const d = await api("/api/products/parse-url", { method: "POST", body: { url } });
+        lastParsed = d;
+        const meta = [d.source ? {kakaku: "kakaku", kitamura: "北村相机"}[d.source] || d.source : null, d.maker, d.currency, d.rating ? "评分 " + d.rating + (d.review_count ? "（" + d.review_count + " 条）" : "") : null]
+          .filter(Boolean).join(" · ");
+        box.innerHTML = `<div class="parse-result">
+          ${d.image_url ? `<img src="${esc(d.image_url)}" alt="${esc(d.name || "商品图片")}" loading="lazy" onerror="this.style.display='none'">` : ""}
+          <div style="min-width:0"><div class="p-name">${esc(d.name)}</div>${meta ? `<div class="p-meta">${esc(meta)}</div>` : ""}</div>
+          <div class="p-price">${d.price_yen != null ? money(d.price_yen, d.currency || "JPY") : "—"}</div>
+          <button class="parse-btn" id="save-btn" onclick="saveProduct()">加入商品库</button>
+        </div>`;
+        notify("解析成功");
+      } catch (err) {
+        box.innerHTML = '<div class="parse-err">' + esc(err.message || "解析失败") + "</div>";
+      } finally {
+        btn.disabled = false; btn.textContent = "解析";
+      }
+    }
+
+    async function saveProduct() {
+      const d = lastParsed;
+      if (!d) return;
+      const btn = document.getElementById("save-btn");
+      btn.disabled = true; btn.textContent = "加入中…";
+      try {
+        await api("/api/products", { method: "POST", body: {
+          name: d.name, source_name: d.source || "kakaku", source_url: d.url,
+          image_url: d.image_url,
+          price_cents: d.price_yen, currency: d.currency || "JPY",
+        }});
+        btn.textContent = "已加入"; btn.disabled = true;
+        notify("已加入商品库，可在用户搜索中找到");
+      } catch (err) {
+        btn.disabled = false; btn.textContent = "加入商品库";
+        notify(err.message || "加入失败");
+      }
+    }
+
+    // —— 商品库视图 ——
+    let products = [];
+    function switchView(view) {
+      document.getElementById("view-carts").style.display = view === "carts" ? "" : "none";
+      document.getElementById("view-products").style.display = view === "products" ? "" : "none";
+      document.getElementById("view-batches").style.display = view === "batches" ? "" : "none";
+      document.getElementById("view-users").style.display = view === "users" ? "" : "none";
+      document.getElementById("tab-carts").classList.toggle("active", view === "carts");
+      document.getElementById("tab-products").classList.toggle("active", view === "products");
+      document.getElementById("tab-batches").classList.toggle("active", view === "batches");
+      document.getElementById("tab-users").classList.toggle("active", view === "users");
+      ["carts", "products", "batches", "users"].forEach(name => document.getElementById("tab-" + name).setAttribute("aria-selected", String(view === name)));
+      if (view === "carts") loadCarts();
+      if (view === "products") { loadProducts(); loadPriceSettings(); }
+      if (view === "batches") loadGroupsView();
+      if (view === "users") loadUsersView();
+    }
+    async function loadProducts() {
+      products = await api("/api/products");
+      renderProducts();
+    }
+    function renderProducts() {
+      const list = currentProductList();
+      document.getElementById("prod-total").textContent = products.length;
+      const box = document.getElementById("prod-list");
+      box.innerHTML = list.map(p => `
+        <div class="prod-item">
+          <span class="sel-col"><input type="checkbox" class="cb" data-id="${p.id}" ${prodSel.has(p.id) ? "checked" : ""} onchange="onProdSelChange(this)"></span>
+          <span class="p-thumb">${productThumb(p)}</span>
+          <div><div class="p-name">${esc(p.name)}</div><div class="p-meta">${esc(p.source_name)} · ${esc(p.currency)}</div></div>
+          <div class="p-price">${priceText(p)}</div>
+          <div class="p-actions"><button class="p-btn" onclick="editProduct(${p.id})">改价</button><button class="p-btn danger" onclick="deleteProduct(${p.id})">删除</button></div>
+        </div>`).join("") || '<div class="empty">没有商品</div>';
+      syncProdSelUI(list);
+    }
+    async function editProduct(id) {
+      const p = products.find(x => x.id === id);
+      if (!p) return;
+      const hint = p.currency === "JPY" ? "请输入新价格（日元整数）" : "请输入新价格（人民币分）";
+      const val = prompt(hint, p.price_cents);
+      if (val === null) return;
+      const n = parseInt(val, 10);
+      if (isNaN(n) || n < 0) { notify("价格无效"); return; }
+      await api("/api/products/" + id, { method: "PATCH", body: { price_cents: n } });
+      await loadProducts(); notify("价格已更新");
+    }
+    async function deleteProduct(id) {
+      const p = products.find(x => x.id === id);
+      if (!p) return;
+      if (!confirm("确定删除商品「" + p.name + "」？")) return;
+      try {
+        await api("/api/products/" + id, { method: "DELETE" });
+        await loadProducts(); notify("已删除");
+      } catch (err) {
+        notify(err.message || "删除失败");
+      }
+    }
+
+    // 价格统一按税前原价录入，含税价由当前价格组税率计算；旧 tax_included 字段仅为接口兼容。
+    async function loadPriceSettings() {
+      try {
+        const s = await api("/api/settings/price");
+        document.getElementById("set-tax").value = s.tax_rate;
+        document.getElementById("set-rate").value = s.exchange_rate_jpy_cny;
+      } catch (err) { notify(err.message || "读取价格参数失败"); }
+    }
+    async function saveSettings() {
+      const btn = document.getElementById("save-settings");
+      btn.disabled = true; btn.textContent = "保存中…";
+      try {
+        await api("/api/settings/price", { method: "PUT", body: {
+          tax_rate: parseFloat(document.getElementById("set-tax").value),
+          exchange_rate_jpy_cny: parseFloat(document.getElementById("set-rate").value),
+        }});
+        await loadProducts(); notify("价格参数已保存，已对全部商品生效");
+      } catch (err) { notify(err.message || "保存失败"); }
+      finally { btn.disabled = false; btn.textContent = "保存"; }
+    }
+
+    // —— 出游采购组（管理只读视图） ——
+    let users = [];
+    let gGroups = [];
+    let memberOptions = [];
+    let gEditId = null;
+    let gPullId = null;
+    async function loadGroupsView() {
+      try {
+        const [list, opts] = await Promise.all([
+          api("/api/groups"),
+          api("/api/groups/member-options").catch(() => []),
+        ]);
+        gGroups = list || [];
+        memberOptions = opts || [];
+        renderGroups();
+      } catch (err) {
+        const box = document.getElementById("group-list");
+        if (box) box.innerHTML = '<div class="empty">' + esc(err.message) + "</div>";
+      }
+    }
+    async function setRole(id, role) {
+      await api("/api/admin/users/" + id + "/role", { method: "PATCH", body: { role } });
+      await loadUsersView(); notify("角色已更新");
+    }
+    // —— 用户与设置 ——
+    let priceGroups = [];
+    let currentMe = null;
+    const ROLE_LABELS = { admin: "管理员", purchaser: "采购人", user: "普通用户" };
+    function userGroupOptions(selectedId) {
+      return '<option value="">默认组</option>' + (priceGroups || []).map(g =>
+        `<option value="${g.id}" ${g.id === selectedId ? "selected" : ""}>${esc(g.name)}</option>`).join("");
+    }
+    async function loadUsersView() {
+      if (!currentMe) currentMe = await requireRole("admin");
+      users = await api("/api/admin/users");
+      priceGroups = await api("/api/settings/price-groups");
+      document.getElementById("nu-group").innerHTML = userGroupOptions(null);
+      renderUsers(); renderPriceGroups(); loadReg();
+    }
+    // —— 点击用户头像：查看该用户全部清单（弹窗） ——
+    async function showUserCarts(userId, name) {
+      const mask = document.getElementById("ucm-mask");
+      const body = document.getElementById("ucm-body");
+      document.getElementById("ucm-name").textContent = "「" + (name || "") + "」的采购清单";
+      document.getElementById("ucm-avatar").textContent = initials(name);
+      mask.classList.add("show");
+      body.innerHTML = '<div class="empty" style="padding:20px">加载中…</div>';
+      try {
+        const carts = await api("/api/admin/carts?user_id=" + userId);
+        document.getElementById("ucm-meta").textContent = "共 " + carts.length + " 张清单";
+        if (!carts.length) { body.innerHTML = '<div class="empty" style="padding:20px">该用户还没有任何清单</div>'; return; }
+        body.innerHTML = carts.map(cart => {
+          const items = cart.items || [];
+          const user = cart.user;
+          return `<article class="ucm-cart">
+            <div class="card-head"><span class="person">${initials(user.full_name || user.email)}</span><div><div class="name">${esc(user.full_name || user.email)}</div><div class="email">${esc(user.email)}</div></div><span class="badge ${cart.status}">${STATUS_LABELS[cart.status] || cart.status}</span></div>
+            <div class="items">${items.length ? renderAdminItems(items, cart.id) : '<div class="empty" style="padding:10px">暂无商品</div>'}</div>
+            <div class="ucm-foot"><span>${items.length} 个商品种类 · ${items.reduce((n, i) => n + i.quantity, 0)} 件</span><b>${cartTotal(cart)}</b></div>
+          </article>`;
+        }).join("");
+      } catch (err) { body.innerHTML = '<div class="empty" style="padding:20px">' + esc(err.message || "加载失败") + "</div>"; }
+    }
+    function closeUserCarts() { document.getElementById("ucm-mask").classList.remove("show"); }
+    function renderUsers() {
+      const list = currentUserList();
+      const box = document.getElementById("user-grid");
+      box.innerHTML = list.map(u => {
+        const canOp = u.role !== "admin" && u.id !== (currentMe && currentMe.id);
+        const roleCtrl = u.role !== "admin"
+          ? `<select title="角色" onchange="setRole(${u.id}, this.value)"><option value="user" ${u.role === "user" ? "selected" : ""}>普通用户</option><option value="purchaser" ${u.role === "purchaser" ? "selected" : ""}>采购人</option></select>`
+          : '<span class="p-meta">系统管理员</span>';
+        const groupCtrl = u.role !== "admin"
+          ? `<select title="归属价格组" onchange="setUserGroup(${u.id}, this.value)">${userGroupOptions(u.price_group_id)}</select>`
+          : "";
+        return `<div class="user-line">
+          <span class="sel-col">${canOp ? `<input type="checkbox" class="cb" data-id="${u.id}" ${userSel.has(u.id) ? "checked" : ""} onchange="onUserSelChange(this)">` : ""}</span>
+          <button class="avatar-btn" title="查看 ${esc(u.full_name || u.email)} 的清单" onclick="showUserCarts(${u.id}, '${esc(u.full_name || u.email)}')">${initials(u.full_name || u.email)}</button>
+          <div class="u-main"><div class="p-name">${esc(u.full_name || u.email)} <span class="tag ${u.role === "admin" ? "admin" : ""}">${ROLE_LABELS[u.role] || u.role}</span>${u.active ? "" : ' <span class="tag off">已停用</span>'}</div>
+          <div class="p-meta">${esc(u.email)} · 共 ${u.cart_count ?? 0} 张清单 · 创建于 ${new Date(u.created_at).toLocaleDateString("zh-CN")}</div></div>
+          ${roleCtrl}${groupCtrl}
+          <span class="p-actions" style="margin-left:auto">${canOp ? `
+            <button class="p-btn" onclick="resetPassword(${u.id})">重置密码</button>
+            ${u.active ? `<button class="p-btn danger" onclick="setUserActive(${u.id}, false)">停用</button>` : `<button class="p-btn" onclick="setUserActive(${u.id}, true)">启用</button>`}
+            <button class="p-btn danger" onclick="deleteUser(${u.id})">删除</button>` : ""}</span>
+        </div>`;
+      }).join("") || '<div class="empty">没有匹配的用户</div>';
+      syncUserSelUI(selectableUsers(list));
+    }
+    // —— 多选 / 批量删除 ——
+    const userSel = new Set();
+    const prodSel = new Set();
+    function selectableUsers(list) {
+      return (list || users).filter(u => u.role !== "admin" && u.id !== (currentMe && currentMe.id));
+    }
+    function currentUserList() {
+      const q = document.getElementById("u-search").value.trim().toLowerCase();
+      const st = document.getElementById("u-status").value;
+      return users.filter(u =>
+        (!q || (u.full_name + " " + u.email).toLowerCase().includes(q)) &&
+        (st === "all" || (st === "active" ? u.active !== false : u.active === false)));
+    }
+    function onUserSelChange(cb) {
+      const id = Number(cb.dataset.id);
+      if (cb.checked) userSel.add(id); else userSel.delete(id);
+      syncUserSelUI(selectableUsers(currentUserList()));
+    }
+    function toggleAllUsers(on) {
+      const list = selectableUsers(currentUserList());
+      if (on) list.forEach(u => userSel.add(u.id)); else userSel.clear();
+      renderUsers();
+    }
+    function syncUserSelUI(selList) {
+      const list = selList || selectableUsers(currentUserList());
+      const el = document.getElementById("user-sel-all");
+      const n = list.filter(u => userSel.has(u.id)).length;
+      if (el) { el.checked = list.length > 0 && n === list.length; el.classList.toggle("indet", n > 0 && n < list.length); }
+      document.getElementById("user-sel-count").textContent = "已选 " + userSel.size + " 人";
+      document.getElementById("user-batch-del").disabled = userSel.size === 0;
+    }
+    async function batchDeleteUsers() {
+      const targets = selectableUsers().filter(u => userSel.has(u.id));
+      if (!targets.length) { notify("请先勾选要删除的用户"); return; }
+      const warn = confirm("⚠️ 确定彻底删除选中的 " + targets.length + " 位用户？\n\n该操作不可恢复，将连同每人的全部采购清单、条目一起彻底删除；每人名下的出游组将转由管理员代管。\n\n确认后立即执行。");
+      if (!warn) return;
+      let del = 0, fail = 0, firstErr = "";
+      for (const u of targets) {
+        try {
+          await api("/api/admin/users/" + u.id, { method: "DELETE" });
+          del++;
+        } catch (err) { fail++; if (!firstErr) firstErr = err.message || "操作失败"; }
+      }
+      userSel.clear();
+      await loadUsersView();
+      notify("批量删除完成：彻底删除 " + del + " 人" + (fail ? "、失败 " + fail + " 人（" + firstErr + "）" : ""));
+    }
+    function currentProductList() {
+      const q = document.getElementById("prod-search").value.trim().toLowerCase();
+      return products.filter(p => !q || (p.name + " " + p.source_name).toLowerCase().includes(q));
+    }
+    function onProdSelChange(cb) {
+      const id = Number(cb.dataset.id);
+      if (cb.checked) prodSel.add(id); else prodSel.delete(id);
+      syncProdSelUI(currentProductList());
+    }
+    function toggleAllProducts(on) {
+      const list = currentProductList();
+      if (on) list.forEach(p => prodSel.add(p.id)); else prodSel.clear();
+      renderProducts();
+    }
+    function syncProdSelUI(list) {
+      const sel = list || currentProductList();
+      const el = document.getElementById("prod-sel-all");
+      const n = sel.filter(p => prodSel.has(p.id)).length;
+      if (el) { el.checked = sel.length > 0 && n === sel.length; el.classList.toggle("indet", n > 0 && n < sel.length); }
+      document.getElementById("prod-sel-count").textContent = "已选 " + prodSel.size + " 件";
+      document.getElementById("prod-batch-del").disabled = prodSel.size === 0;
+    }
+    async function batchDeleteProducts() {
+      const targets = products.filter(p => prodSel.has(p.id));
+      if (!targets.length) { notify("请先勾选要删除的商品"); return; }
+      if (!confirm("确定删除选中的 " + targets.length + " 件商品？\n\n已被加入清单的商品无法删除，会被跳过。")) return;
+      let ok = 0, fail = 0, firstErr = "";
+      for (const p of targets) {
+        try { await api("/api/products/" + p.id, { method: "DELETE" }); ok++; }
+        catch (err) { fail++; if (!firstErr) firstErr = err.message || "删除失败"; }
+      }
+      prodSel.clear();
+      await loadProducts();
+      notify("批量删除完成：成功 " + ok + " 件" + (fail ? "、跳过 " + fail + " 件（" + firstErr + "）" : ""));
+    }
+    async function createUser() {
+      const email = document.getElementById("nu-email").value.trim();
+      const name = document.getElementById("nu-name").value.trim();
+      const pass = document.getElementById("nu-pass").value;
+      const role = document.getElementById("nu-role").value;
+      const gid = document.getElementById("nu-group").value;
+      if (!email || !name || !pass) { notify("请填写邮箱 / 姓名 / 初始密码"); return; }
+      if (pass.length < 6) { notify("初始密码至少 6 位"); return; }
+      try {
+        await api("/api/admin/users", { method: "POST", body: { email, full_name: name, password: pass, role, price_group_id: gid ? parseInt(gid, 10) : null } });
+        document.getElementById("nu-email").value = ""; document.getElementById("nu-name").value = ""; document.getElementById("nu-pass").value = "";
+        await loadUsersView(); notify("用户已创建");
+      } catch (err) { notify(err.message || "创建失败"); }
+    }
+    async function setUserGroup(id, groupId) {
+      await api("/api/admin/users/" + id + "/price-group", { method: "PATCH", body: { price_group_id: groupId ? parseInt(groupId, 10) : null } });
+      await loadUsersView(); notify("价格组已更新");
+    }
+    async function setUserActive(id, active) {
+      const u = users.find(x => x.id === id); if (!u) return;
+      await api("/api/admin/users/" + id + "/active", { method: "PATCH", body: { active } });
+      await loadUsersView(); notify(active ? "账号已启用" : "账号已停用");
+    }
+    async function resetPassword(id) {
+      const u = users.find(x => x.id === id); if (!u) return;
+      const pass = prompt("为「" + (u.full_name || u.email) + "」设置新密码（至少 6 位）：");
+      if (pass === null) return;
+      if (pass.length < 6) { notify("至少 6 位"); return; }
+      try {
+        await api("/api/admin/users/" + id + "/password", { method: "PATCH", body: { password: pass } });
+        notify("密码已重置");
+      } catch (err) { notify(err.message || "重置失败"); }
+    }
+    async function deleteUser(id) {
+      const u = users.find(x => x.id === id); if (!u) return;
+      const warn = confirm("⚠️ 确定彻底删除用户「" + (u.full_name || u.email) + "」？\n\n该操作不可恢复，将连同其名下全部采购清单一并删除。\n· 用户账号将被移除\n· 该用户的所有清单及条目将被彻底删除\n· 该用户名下的出游组将转由当前管理员代管\n\n确认后立即执行，请谨慎操作。");
+      if (!warn) return;
+      try {
+        const r = await api("/api/admin/users/" + id, { method: "DELETE" });
+        await loadUsersView(); notify(r.message || "用户及清单已彻底删除");
+      } catch (err) { notify(err.message || "操作失败"); }
+    }
+    function renderPriceGroups() {
+      const box = document.getElementById("price-group-list");
+      box.innerHTML = (priceGroups || []).map(g => {
+        const members = `（${g.user_count} 人）`;
+        const nameCtrl = `<input id="pg-name-${g.id}" value="${esc(g.name)}" ${g.is_default ? "disabled" : ""}>`;
+        return `<div class="group-line">
+          <div style="min-width:118px">${g.is_default ? '<span class="gdef">默认组</span>' : esc(g.name)} <span class="p-meta">${g.is_default ? "全局兜底" : ""}${members}</span></div>
+          <label>组名${nameCtrl}</label>
+          <label>税率（%）<input id="pg-tax-${g.id}" type="number" step="0.1" min="0" max="100" value="${g.tax_rate}"></label>
+          <label>汇率（1 日元 = 元）<input id="pg-rate-${g.id}" type="number" step="0.0001" min="0.0001" value="${g.exchange_rate_jpy_cny}"></label>
+          <button class="p-btn" onclick="updateGroup(${g.id})">保存</button>
+          ${g.is_default ? "" : (g.user_count > 0 ? '<span class="p-meta">有成员，先调整归属再删</span>' : `<button class="p-btn danger" onclick="deleteGroup(${g.id})">删除</button>`)}
+        </div>`;
+      }).join("") || '<div class="empty">暂无分组</div>';
+    }
+    async function addGroup() {
+      const name = document.getElementById("ng-name").value.trim();
+      const tax = parseFloat(document.getElementById("ng-tax").value);
+      const rate = parseFloat(document.getElementById("ng-rate").value);
+      if (!name) { notify("请填写组名"); return; }
+      try {
+        await api("/api/settings/price-groups", { method: "POST", body: { name, tax_rate: tax, exchange_rate_jpy_cny: rate } });
+        document.getElementById("ng-name").value = "";
+        await loadUsersView(); notify("分组已添加");
+      } catch (err) { notify(err.message || "添加失败"); }
+    }
+    async function updateGroup(id) {
+      const g = (priceGroups || []).find(x => x.id === id);
+      const body = {
+        name: document.getElementById("pg-name-" + id).value.trim() || (g && g.name),
+        tax_rate: parseFloat(document.getElementById("pg-tax-" + id).value),
+        exchange_rate_jpy_cny: parseFloat(document.getElementById("pg-rate-" + id).value),
+      };
+      if (!body.name) { notify("组名不能为空"); return; }
+      try { await api("/api/settings/price-groups/" + id, { method: "PUT", body }); await loadUsersView(); notify("分组已更新"); }
+      catch (err) { notify(err.message || "保存失败"); }
+    }
+    async function deleteGroup(id) {
+      const g = (priceGroups || []).find(x => x.id === id); if (!g) return;
+      if (!confirm("删除分组「" + g.name + "」？")) return;
+      try { await api("/api/settings/price-groups/" + id, { method: "DELETE" }); await loadUsersView(); notify("分组已删除"); }
+      catch (err) { notify(err.message || "删除失败"); }
+    }
+    async function loadReg() {
+      try { const r = await api("/api/settings/registration", { auth: false }); document.getElementById("reg-open").checked = !!r.allow_registration; }
+      catch (err) { /* 保持默认 */ }
+    }
+    async function saveReg(allow) {
+      try { await api("/api/settings/registration", { method: "PUT", body: { allow_registration: allow } }); notify(allow ? "已开启自助注册" : "已关闭自助注册"); }
+      catch (err) { notify(err.message || "保存失败"); document.getElementById("reg-open").checked = !allow; }
+    }
+
+    function gFmtDate(ds) { if (!ds) return ""; const [y, m, dd] = ds.split("-"); return y + "年" + (+m) + "月" + (+dd) + "日"; }
+    function gRange(g) { return gFmtDate(g.start_date) + " ~ " + gFmtDate(g.end_date); }
+    async function gCopy(code, _btn) {
+      try { await navigator.clipboard.writeText(code); notify("邀请码 " + code + " 已复制"); }
+      catch (_) { notify("请手动复制邀请码 " + code); }
+    }
+    async function gCopyLink(code, _btn) {
+      const link = location.origin + "/login.html?invite=" + code;
+      try { await navigator.clipboard.writeText(link); notify("邀请链接已复制，发同事点开登录/注册后自动入组"); }
+      catch (_) { notify("请手动复制链接：" + link); }
+    }
+    function renderGroups() {
+      const q = (document.getElementById("grp-search").value || "").trim().toLowerCase();
+      const st = document.getElementById("grp-status").value;
+      const box = document.getElementById("group-list");
+      document.getElementById("grp-total").textContent = gGroups.length;
+      document.getElementById("grp-open").textContent = gGroups.filter(g => g.status === "open").length;
+      document.getElementById("grp-items").textContent = gGroups.reduce((s, g) => s + (g.total || 0), 0);
+      const shown = gGroups.filter(g => {
+        const names = [g.purchaser.full_name, g.purchaser.email].concat((g.members || []).map(m => m.full_name || m.email)).join(" ");
+        return (g.title + " " + names).toLowerCase().includes(q) && (st === "all" || g.status === st);
+      });
+      if (!shown.length) {
+        box.innerHTML = '<div class="empty">' + (gGroups.length ? "没有匹配的出游采购组" : "还没有采购员创建出游采购组") + "</div>";
+        return;
+      }
+      box.innerHTML = shown.map(g => {
+        const p = g.purchaser || {};
+        const open = g.status === "open";
+        const members = g.members || [];
+        const items = g.items || [];
+        const done = items.filter(i => i.purchased).length;
+        return `<article class="gcard">
+          <div class="grow"><div style="min-width:0">
+            <div class="gtitle">${esc(g.title)}</div>
+            <div class="gmeta">采购员 ${esc(p.full_name || p.email)} · ${esc(gRange(g))} · 共 ${g.total} 件 / 已采购 ${done} 件</div>
+            ${open ? `<div class="gcode">入组邀请码 <code>${esc(g.invite_code)}</code><button onclick="gCopy('${esc(g.invite_code)}', this)">复制</button><button onclick="gCopyLink('${esc(g.invite_code)}', this)" title="复制邀请链接，发同事点开登录/注册后自动入组">复制邀请链接</button></div>` : ""}
+            ${members.length ? `<div class="gmems">${members.map(m => `<a class="gmchip" href="member.html?group_id=${g.id}&member_id=${m.id}" title="查看 ${esc(m.full_name || m.email)} 在本组提交的清单">${esc(m.full_name || m.email)}</a>`).join("")}</div>` : ""}
+          </div><span class="badge ${open ? "gopen" : "gdone"}">${open ? "进行中" : "已完成"}</span></div>
+          ${gEditId === g.id ? gEditRow(g) : ""}
+          ${open && gPullId === g.id ? gPullPanel(g, members) : ""}
+          <div class="gsec">${items.length ? `<div class="gsec-t">组内已提交条目（${g.total} 件）</div>` + gRenderItems(items) : '<div class="gempty">该组还没有成员提交的清单</div>'}</div>
+          <div class="gfoot"><div></div><div class="gacts">
+            ${open ? `<button class="p-btn" onclick="gToggleEdit(${g.id})">${gEditId === g.id ? "收起编辑" : "改标题 / 日期"}</button>` : ""}
+            ${open ? `<button class="p-btn" onclick="gTogglePull(${g.id})">${gPullId === g.id ? "收起拉人" : "拉人入组"}</button>` : ""}
+            ${open ? `<button class="p-btn" onclick="gComplete(${g.id})">标记完成（结束收单）</button>` : ""}
+            <button class="p-btn danger" onclick="gDelete(${g.id})">删除组</button>
+          </div></div>
+        </article>`;
+      }).join("");
+    }
+    function gEditRow(g) {
+      return `<div class="g-edit">
+        <div class="g-edit-row">
+          <label>组标题<input id="ge-title" autocomplete="off" value="${esc(g.title)}" placeholder="组标题"></label>
+          <label>开始日期<input id="ge-start" type="date" value="${esc(g.start_date)}"></label>
+          <label>结束日期<input id="ge-end" type="date" autocomplete="off" value="${esc(g.end_date)}"></label>
+        </div>
+        <div class="g-edit-acts"><button class="g-btn primary" onclick="gSaveMeta(${g.id})">保存修改</button><button class="g-btn" onclick="gToggleEdit(${g.id})">取消</button></div>
+      </div>`;
+    }
+    function gPullPanel(g, members) {
+      const mine = new Set((members || []).map(m => m.id));
+      const opts = (memberOptions || []).filter(u => !mine.has(u.id));
+      return `<div class="pull-panel">
+        <div class="pull-head">把需求人拉入「${esc(g.title)}」：</div>
+        ${opts.length ? `<div class="pull-opts">${opts.map(u => `<label class="opt-chip"><input type="checkbox" data-uid="${u.id}">${esc(u.full_name || u.email)}</label>`).join("")}</div>
+        <div class="pull-bar"><button class="g-btn primary" onclick="gPullMembers(${g.id})">加入选中需求人</button><span class="pull-tip">或把邀请码 / 邀请链接发给同事，让 TA 自助加入</span></div>` : '<div class="pull-tip">没有可拉入的普通用户（全员都已在组内）</div>'}
+      </div>`;
+    }
+    function gToggleEdit(id) { gEditId = (gEditId === id ? null : id); gPullId = null; renderGroups(); }
+    function gTogglePull(id) { gPullId = (gPullId === id ? null : id); gEditId = null; renderGroups(); }
+    async function gSaveMeta(id) {
+      const title = (document.getElementById("ge-title").value || "").trim();
+      const start = document.getElementById("ge-start").value;
+      const end = document.getElementById("ge-end").value;
+      if (!title) { notify("请填写组标题"); return; }
+      if (!start || !end) { notify("请选择开始与结束日期"); return; }
+      if (end < start) { notify("结束日期不能早于开始日期"); return; }
+      try {
+        await api("/api/groups/" + id, { method: "PATCH", body: { title, start_date: start, end_date: end } });
+        gEditId = null;
+        await loadGroupsView(); notify("出游组信息已更新");
+      } catch (err) { notify(err.message || "保存失败"); }
+    }
+    async function gPullMembers(id) {
+      const uids = [...document.querySelectorAll(".pull-panel .opt-chip input[data-uid]:checked")].map(i => parseInt(i.dataset.uid, 10));
+      if (!uids.length) { notify("请先勾选要拉入的需求人"); return; }
+      try {
+        await api("/api/groups/" + id + "/members", { method: "POST", body: { user_ids: uids } });
+        gPullId = null;
+        await loadGroupsView(); notify("已加入选中需求人");
+      } catch (err) { notify(err.message || "操作失败"); }
+    }
+    async function adminCreateGroup() {
+      const title = (document.getElementById("ag-title").value || "").trim();
+      const start = document.getElementById("ag-start").value;
+      const end = document.getElementById("ag-end").value;
+      if (!title) { notify("请填写组标题"); return; }
+      if (!start || !end) { notify("请选择出游开始与结束日期"); return; }
+      if (end < start) { notify("结束日期不能早于开始日期"); return; }
+      try {
+        await api("/api/groups", { method: "POST", body: { title, start_date: start, end_date: end } });
+        document.getElementById("ag-title").value = "";
+        document.getElementById("ag-start").value = "";
+        document.getElementById("ag-end").value = "";
+        await loadGroupsView(); notify("出游组已创建，邀请码见组卡片；也可复制邀请链接发同事");
+      } catch (err) { notify(err.message || "创建失败"); }
+    }
+    function gCheckCell(it) {
+      return `<div class="gi-check">
+        <label class="purchased ${it.purchased ? 'on' : ''}" title="标记是否已采购"><input type="checkbox" ${it.purchased ? 'checked' : ''} onchange="gTogglePurchased(${it.id}, this.checked)">采购</label>
+      </div>`;
+    }
+    function gRemark(it) {
+      return `<div class="gi-remark"><textarea rows="1" placeholder="采购侧备注（仅采购/管理员可编辑）" onchange="saveRemark(${it.id}, this.value)">${esc(it.procurement_remark || "")}</textarea></div>`;
+    }
+    function gPlainRow(it) {
+      const p = it.product;
+      const c = (it.color || "").trim();
+      const req = it.requester ? (it.requester.full_name || it.requester.email) : "";
+      const typeBit = (p.category || "").trim();
+      const note = (p.remark || "").trim();
+      const meta = [req ? "需求人 " + req : "", typeBit ? "类型：" + typeBit : "", "× " + it.quantity, "税前单价 " + money(it.pretax_price_cents ?? it.unit_price_cents, p.currency) + " · 含税价 " + money(it.taxed_price_cents ?? p.taxed_price_cents, p.currency) + " · 人民币 " + money(it.price_cny_cents ?? p.price_cny_cents, "CNY") + "/件"].filter(Boolean).join(" · ");
+      return `<div class="grow2">${itemThumb(it, "gthumb")}<div style="min-width:0">
+        <div class="gi-name">${esc(p.name)}${c ? `<span class="color-chip">${esc(c)}</span>` : ""}</div>
+        <div class="gi-meta">${esc(meta)}</div>${note ? `<div class="gi-note">备注：${esc(note)}</div>` : ""}${gRemark(it)}</div>
+        ${gCheckCell(it)}</div>`;
+    }
+    function gSubRow(it) {
+      const c = (it.color || "").trim() || "默认";
+      const dotStyle = it.color ? `background:${adminChipColor(it.color)}` : "";
+      return `<div class="gg-sub"><div class="vcell"><span class="vdot" style="${dotStyle}"></span><b>${esc(c)}</b><span class="vqty">× ${it.quantity} · 税前单价 ${money(it.pretax_price_cents ?? it.unit_price_cents, it.product.currency)} · 含税价 ${money(it.taxed_price_cents ?? it.product.taxed_price_cents, it.product.currency)} · 人民币 ${money(it.price_cny_cents ?? it.product.price_cny_cents, "CNY")}/件</span></div>${gCheckCell(it)}${gRemark(it)}</div>`;
+    }
+    function gGroupCard(rows) {
+      const first = rows[0], p = first.product, cur = p.currency;
+      const req = first.requester ? (first.requester.full_name || first.requester.email) : "";
+      const typeBit = (p.category || "").trim();
+      const note = (p.remark || "").trim();
+      const tq = rows.reduce((s, i) => s + i.quantity, 0);
+      const sumNative = rows.reduce((s, i) => s + (i.taxed_price_cents || 0) * i.quantity, 0);
+      const sumCny = rows.reduce((s, i) => s + (i.price_cny_cents || 0) * i.quantity, 0);
+      const meta = [req ? "需求人 " + req : "", typeBit ? "类型：" + typeBit : "", "共 " + tq + " 件", money(first.unit_price_cents, cur) + "/件"].filter(Boolean).join(" · ");
+      return `<div class="gg"><div class="gg-head">${itemThumb(first, "gthumb")}<div style="min-width:0">
+        <div class="gi-name">${esc(p.name)}</div><div class="gi-meta">${esc(meta)}</div>${note ? `<div class="gi-note">备注：${esc(note)}</div>` : ""}</div>
+        <div class="gg-total"><b>${money(sumNative, cur)}</b>${sumCny ? `<div class="cny">≈ ${money(sumCny, "CNY")}</div>` : ""}</div></div>
+        ${rows.map(gSubRow).join("")}</div>`;
+    }
+    function gRenderItems(items) {
+      const out = []; let cur = null;
+      for (const it of items || []) {
+        const manual = it.product && it.product.source_name === "手工添加";
+        const rid = it.requester ? it.requester.id : null;
+        if (manual) {
+          if (cur && cur.key === it.product.id + "|" + rid) { cur.rows.push(it); continue; }
+          if (cur) out.push(cur);
+          cur = { key: it.product.id + "|" + rid, rows: [it] };
+        } else {
+          if (cur) { out.push(cur); cur = null; }
+          out.push({ plain: it });
+        }
+      }
+      if (cur) out.push(cur);
+      return out.map(s => {
+        if (s.plain) return gPlainRow(s.plain);
+        if (s.rows.length === 1) return gPlainRow(s.rows[0]);
+        return gGroupCard(s.rows);
+      }).join("");
+    }
+    async function gToggleConfirmed(itemId, confirmed) {
+      await api("/api/admin/cart-items/" + itemId + "/confirmed", { method: "PATCH", body: { confirmed } });
+      await loadGroupsView(); notify(confirmed ? "已确认采购" : "已取消确认采购");
+    }
+    async function gTogglePurchased(itemId, purchased) {
+      await api("/api/admin/cart-items/" + itemId + "/purchased", { method: "PATCH", body: { purchased } });
+      await loadGroupsView(); notify(purchased ? "已标记为已采购" : "已取消采购标记");
+    }
+    async function saveRemark(itemId, remark) {
+      try { await api("/api/admin/cart-items/" + itemId + "/remark", { method: "PATCH", body: { remark } }); notify("采购侧备注已保存"); }
+      catch (err) { notify(err.message || "保存失败"); }
+    }
+    async function gComplete(id) {
+      const g = gGroups.find(x => x.id === id);
+      if (!g || !confirm("标记出游组「" + g.title + "」为完成？完成后该组停止收单，组内成员不能再向该组提交清单。")) return;
+      try { await api("/api/groups/" + id, { method: "PATCH", body: { status: "completed" } }); await loadGroupsView(); notify("组已标记完成"); }
+      catch (err) { notify(err.message || "操作失败"); }
+    }
+    async function gDelete(id) {
+      const g = gGroups.find(x => x.id === id);
+      if (!g || !confirm("确定删除出游组「" + g.title + "」？仅组内没有已提交清单的组可删除；否则请改用「标记完成」。")) return;
+      try { await api("/api/groups/" + id, { method: "DELETE" }); await loadGroupsView(); notify("组已删除"); }
+      catch (err) { notify(err.message || "删除失败"); }
+    }
+    function cartTotal(cart) {
+      const items = cart.items || [];
+      const hasJpy = items.some(i => i.product && i.product.currency === "JPY");
+      const cny = money(cnyTotal(items), "CNY");
+      if (hasJpy) return cny + ' <span style="color:var(--muted);font-size:12px;font-weight:400">(本币 ' + moneyGroup(items) + ')</span>';
+      return cny;
+    }
+
+    function updateTotals() {
+      const nonEmpty = carts.filter(c => (c.items || []).length);
+      document.getElementById("user-total").textContent = new Set(nonEmpty.map(c => c.user.id)).size;
+      document.getElementById("item-total").textContent = nonEmpty.reduce((s, c) => s + c.items.reduce((n, i) => n + i.quantity, 0), 0);
+    }
+
+    function statusSelect(cart) {
+      const next = TRANSITIONS[cart.status] || [];
+      if (!next.length) return '<span class="terminal">已终态</span>';
+      const opts = [`<option value="${cart.status}" selected>${STATUS_LABELS[cart.status]}</option>`]
+        .concat(next.map(s => `<option value="${s}">改为「${VERBS[s] || STATUS_LABELS[s]}」</option>`)).join("");
+      return `<select class="edit-control" ${editMode ? "" : "disabled"} onchange="changeStatus(${cart.id}, this.value)">${opts}</select>`;
+    }
+
+    function render() {
+      const search = document.getElementById("search").value.trim().toLowerCase();
+      const filter = document.getElementById("filter").value;
+      const shown = carts.filter(cart => {
+        const items = cart.items || [];
+        const terms = `${cart.user.full_name} ${cart.user.email} ${items.map(i => i.product.name).join(" ")}`.toLowerCase();
+        return (!search || terms.includes(search)) && (filter === "all" || cart.status === filter);
+      });
+      const board = document.getElementById("board");
+      board.innerHTML = shown.map(cart => {
+        const items = cart.items || [];
+        const user = cart.user;
+        return `<article class="card">
+          <div class="card-head"><span class="person">${initials(user.full_name || user.email)}</span><div><div class="name">${user.full_name || user.email}</div><div class="email">${user.email}</div></div><span class="badge ${cart.status}">${STATUS_LABELS[cart.status]}</span></div>
+          <div class="status-row"><label>采购状态 ${statusSelect(cart)}</label></div>
+          <div class="items">${items.length ? renderAdminItems(items, cart.id) : '<div class="empty">暂无商品</div>'}</div>
+          <div class="card-foot"><span>${items.length} 个商品种类 · ${items.reduce((n, i) => n + i.quantity, 0)} 件</span><b>${cartTotal(cart)}</b></div>
+        </article>`;
+      }).join("") || '<div class="empty">没有匹配的用户清单</div>';
+      updateTotals();
+    }
+
+    function setEditMode() {
+      editMode = document.getElementById("edit-mode").checked;
+      document.getElementById("edit-label").textContent = editMode ? "调整已开启" : "调整已关闭";
+      render(); notify(editMode ? "调整模式已开启" : "调整模式已关闭");
+    }
+
+    // ===== 采购清单分组渲染：手工商品多颜色 → 商品卡 + 颜色子行 =====
+    const ADMIN_CHIP_COLORS = [["黑", "#2b2f2b"], ["白", "#e9e9e9"], ["红", "#a3463f"], ["蓝", "#336fa9"], ["绿", "#28725a"], ["黄", "#d9a441"], ["粉", "#d972a0"], ["紫", "#7a5aa8"], ["棕", "#8a6642"], ["灰", "#8b908c"], ["橙", "#d97441"], ["金", "#c9a227"], ["银", "#a9b0b4"], ["透明", "#cfe2ec"]];
+    function adminChipColor(color) { for (const [k, v] of ADMIN_CHIP_COLORS) { if (color.includes(k)) return v; } return "#5c6b63"; }
+    function adminColorChip(item) { const c = (item.color || "").trim(); return c ? `<span class="color-chip">${esc(c)}</span>` : ""; }
+    function adminChecks(item) {
+      return `<div class="item-checks">
+        <label class="purchased ${item.purchased ? 'on' : ''}" title="标记是否已采购"><input type="checkbox" ${item.purchased ? 'checked' : ''} onchange="togglePurchased(${item.id}, this.checked)">采购</label>
+      </div>`;
+    }
+    function adminRemark(item, cartId) {
+      return `<div class="gi-remark"><textarea rows="1" placeholder="采购侧备注（仅采购/管理员可编辑）" onchange="saveRemark(${item.id}, this.value)">${esc(item.procurement_remark || "")}</textarea></div>`;
+    }
+    function adminAmount(item, cartId) {
+      return `<div class="amount">
+        <button class="mini edit-control" ${editMode ? "" : "disabled"} aria-label="减少数量" onclick="adjust(${item.id}, -1)">−</button><span class="qty">${item.quantity}</span>
+        <button class="mini edit-control" ${editMode ? "" : "disabled"} aria-label="增加数量" onclick="adjust(${item.id}, 1)">+</button>
+        <button class="mini remove edit-control" ${editMode ? "" : "disabled"} aria-label="移除商品" onclick="removeItem(${cartId}, ${item.id})">✕</button>
+      </div>`;
+    }
+    function renderAdminPlain(item, cartId) {
+      const p = item.product;
+      const note = (p.remark || "").trim();
+      const typeBit = (p.category || "").trim();
+      return `<div class="item"><span class="icon">${itemThumb(item)}</span><div><div class="item-name">${esc(p.name)} ${adminColorChip(item)}</div><div class="item-meta">${esc(typeBit)}${typeBit ? " · " : ""}${money(item.unit_price_cents, p.currency)}${p.currency === "JPY" && item.price_cny_cents != null ? " ≈ " + money(item.price_cny_cents, "CNY") : ""} / 件${item.price_frozen ? ' · 价已冻结' : ''}</div>${note ? `<div class="item-note">备注：${esc(note)}</div>` : ""}${adminRemark(item, cartId)}</div>${adminAmount(item, cartId)}${adminChecks(item)}</div>`;
+    }
+    function renderAdminSubRow(item, cartId) {
+      const c = (item.color || "").trim() || "默认";
+      const dotStyle = item.color ? `background:${adminChipColor(item.color)}` : "";
+      return `<div class="pg-row"><div class="vcell"><span class="vdot" style="${dotStyle}"></span><b>${esc(c)}</b><span class="vqty">× ${item.quantity} · 税前 ${money(item.pretax_price_cents ?? item.unit_price_cents, item.product.currency)} · 含税 ${money(item.taxed_price_cents ?? item.product.taxed_price_cents, item.product.currency)} · 人民币 ${money(item.price_cny_cents ?? item.product.price_cny_cents, "CNY")}</span></div>${adminAmount(item, cartId)}${adminChecks(item)}${adminRemark(item, cartId)}</div>`;
+    }
+    function renderAdminGroup(rows, cartId) {
+      const first = rows[0], p = first.product, cur = p.currency;
+      const note = (p.remark || "").trim();
+      const typeBit = (p.category || "").trim();
+      const tq = rows.reduce((s, i) => s + i.quantity, 0);
+      const sumNative = rows.reduce((s, i) => s + (i.taxed_price_cents || 0) * i.quantity, 0);
+      const sumCny = rows.reduce((s, i) => s + (i.price_cny_cents || 0) * i.quantity, 0);
+      return `<div class="pg"><div class="pg-head">${itemThumb(first, "g-thumb")}<div style="min-width:0"><div class="item-name">${esc(p.name)}</div><div class="item-meta">${esc(typeBit)}${typeBit ? " · " : ""}共 ${tq} 件 · ${money(first.unit_price_cents, cur)}/件</div>${note ? `<div class="item-note">备注：${esc(note)}</div>` : ""}</div><div class="pg-total"><b>${money(sumNative, cur)}</b>${sumCny ? `<div class="cny">≈ ${money(sumCny, "CNY")}</div>` : ""}</div></div><div class="pg-rows">${rows.map(r => renderAdminSubRow(r, cartId)).join("")}</div></div>`;
+    }
+    function adminGroupSegments(items) {
+      const out = []; let cur = null;
+      for (const it of items || []) {
+        const manual = it.product && it.product.source_name === "手工添加";
+        if (manual) {
+          if (cur && cur.pid === it.product.id) { cur.rows.push(it); continue; }
+          if (cur) out.push(cur);
+          cur = { pid: it.product.id, rows: [it] };
+        } else {
+          if (cur) { out.push(cur); cur = null; }
+          out.push({ plain: it });
+        }
+      }
+      if (cur) out.push(cur);
+      return out;
+    }
+    function renderAdminItems(items, cartId) {
+      return adminGroupSegments(items).map(s => {
+        if (s.plain) return renderAdminPlain(s.plain, cartId);
+        if (s.rows.length === 1) return renderAdminPlain(s.rows[0], cartId);
+        return renderAdminGroup(s.rows, cartId);
+      }).join("");
+    }
+    async function toggleConfirmed(itemId, confirmed) {
+      await api("/api/admin/cart-items/" + itemId + "/confirmed", { method: "PATCH", body: { confirmed } });
+      await loadCarts(); notify(confirmed ? "已确认采购" : "已取消确认采购");
+    }
+
+    async function loadCarts() {
+      carts = await api("/api/admin/carts");
+      render();
+    }
+    async function adjust(itemId, change) {
+      const item = carts.flatMap(c => c.items).find(i => i.id === itemId);
+      if (!item) return;
+      const next = item.quantity + change;
+      if (next < 1) return removeItem(itemId);
+      await api("/api/admin/cart-items/" + itemId, { method: "PATCH", body: { quantity: next } });
+      await loadCarts(); notify("商品数量已调整");
+    }
+    async function removeItem(cartId, itemId) {
+      await api("/api/admin/cart-items/" + itemId, { method: "DELETE" });
+      await loadCarts(); notify("商品已从该用户清单移除");
+    }
+    async function togglePurchased(itemId, purchased) {
+      await api("/api/admin/cart-items/" + itemId + "/purchased", { method: "PATCH", body: { purchased } });
+      await loadCarts(); notify(purchased ? "已标记为已采购" : "已取消采购标记");
+    }
+    async function changeStatus(cartId, status) {
+      await api("/api/admin/carts/" + cartId + "/status", { method: "PATCH", body: { status } });
+      await loadCarts(); notify("已更新为「" + STATUS_LABELS[status] + "」");
+    }
+
+    (async function init() {
+      currentMe = await requireRole("admin");
+      if (!currentMe) return;
+      document.getElementById("avatar").textContent = initials(currentMe.full_name || currentMe.email);
+      await loadCarts();
+    })().catch(err => { document.getElementById("board").innerHTML = '<div class="empty">' + err.message + "</div>"; });
+  </script>
+  <!-- 用户清单弹窗：点击用户头像打开（置于 body 直下，脱离各 view 的 display:none） -->
+  <div class="ucm-mask" id="ucm-mask" onclick="if(event.target===this)closeUserCarts()">
+    <div class="ucm-panel">
+      <div class="ucm-head">
+        <span class="person" id="ucm-avatar"></span>
+        <div><h2 id="ucm-name">用户清单</h2><div class="sub" id="ucm-meta"></div></div>
+        <button class="ucm-close" onclick="closeUserCarts()" aria-label="关闭">×</button>
+      </div>
+      <div class="ucm-body" id="ucm-body"></div>
+    </div>
+  </div>
+</body>
+</html>

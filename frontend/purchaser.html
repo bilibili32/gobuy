@@ -1,0 +1,320 @@
+<!doctype html>
+<html lang="zh-CN" data-page-node-id="yb4VFbJRmP590FVr3SPNIM">
+<head data-page-node-id="qTGQpePFHWLYeHstj0IGgA">
+  <meta charset="utf-8" data-page-node-id="K0HE7MGgWxihT6UjulF8Sn">
+  <meta name="viewport" content="width=device-width, initial-scale=1" data-page-node-id="D1lXXHrU3EJGzJYKvXSikl">
+  <title>出游采购工作台</title>
+  <style>
+    :root { --bg:#f6f2e9; --surface:#fffdfa; --ink:#25312d; --muted:#7b847f; --line:#e6dfd3; --line-soft:#f0ece5; --green:#28725a; --green-dark:#1e5e49; --green-bg:#e5f0e9; --amber:#966209; --amber-bg:#fff0d5; --blue:#336fa9; --blue-bg:#e8f0f8; --red:#a3463f; --red-bg:#f8e7e4; }
+    * { box-sizing:border-box; } body { margin:0; min-width:320px; background:var(--bg); color:var(--ink); font:14px/1.45 Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif; }
+    button,input,select { font:inherit; } button { cursor:pointer; } .page { max-width:980px; margin:auto; padding:36px 28px 44px; }
+    header { display:flex; align-items:center; justify-content:space-between; gap:18px; margin-bottom:28px; } .brand { font-size:18px; font-weight:800; } .brand span { color:var(--green); } .account { display:flex; gap:10px; align-items:center; color:var(--muted); font-size:13px; } .avatar { width:30px; height:30px; display:grid; place-items:center; border-radius:50%; background:#dfeae2; color:var(--green); font-size:11px; font-weight:800; } .logout { border:1px solid var(--line); background:#fff; color:var(--muted); border-radius:4px; padding:6px 12px; font-weight:700; cursor:pointer; } .logout:hover { color:#a3463f; border-color:#a3463f; }
+    h1 { margin:0; font-size:27px; } .sub { margin:7px 0 0; color:var(--muted); } .summary { margin-top:14px; color:var(--muted); font-size:12px; } .summary b { color:var(--ink); }
+    .groups { display:flex; flex-direction:column; gap:16px; margin-top:20px; } .group { background:var(--surface); border:1px solid var(--line); border-radius:10px; overflow:hidden; }
+    .group-head { display:flex; align-items:center; justify-content:space-between; gap:12px; padding:16px 19px 13px; border-bottom:1px solid var(--line); } .group-title { font-weight:800; font-size:15px; } .group-meta { color:var(--muted); font-size:12px; margin-top:2px; } .badge { border-radius:999px; padding:4px 9px; font-size:11px; font-weight:750; white-space:nowrap; } .badge.open { color:var(--amber); background:var(--amber-bg); } .badge.completed { color:var(--green); background:var(--green-bg); }
+    .g-actions { display:flex; gap:7px; align-items:center; } .g-btn { border:1px solid var(--line); background:#fff; color:var(--muted); border-radius:5px; padding:6px 11px; font-size:12px; font-weight:700; white-space:nowrap; } .g-btn:hover { border-color:var(--green); color:var(--green); } .g-btn.danger:hover { border-color:#a3463f; color:#a3463f; } .g-btn.primary { background:var(--green); border-color:var(--green); color:#fff; } .g-btn.primary:hover { background:var(--green-dark); }
+    .invite { display:inline-flex; align-items:center; gap:7px; margin-top:7px; padding:5px 10px; border-radius:6px; background:var(--amber-bg); color:#7d5a16; font-size:12px; font-weight:700; } .invite code { font-size:15px; letter-spacing:2px; color:#5d3f00; font-weight:900; } .invite .copy { border:0; background:transparent; color:var(--amber); font-weight:800; cursor:pointer; padding:2px 5px; border-radius:4px; } .invite .copy:hover { background:rgba(150,98,9,.12); }
+    .member-chips { display:flex; flex-wrap:wrap; gap:6px; margin-top:9px; } .mchip { display:inline-flex; align-items:center; gap:5px; padding:2px 9px 2px 7px; border-radius:999px; background:#eef1ec; color:#496258; font-size:11px; font-weight:700; } .mchip b { font-weight:800; }
+    .items { padding:4px 0; } .item { display:grid; grid-template-columns:118px 52px 1fr; gap:10px; align-items:center; padding:13px 19px; border-bottom:1px solid var(--line-soft); } .item:last-child { border-bottom:0; } .item.done .name { color:var(--muted); text-decoration:line-through; }
+    .b-thumb { width:52px; height:52px; display:grid; place-items:center; border-radius:6px; background:#eef1ec; color:#496258; font-size:10px; font-weight:800; overflow:hidden; } .b-thumb img { width:100%; height:100%; object-fit:cover; display:block; }
+    .check { display:flex; align-items:center; gap:7px; color:var(--muted); font-size:12px; cursor:pointer; user-select:none; white-space:nowrap; } .check input { appearance:none; width:17px; height:17px; margin:0; border:1.5px solid #c9d2cc; border-radius:4px; background:#fff; position:relative; cursor:pointer; transition:.15s; flex:none; } .check input:hover { border-color:var(--green); } .check input:checked { background:var(--green); border-color:var(--green); } .check input:checked::after { content:"✓"; position:absolute; left:3.5px; top:-1px; color:#fff; font-size:11px; font-weight:800; } .check.on { color:var(--green); font-weight:700; }
+    .info .name { font-weight:700; font-size:13px; } .info .meta { color:var(--muted); font-size:11px; margin-top:2px; } .check-col { display:flex; flex-direction:column; gap:7px; align-items:flex-start; } .check.c-conf input:checked { background:var(--amber); border-color:var(--amber); } .check.c-conf.on { color:var(--amber); font-weight:700; } .pgroup { border:1px solid var(--line); border-radius:8px; margin:0; overflow:hidden; } .pgroup + .pgroup, .pgroup + .item { border-top:0; } .pg-head { display:grid; grid-template-columns:52px minmax(0,1fr) auto; gap:12px; align-items:center; padding:12px 19px; background:#fbf8f0; border-bottom:1px solid var(--line); } .pg-name { font-weight:800; font-size:13.5px; line-height:1.35; } .pg-sub { color:var(--muted); font-size:11px; margin-top:2px; } .pg-note { margin-top:5px; font-size:11px; color:#7d6a3c; background:var(--amber-bg); border-radius:4px; padding:4px 7px; line-height:1.5; word-break:break-all; } .pg-total { text-align:right; white-space:nowrap; font-size:13px; font-weight:800; } .pg-total .cny { font-size:10.5px; color:var(--muted); font-weight:500; } .color-chip { display:inline-block; padding:1px 7px; border-radius:999px; background:#eef1ec; color:#496258; font-size:10.5px; font-weight:700; white-space:nowrap; } .item-note { margin-top:3px; font-size:11px; color:#7d6a3c; line-height:1.5; word-break:break-all; } .p-remark { margin-top:6px; } .p-remark textarea { width:100%; max-width:480px; min-height:30px; padding:5px 8px; border:1px dashed var(--line); border-radius:5px; background:#fffdfa; color:var(--ink); font-size:12px; line-height:1.4; resize:vertical; outline:none; } .p-remark textarea:focus { border-style:solid; border-color:var(--green); box-shadow:0 0 0 3px rgba(40,114,90,.08); }
+    /* 建组表单 */
+    .create-card { background:var(--surface); border:1px solid var(--line); border-radius:10px; padding:17px 19px 19px; margin-top:20px; } .cc-head { font-weight:800; font-size:14px; margin-bottom:6px; } .cc-tip { color:var(--muted); font-size:12px; margin:0 0 12px; } .cc-row { display:flex; flex-wrap:wrap; gap:10px; align-items:flex-end; } .cc-row label { display:flex; flex-direction:column; gap:5px; font-size:11.5px; color:var(--muted); } .cc-row input { height:36px; padding:0 10px; border:1px solid var(--line); border-radius:5px; background:#fff; outline:none; min-width:130px; } .cc-row input:focus { border-color:var(--green); box-shadow:0 0 0 3px rgba(40,114,90,.1); } .cc-row input#g-title { min-width:220px; } .quota { color:var(--amber); font-size:12px; margin-top:9px; font-weight:600; }
+    .price-card { background:var(--surface); border:1px solid var(--line); border-radius:10px; padding:17px 19px 19px; margin-top:16px; } .price-card-head { display:flex; align-items:baseline; justify-content:space-between; gap:12px; flex-wrap:wrap; } .price-card-title { font-weight:800; font-size:14px; } .price-card-tip { color:var(--muted); font-size:12px; } .price-list { margin-top:10px; } .price-line { display:grid; grid-template-columns:minmax(150px,1fr) 150px 170px auto auto auto; align-items:end; gap:10px; padding:10px 0; border-bottom:1px dashed var(--line-soft); } .price-line:last-child { border-bottom:0; } .price-line .price-name { min-width:0; font-weight:750; font-size:13px; } .price-line label { display:flex; flex-direction:column; gap:4px; color:var(--muted); font-size:11px; min-width:0; } .price-line input { height:32px; width:100%; padding:0 8px; border:1px solid var(--line); border-radius:5px; background:#fff; color:var(--ink); outline:none; } .price-line .price-name-input { width:100%; font-weight:750; } .price-line input:focus { border-color:var(--green); box-shadow:0 0 0 3px rgba(40,114,90,.1); } .price-line .price-users { color:var(--muted); font-size:11px; white-space:nowrap; align-self:center; } .price-line .price-default { color:var(--amber); font-size:11px; font-weight:750; } .price-line > div:first-child { min-width:0; }
+    .price-boxes { display:inline-flex; flex-wrap:wrap; gap:4px; vertical-align:middle; }
+    .price-box { display:inline-flex; align-items:center; min-height:22px; padding:2px 7px; border:1px solid #e6dfd3; border-radius:4px; background:#fffdfa; color:#7b847f; font-size:11px; white-space:nowrap; }
+    .price-box.original { color:var(--ink); }
+    .price-box.taxed { color:var(--green-dark); background:var(--green-bg); border-color:#c8ded1; }
+    .price-box.cny { color:#7d5a16; background:var(--amber-bg); border-color:#f0dcae; }
+    @media(max-width:760px) { .price-line { grid-template-columns:minmax(130px,1fr) 125px 145px auto; } .price-line > div:first-child { grid-column:1 / -1; } } @media(max-width:520px) { .price-line { grid-template-columns:1fr 1fr; } .price-line > div:first-child, .price-line label, .price-line .price-users { grid-column:1 / -1; } .price-line .g-btn { width:100%; } } .price-empty { color:var(--muted); font-size:12px; padding:8px 0; }
+    .pull-panel { border-top:1px dashed var(--line-soft); margin-top:12px; padding-top:11px; } .pull-head { font-size:12px; color:var(--muted); margin-bottom:8px; font-weight:700; } .pull-opts { display:flex; flex-wrap:wrap; gap:7px; max-height:130px; overflow:auto; } .opt-chip { display:inline-flex; align-items:center; gap:6px; padding:5px 10px; border:1px solid var(--line); border-radius:999px; background:#fff; color:var(--ink); font-size:12px; cursor:pointer; user-select:none; } .opt-chip:hover { border-color:var(--green); } .opt-chip.sel { background:var(--green-bg); border-color:var(--green); color:var(--green-dark); font-weight:700; } .opt-chip input { position:absolute; width:1px; height:1px; opacity:0; } .opt-chip:focus-within { border-color:var(--green); box-shadow:0 0 0 3px rgba(40,114,90,.1); } .pull-bar { display:flex; gap:8px; align-items:center; margin-top:10px; }
+    .empty { padding:34px 16px; text-align:center; color:var(--muted); font-size:13px; } .loading { padding:34px 16px; text-align:center; color:var(--muted); font-size:13px; } .notice { position:fixed; right:22px; bottom:22px; padding:11px 14px; border-radius:5px; background:#28463a; color:#fff; opacity:0; pointer-events:none; transform:translateY(7px); transition:opacity .2s ease, transform .2s ease; z-index:10; } .notice.show { opacity:1; transform:translateY(0); }
+    @media(max-width:600px) { .page { padding:24px 16px 36px; } .item { grid-template-columns:1fr; } }
+  </style>
+  <link rel="stylesheet" href="responsive.css" data-page-node-id="C5InS8m5gnaxwmuTI1vp2j">
+</head>
+<body class="pg-purchaser" data-page-node-id="3EiyHpLnLThSrieAVWh1Ns">
+  <div class="page" data-page-node-id="43y3RX795ECRhFGbxrLXoD">
+    <header data-page-node-id="NaGnXlHTYYszbAgxLR0Yyy">
+      <div class="brand" data-page-node-id="V4nGfBKkI53rudB6YbG6ze">
+        <svg class="brand-ico" viewBox="0 0 40 40" fill="none" aria-hidden="true" data-page-node-id="GiVEMqoo6UnZKBSeW8JQlq">
+          <defs data-page-node-id="U8HJ25AVik4wydMRSoyYPY">
+            <linearGradient id="bgrad" x1="2" y1="2" x2="38" y2="38" gradientUnits="userSpaceOnUse" data-page-node-id="TOj8GH6YE9gwMaPdiHjU4Z">
+              <stop stop-color="#33a97c" data-page-node-id="aV0LZeXtXrkzrdHZIbARz2"/><stop offset="1" stop-color="#185f49" data-page-node-id="IHUWyzDqz4gUBBD5CeMfv7"/>
+            </linearGradient>
+          </defs>
+          <g data-page-node-id="6HZf0QyeQCn9sDo47Owiov">
+            <animateTransform attributeName="transform" type="rotate" from="0 20 20" to="360 20 20" dur="26s" repeatCount="indefinite" data-page-node-id="FvPse9X3Eo7mHdkXd18zkY"/>
+            <circle cx="20" cy="20" r="16" stroke="url(#bgrad)" stroke-width="2.4" stroke-dasharray="13 6 5 6" stroke-linecap="round" data-page-node-id="MBOWiRG2AA4MVqgP8Q3sP5"/>
+          </g>
+          <circle cx="20" cy="20" r="16" stroke="#2fa377" stroke-opacity=".25" stroke-width="1.3" data-page-node-id="eK6lkNSqOef6S52k2HEKEo"/>
+          <path d="M20 26.2 V16.4" stroke="url(#bgrad)" stroke-width="3" stroke-linecap="round" data-page-node-id="0xmsyb8EMtrxQDDw7D7Iyl"/>
+          <path d="M14.6 19.7 L20 13.6 L25.4 19.7 L20 16.8 Z" fill="url(#bgrad)" data-page-node-id="7cz8fFp9pn0cL3azuPKuvE"/>
+          <g data-page-node-id="0kuvMtsniKpxGxgBvTReRN">
+            <animateTransform attributeName="transform" type="rotate" from="0 20 20" to="360 20 20" dur="3.2s" repeatCount="indefinite" data-page-node-id="juzNCB6MzFb79KCicaabAk"/>
+            <circle cx="36" cy="20" r="2.2" fill="#f0b429" data-page-node-id="HsN4GIBSpeWHjXdWW6AXKW"/>
+          </g>
+        </svg>
+        <span class="brand-txt" data-page-node-id="wuH0tDs4VfEgZK7MlkmNyl">买办</span>
+      </div>
+      <div class="account" data-page-node-id="nlc6FhNntaZwqMGRDTdDDN"><span id="who" data-page-node-id="b5nyvHglgfcB1g1je6zeC4">…</span><span class="avatar" id="avatar" data-page-node-id="8pd22ItUAti2VrySNKhMM9">…</span><button class="logout" onclick="logout()" data-page-node-id="T35bDzOveYvP74GOVWWCt0">退出</button></div>
+    </header>
+    <main data-page-node-id="DlcdrGUJMS8RRou7kjyBqO">
+      <h1 data-page-node-id="3lxmg69eANFQsdI9yDDRSu">出游采购工作台</h1>
+      <p class="sub" data-page-node-id="OQ8qHD3xz3sqfqw2FXEgdR">为每次跨国出游创建一个「出游采购组」（起止日期即采购周期），把需求人拉入或分享邀请码，出游前统一收单、按组逐项采购。</p>
+      <div class="summary" data-page-node-id="p2YmWAXGAoqff8DpNZslO2">已创建 <b id="group-total" data-page-node-id="CwLaFSiBrfP9KNUvA36j3i">0</b> 个组（累计最多 3 个） · 共 <b id="item-all" data-page-node-id="ChpAFf52PciZHYxQsrXfeV">0</b> 件 · 已采购 <b id="item-done" data-page-node-id="RRsjdaocqRUnFvGHN5ANoC">0</b> 件</div>
+
+      <section class="price-card" id="price-card" data-page-node-id="SM9vHEeFqUv090MISa1zTu">
+        <div class="price-card-head" data-page-node-id="RInsZj4cLNaxw0BDkWyBpZ"><span class="price-card-title" data-page-node-id="GxVZei3HG2mciZPFnuUXN0">价格分组</span><span class="price-card-tip" data-page-node-id="Edyl50NSjPFWAJ9Ur5pBAQ">采购员可维护税率与日元汇率，影响对应用户清单的人民币折算</span></div>
+        <div class="price-list" id="price-list" data-page-node-id="NhEWQsEoIzvpXTqH6GtJ5s"><div class="loading" data-page-node-id="1WFj73WXe71K91CgpjilMS">加载中…</div></div>
+        <div class="cc-row" style="margin-top:8px;padding-top:10px;border-top:1px dashed var(--line-soft)" data-page-node-id="F96HxVloFgPes7ZSr3ZK1C">
+          <label data-page-node-id="mz5ywRV7aI7EPaCx3tjL3F">新增分组<input id="pgn-name" placeholder="如：海外直采组" data-page-node-id="ymKw1vdpNK56Bv93oUU5xr"></label>
+          <label data-page-node-id="hgRX2emGlsMpUs7BGyDg3D">税率（%）<input id="pgn-tax" type="number" step="0.1" min="0" max="100" value="10" data-page-node-id="lJzJuPrtBawgTeTmcec1G7"></label>
+          <label data-page-node-id="3obZinYBHxuiBq0TWIm7eu">汇率（1 日元 = 元）<input id="pgn-rate" type="number" step="0.0001" min="0.0001" value="0.048" inputmode="decimal" data-page-node-id="D9AfoDv2M6DMPq496veod6"></label>
+          <button class="g-btn primary" onclick="addPriceGroup()" data-page-node-id="Brtd4hhK3wyMtrBkAMSSJK">添加分组</button>
+        </div>
+      </section>
+
+      <section class="create-card" id="create-card" data-page-node-id="AnjjkC8eeYkP4Zo0brljUN">
+        <div class="cc-head" data-page-node-id="qnIqImO2011I9nMClIBUJw">新建出游采购组</div>
+        <p class="cc-tip" data-page-node-id="OzHwENOmjDfzCMzKnpjFyt">标题 + 出游日期区间（开始日期 ~ 结束日期）；创建后自动生成 4 位邀请码，可把需求人批量拉入，或把邀请码发给同事自助加入。</p>
+        <div class="cc-row" data-page-node-id="52bUooXV8NZrrM7hkBAgxe">
+          <label data-page-node-id="mqk5zSHmRMF760ZKev0Jbb">组标题<input id="g-title" autocomplete="off" placeholder="例如：9月东京代购" data-page-node-id="rCSNHGVRA4HITU4jP5F4FS"></label>
+          <label data-page-node-id="5FwTlV6XwFfp2IRZZVQ9zY">开始日期<input id="g-start" type="date" data-page-node-id="ZFp7o3GjWUrsKIDdMabuKW"></label>
+          <label data-page-node-id="dnynAE7mmN8sZj87n7U1lC">结束日期<input id="g-end" type="date" autocomplete="off" data-page-node-id="vvdUxQkZg7WW7Ek5qU3njd"></label>
+          <button class="g-btn primary" onclick="createGroup()" data-page-node-id="RqU6FUktip5AQU9l39vD69">创建出游组</button>
+        </div>
+        <div class="quota" id="quota-tip" data-page-node-id="xSZfCbNcQKM7LSsWD0kM9V"></div>
+      </section>
+
+      <section class="groups" id="groups" data-page-node-id="kS9ZeAyiTeVU128pNQ92w3"><div class="loading" data-page-node-id="d0Phk1DBhk2n85yRoynxVx">加载中…</div></section>
+    </main>
+  </div>
+  <div class="notice" id="notice" role="status" aria-live="polite" aria-atomic="true" data-page-node-id="RXleRNF1PeCmJR0d3rx5Yt">已更新</div>
+  <script src="auth.js"></script>
+  <script>
+    let groups = [];
+    let memberOptions = [];
+    let priceGroups = [];
+    const noticeEl = document.getElementById("notice");
+    function notify(m) { noticeEl.textContent = m; noticeEl.classList.add("show"); setTimeout(() => noticeEl.classList.remove("show"), 2200); }
+    const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+
+    function fmtDate(d) { if (!d) return ""; const [y, m, dd] = d.split("-"); return y + "年" + +m + "月" + +dd + "日"; }
+    function dateRange(g) { return fmtDate(g.start_date) + " ~ " + fmtDate(g.end_date); }
+    function renderPriceGroups() {
+      const box = document.getElementById("price-list");
+      if (!priceGroups.length) { box.innerHTML = '<div class="price-empty">暂无价格分组</div>'; return; }
+      box.innerHTML = priceGroups.map(g => `<div class="price-line">
+        <div class="price-name">${g.is_default ? '<span class="price-default">默认组</span>' : `<input id="pgt-name-${g.id}" class="price-name-input" value="${esc(g.name)}" aria-label="价格分组名称">`}</div>
+        <label>税率（%）<input id="pgt-tax-${g.id}" type="number" step="0.1" min="0" max="100" value="${g.tax_rate}"></label>
+        <label>汇率（1 日元 = 元）<input id="pgt-rate-${g.id}" type="number" step="0.0001" min="0.0001" value="${g.exchange_rate_jpy_cny}"></label>
+        <span class="price-users">${g.user_count || 0} 人使用</span>
+        <button class="g-btn" onclick="savePriceGroup(${g.id})">保存</button>
+        ${g.is_default ? '' : (g.user_count ? '<span class="price-users">有成员，先调整归属</span>' : `<button class="g-btn danger" onclick="removePriceGroup(${g.id})">删除</button>`)}
+      </div>`).join('');
+    }
+    async function loadPriceGroups() { priceGroups = await api("/api/settings/price-groups"); renderPriceGroups(); }
+    async function addPriceGroup() {
+      const name = document.getElementById("pgn-name").value.trim();
+      const tax = parseFloat(document.getElementById("pgn-tax").value);
+      const rate = parseFloat(document.getElementById("pgn-rate").value);
+      if (!name) { notify("请填写分组名称"); return; }
+      try { await api("/api/settings/price-groups", { method: "POST", body: { name, tax_rate: tax, exchange_rate_jpy_cny: rate } }); document.getElementById("pgn-name").value = ""; await loadPriceGroups(); notify("价格分组已添加"); }
+      catch (err) { notify(err.message || "添加失败"); }
+    }
+    async function savePriceGroup(id) {
+      const g = priceGroups.find(x => x.id === id); if (!g) return;
+      const nameInput = document.getElementById("pgt-name-" + id);
+      const body = { name: nameInput ? nameInput.value.trim() : g.name, tax_rate: parseFloat(document.getElementById("pgt-tax-" + id).value), exchange_rate_jpy_cny: parseFloat(document.getElementById("pgt-rate-" + id).value) };
+      if (!body.name) { notify("分组名称不能为空"); return; }
+      try { await api("/api/settings/price-groups/" + id, { method: "PUT", body }); await loadPriceGroups(); notify("价格分组已更新"); }
+      catch (err) { notify(err.message || "保存失败"); }
+    }
+    async function removePriceGroup(id) {
+      const g = priceGroups.find(x => x.id === id); if (!g || !confirm("删除价格分组「" + g.name + "」？")) return;
+      try { await api("/api/settings/price-groups/" + id, { method: "DELETE" }); await loadPriceGroups(); notify("价格分组已删除"); }
+      catch (err) { notify(err.message || "删除失败"); }
+    }
+    async function copyInvite(code, btn) {
+      try { await navigator.clipboard.writeText(code); notify("邀请码 " + code + " 已复制"); }
+      catch (_) { btn && btn.select && btn.select(); notify("请手动复制邀请码 " + code); }
+    }
+    // 复制「邀请链接」：通过该链接打开登录页会自动加入本组（登录/注册成功后入组）。
+    function inviteLink(code) { return location.origin + "/login.html?invite=" + code; }
+    async function copyInviteLink(code, btn) {
+      const link = inviteLink(code);
+      try { await navigator.clipboard.writeText(link); notify("邀请链接已复制，发同事点开即可自动入组"); }
+      catch (_) { btn && btn.select && btn.select(); notify("请手动复制链接：" + link); }
+    }
+
+    function render() {
+      const box = document.getElementById("groups");
+      document.getElementById("group-total").textContent = groups.length;
+      const all = groups.reduce((s, g) => s + (g.total || 0), 0);
+      const done = groups.reduce((s, g) => s + (g.purchased || 0), 0);
+      document.getElementById("item-all").textContent = all;
+      document.getElementById("item-done").textContent = done;
+      document.getElementById("quota-tip").textContent = groups.length >= 3 ? "已达 3 个组上限：完成的组会保留名额，如需新建请删除无用组（删除仅限没有归组清单的组）。" : "还可创建 " + (3 - groups.length) + " 个组（累计上限 3，含已完成）。";
+      if (!groups.length) { box.innerHTML = '<div class="empty">还没有出游采购组，先在上方创建一个吧</div>'; return; }
+      box.innerHTML = groups.map(g => {
+        const members = g.members || [];
+        const items = g.items || [];
+        return `<article class="group">
+          <div class="group-head"><div>
+            <div class="group-title">${esc(g.title)}</div>
+            <div class="group-meta">${esc(dateRange(g))} · 共 ${g.total} 件 · 已采购 ${g.purchased} 件</div>
+            ${g.status === "open" ? `<div class="invite">入组邀请码 <code>${esc(g.invite_code)}</code> <button class="copy" onclick="copyInvite('${esc(g.invite_code)}', this)">复制</button><button class="copy" onclick="copyInviteLink('${esc(g.invite_code)}', this)" title="复制链接，同事点开登录/注册后自动入组">复制邀请链接</button></div>` : ""}
+            ${members.length ? `<div class="member-chips">${members.map(m => `<a class="mchip" href="member.html?group_id=${g.id}&member_id=${m.id}" title="查看 ${esc(m.full_name || m.email)} 在本组提交的清单">${esc(m.full_name || m.email)}</a>`).join("")}</div>` : ""}
+          </div>
+          <span class="badge ${g.status}">${g.status === "completed" ? "已完成" : "进行中"}</span></div>
+          ${g.status === "open" ? renderPullBar(g, members) : ""}
+          <div class="items">${items.length ? renderGroupItems(items) : '<div class="empty">该组还没有成员提交的清单</div>'}</div>
+          <div class="group-head" style="border-top:1px solid var(--line-soft);border-bottom:0">
+            <div class="g-actions" style="width:100%;justify-content:flex-end">
+              ${g.status === "open" ? `<button class="g-btn" onclick="completeGroup(${g.id})">标记完成（结束收单）</button>` : ""}
+              <button class="g-btn danger" onclick="deleteGroup(${g.id})">删除组</button>
+            </div>
+          </div>
+        </article>`;
+      }).join("");
+    }
+
+    function renderPullBar(g, members) {
+      const mine = new Set(members.map(m => m.id));
+      const options = memberOptions.filter(u => !mine.has(u.id));
+      return `<div class="pull-panel">
+        <div class="pull-head">把需求人拉入当前组：</div>
+        ${options.length ? `<div class="pull-opts">${options.map(u => `<label class="opt-chip"><input type="checkbox" data-uid="${u.id}">${esc(u.full_name || u.email)}</label>`).join("")}</div>
+        <div class="pull-bar"><button class="g-btn primary" onclick="pullMembers(${g.id})">加入选中需求人</button><span style="color:var(--muted);font-size:11.5px">或把上方邀请码发给同事，让 TA 在「我的清单」页自助加入</span></div>` : '<div style="color:var(--muted);font-size:12px">没有可拉入的普通用户（全员都已在组内）</div>'}
+      </div>`;
+    }
+
+    async function createGroup() {
+      const title = document.getElementById("g-title").value.trim();
+      const start = document.getElementById("g-start").value;
+      const end = document.getElementById("g-end").value;
+      if (!title) { notify("请填写组标题"); return; }
+      if (!start || !end) { notify("请选择出游开始与结束日期"); return; }
+      if (end < start) { notify("结束日期不能早于开始日期"); return; }
+      try {
+        const g = await api("/api/groups", { method: "POST", body: { title, start_date: start, end_date: end } });
+        document.getElementById("g-title").value = "";
+        document.getElementById("g-start").value = "";
+        document.getElementById("g-end").value = "";
+        await loadAll();
+        notify("出游组已创建，邀请码见组卡片；也可复制邀请链接发同事");
+      } catch (err) { notify(err.message || "创建失败"); }
+    }
+    async function completeGroup(id) {
+      const g = groups.find(x => x.id === id);
+      if (!g) return;
+      if (!confirm("标记组「" + g.title + "」为完成？完成后该组停止收单，成员不能再提交清单给该组。")) return;
+      try { await api("/api/groups/" + id, { method: "PATCH", body: { status: "completed" } }); await loadAll(); notify("组已标记完成"); }
+      catch (err) { notify(err.message || "操作失败"); }
+    }
+    async function deleteGroup(id) {
+      const g = groups.find(x => x.id === id);
+      if (!g || !confirm("确定删除出游组「" + g.title + "」？组内无已提交清单时才可删除。")) return;
+      try { await api("/api/groups/" + id, { method: "DELETE" }); await loadAll(); notify("组已删除"); }
+      catch (err) { notify(err.message || "删除失败"); }
+    }
+    async function pullMembers(groupId) {
+      const uids = [...document.querySelectorAll('.pull-panel .opt-chip input[data-uid]:checked')].map(i => parseInt(i.dataset.uid, 10));
+      if (!uids.length) { notify("请先勾选要拉入的需求人"); return; }
+      try { await api("/api/groups/" + groupId + "/members", { method: "POST", body: { user_ids: uids } }); await loadAll(); notify("已加入选中需求人"); }
+      catch (err) { notify(err.message || "操作失败"); }
+    }
+
+    async function loadGroups() { groups = await api("/api/groups/me"); render(); }
+    async function loadMemberOptions() { memberOptions = await api("/api/groups/member-options"); }
+    async function loadAll() { try { await Promise.all([loadGroups(), loadMemberOptions(), loadPriceGroups()]); } catch (err) { document.getElementById("groups").innerHTML = '<div class="empty">' + esc(err.message) + "</div>"; } }
+
+    const P_CHIP_COLORS = [["黑", "#2b2f2b"], ["白", "#e9e9e9"], ["红", "#a3463f"], ["蓝", "#336fa9"], ["绿", "#28725a"], ["黄", "#d9a441"], ["粉", "#d972a0"], ["紫", "#7a5aa8"], ["棕", "#8a6642"], ["灰", "#8b908c"], ["橙", "#d97441"], ["金", "#c9a227"], ["银", "#a9b0b4"], ["透明", "#cfe2ec"]];
+    function pChipColor(color) { for (const [k, v] of P_CHIP_COLORS) { if (color.includes(k)) return v; } return "#5c6b63"; }
+    function pChecks(item) {
+      return `<span class="check-col">
+        <label class="check ${item.purchased ? 'on' : ''}"><input type="checkbox" ${item.purchased ? 'checked' : ''} onchange="togglePurchased(${item.id}, this.checked)" title="标记是否已采购">已采购</label>
+      </span>`;
+    }
+    function pRemark(item) {
+      const val = (item.procurement_remark || "").replace(/"/g, "&quot;");
+      return `<div class="p-remark"><textarea rows="1" placeholder="采购侧备注（仅采购/管理员可编辑，需求人只读）" onchange="saveRemark(${item.id}, this.value)">${esc(item.procurement_remark || "")}</textarea></div>`;
+    }
+    function pPriceBoxes(item) {
+      const p = item.product;
+      return `<span class="price-boxes" aria-label="只读价格"><span class="price-box original">税前单价 ${money(item.pretax_price_cents ?? item.unit_price_cents, p.currency)}</span><span class="price-box taxed">含税价 ${money(item.taxed_price_cents ?? p.taxed_price_cents, p.currency)}</span><span class="price-box cny">人民币 ${money(item.price_cny_cents ?? p.price_cny_cents, "CNY")}</span></span>`;
+    }
+    function pSubRow(item) {
+      const color = (item.color || "").trim();
+      const colorTxt = color || "默认";
+      const dotStyle = item.color ? `background:${pChipColor(item.color)}` : "";
+      const nameHtml = esc(item.product.name) + (color ? ` <span class="color-chip">${esc(color)}</span>` : "");
+      return `<div class="item ${item.purchased ? 'done' : ''}">
+        ${pChecks(item)}
+        ${itemThumb(item, "b-thumb")}
+        <div class="info"><div class="name">${nameHtml}</div><div class="meta">${color ? esc(colorTxt) + " · " : ""}× ${item.quantity} · ${pPriceBoxes(item)} · ${esc((item.requester || {}).full_name || (item.requester || {}).email || "")}</div>${pRemark(item)}</div>
+      </div>`;
+    }
+    function pGroupHead(group) {
+      const first = group.rows[0];
+      const p = first.product;
+      const note = (p.remark || "").trim();
+      const typeBit = (p.category || "").trim();
+      const requester = first.requester || {};
+      const tq = group.rows.reduce((s, i) => s + i.quantity, 0);
+      const sumNative = group.rows.reduce((s, i) => s + (i.taxed_price_cents || 0) * i.quantity, 0);
+      const sumCny = group.rows.reduce((s, i) => s + (i.price_cny_cents || 0) * i.quantity, 0);
+      const headMeta = [typeBit ? `类型：${typeBit}` : "", `需求人 ${esc(requester.full_name || requester.email)}`, `共 ${tq} 件`, `税前单价 ${money(first.pretax_price_cents ?? first.unit_price_cents, p.currency)} · 含税价 ${money(first.taxed_price_cents ?? p.taxed_price_cents, p.currency)}/件`].filter(Boolean).join(" · ");
+      return `<div class="pg-head">${itemThumb(first, "b-thumb")}
+        <div style="min-width:0"><div class="pg-name">${esc(p.name)}</div><div class="pg-sub">${esc(headMeta)}</div>${note ? `<div class="pg-note">备注：${esc(note)}</div>` : ""}</div>
+        <div class="pg-total">${money(sumNative, p.currency)}${sumCny ? `<div class="cny">≈ ${money(sumCny, "CNY")}</div>` : ""}</div>
+      </div>`;
+    }
+    function renderGroupItems(items) {
+      // 手工商品多颜色（同组、同需求人、同 product）→ 分组卡；其余普通行。
+      const out = [];
+      let cur = null;
+      for (const it of items || []) {
+        const manual = it.product && it.product.source_name === "手工添加";
+        const rid = it.requester ? it.requester.id : null;
+        if (manual) {
+          if (cur && cur.key === it.product.id + "|" + rid) { cur.rows.push(it); continue; }
+          if (cur) out.push(cur);
+          cur = { key: it.product.id + "|" + rid, rows: [it] };
+        } else {
+          if (cur) { out.push(cur); cur = null; }
+          out.push({ plain: it });
+        }
+      }
+      if (cur) out.push(cur);
+      return out.map(s => {
+        if (s.plain) return pSubRow(s.plain);
+        if (s.rows.length === 1) return pSubRow(s.rows[0]);
+        return `<div class="pgroup">${pGroupHead(s)}${s.rows.map(pSubRow).join("")}</div>`;
+      }).join("");
+    }
+    async function toggleConfirmed(itemId, confirmed) {
+      await api("/api/admin/cart-items/" + itemId + "/confirmed", { method: "PATCH", body: { confirmed } });
+      await loadAll(); notify(confirmed ? "已确认采购" : "已取消确认采购");
+    }
+    async function togglePurchased(itemId, purchased) {
+      await api("/api/admin/cart-items/" + itemId + "/purchased", { method: "PATCH", body: { purchased } });
+      await loadAll(); notify(purchased ? "已标记为已采购" : "已取消采购标记");
+    }
+    async function saveRemark(itemId, remark) {
+      try { await api("/api/admin/cart-items/" + itemId + "/remark", { method: "PATCH", body: { remark } }); notify("采购备注已保存"); }
+      catch (err) { notify(err.message || "保存失败"); }
+    }
+
+    (async function init() {
+      const me = await requireRole("purchaser");
+      if (!me) return;
+      document.getElementById("who").textContent = me.full_name || me.email;
+      document.getElementById("avatar").textContent = initials(me.full_name || me.email);
+      await loadAll();
+    })().catch(err => { document.getElementById("groups").innerHTML = '<div class="empty">' + esc(err.message) + "</div>"; });
+  </script>
+</body>
+</html>

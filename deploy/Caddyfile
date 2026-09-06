@@ -1,0 +1,13 @@
+# 生产反向代理 + 自动 HTTPS（Let's Encrypt 自动申请与续期）。
+# {$DOMAIN} 由环境变量 DOMAIN 注入（见 docker-compose.prod.yml）。
+#
+# 本地自签名测试时，可把 {$DOMAIN} 换成 localhost 并加一行 `tls internal`：
+#   localhost {
+#       tls internal
+#       reverse_proxy frontend:80
+#   }
+
+{$DOMAIN} {
+	encode gzip
+	reverse_proxy frontend:80
+}

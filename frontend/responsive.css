@@ -1,0 +1,364 @@
+/* ==========================================================================
+   responsive.css —— 内部集中采购系统 · 统一移动/平板/多分辨率适配 v2
+   加载位置：各页面 </head> 前（内联 <style> 之后），保证同名规则覆盖生效。
+   作用域：各页 <body class="pg-login|pg-index|pg-admin|pg-purchaser|pg-member">，
+           页面私有规则一律挂作用域前缀，避免同名类（.item/.tabs/.filters…）跨页误伤。
+   断点：≤1100 中宽桌面留白收紧；≤900 平板/小本；≤760 平板竖/手机；≤560 窄手机。
+   原则：>1100 不产生任何规则（桌面零影响）；只降级，不重排桌面。
+   ========================================================================== */
+
+html { -webkit-text-size-adjust: 100%; }
+body { min-height: 100dvh; }
+img, video { max-width: 100%; }
+
+/* 键盘焦点必须清晰可见，避免 outline:none 让键盘用户迷失。 */
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: 3px solid rgba(40, 114, 90, .34);
+  outline-offset: 2px;
+}
+
+/* 所有可点击控件提供明确的按下反馈，不影响布局。 */
+button, a, label { -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
+button:active:not(:disabled) { transform: translateY(1px); }
+.thumb-trigger { cursor: zoom-in; }
+.thumb-trigger:focus-visible { outline: 3px solid rgba(40, 114, 90, .34); outline-offset: 3px; }
+
+/* 管理员与采购员统一价格分组网格。 */
+.pg-admin .group-line,
+.pg-purchaser .price-line {
+  grid-template-columns: minmax(160px, 1fr) minmax(125px, 150px) minmax(150px, 170px) auto auto auto;
+}
+
+/* 小型操作按钮保留紧凑视觉，但扩大触控区域。 */
+.pg-index .stepper button,
+.pg-admin .mini,
+.pg-admin .ucm-close,
+.pg-index .v-del,
+.pg-index .img-remove {
+  min-width: 32px;
+  min-height: 32px;
+  touch-action: manipulation;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0.001ms !important;
+  }
+  .brand svg animateTransform { display: none; }
+}
+
+
+/* 用户清单价格三栏：含税价为主信息，其余价格降为辅助信息。 */
+.price-boxes { gap: 3px; }
+.price-box.original, .price-box.cny { background: transparent; border-color: transparent; }
+.price-box.taxed { font-weight: 750; }
+
+  .pg-index .price-boxes { display:inline-flex; flex-wrap:wrap; gap:3px; vertical-align:middle; }
+.pg-index .price-box { display:inline-flex; align-items:center; min-height:20px; padding:1px 6px; border:1px solid transparent; border-radius:4px; background:transparent; color:#7b847f; font-size:10.5px; white-space:nowrap; }
+.pg-index .price-box.original, .pg-index .price-box.cny { background:transparent; border-color:transparent; }
+.pg-index .price-box.original { color:var(--ink); }
+.pg-index .price-box.taxed { color:var(--green-dark); background:var(--green-bg); border-color:#c8ded1; }
+.pg-index .price-box.cny { color:#7d5a16; background:var(--amber-bg); border-color:#f0dcae; }
+.pg-index .price-boxes + .price-boxes { margin-left:4px; }
+@media (max-width: 560px) {
+  .pg-index .price-boxes { display:flex; margin-top:3px; }
+  .pg-index .price-box { font-size:10px; padding-left:4px; padding-right:4px; }
+}
+
+/* iOS Safari：聚焦输入框自动放大（字号<16px 时）。≤900 表单控件提到 16px。 */
+@media (max-width: 900px) {
+  input, select, textarea { font-size: 16px; }
+}
+
+/* ============ ≤1100：中宽桌面留白收紧 + 溢出兜底 ============ */
+@media (max-width: 1100px) {
+  body { overflow-x: hidden; }
+  .page { padding-left: 22px; padding-right: 22px; }
+}
+
+/* ============ ≤900：平板横屏 / 小笔记本 ============ */
+@media (max-width: 900px) {
+  /* 管理台：瀑布卡降列、页头/汇总/筛选可换行、标签栏横向可滑 */
+  .pg-admin .board { column-count: 2; }
+  .pg-admin .head { flex-wrap: wrap; row-gap: 8px; }
+  .pg-admin .summary { flex-wrap: wrap; margin-top: 6px; }
+  .pg-admin .filters { flex-wrap: wrap; }
+  .pg-admin .filters input { flex: 1 1 240px; max-width: none; }
+  .pg-admin .tabs { overflow-x: auto; scrollbar-width: none; }
+  .pg-admin .tabs::-webkit-scrollbar { display: none; }
+  .pg-admin .tab { flex: none; white-space: nowrap; }
+}
+
+/* ============ ≤760：平板竖屏 / 手机布局起点 ============ */
+@media (max-width: 760px) {
+  /* —— 页面级通用（各页同构 header/page） —— */
+  .page { padding: 20px 14px 34px; }
+  h1 { font-size: 22px; }
+  header { flex-wrap: wrap; row-gap: 8px; margin-bottom: 20px; }
+  .brand { font-size: 16.5px; }
+  .account, .pg-admin .admin { flex-wrap: wrap; row-gap: 6px; }
+
+  /* —— index 我的清单 —— */
+  .pg-index .layout { grid-template-columns: 1fr; }
+  .pg-index .box-head { flex-wrap: wrap; row-gap: 6px; }
+  .pg-index .cart-footer, .pg-index .my-groups { padding: 13px 14px 15px; }
+  .pg-index .total { flex-wrap: wrap; row-gap: 4px; }
+  .pg-index .join-row { flex-wrap: wrap; }
+  .pg-index .join-row input { flex-basis: 100%; }
+  .pg-index .g-chip { flex-wrap: wrap; row-gap: 4px; }
+  .pg-index .parse-result { flex-wrap: wrap; align-items: flex-start; gap: 9px; }
+  .pg-index .parse-result > div[style*="min-width"] { flex: 1 1 calc(100% - 62px); }
+  .pg-index .parse-result .p-price { order: 3; margin-left: 0; flex: 1 1 auto; }
+  .pg-index .parse-result .add-parsed { order: 4; flex: 1 1 100%; min-height: 38px; }
+  .pg-index .parse-row { grid-template-columns: 1fr; }
+  .pg-index .parse-row button { width: 100%; }
+  .pg-index .m-base { grid-template-columns: 1fr; }
+  .pg-index .m-single { max-width: none; }
+  .pg-index .pgroup-head { grid-template-columns: 44px minmax(0,1fr); }
+  .pg-index .pg-total { grid-column: 1 / -1; text-align: left; white-space: normal; }
+  .pg-index .pg-total .cny { display: inline; margin-left: 5px; }
+  .pg-index .pg-row { grid-template-columns: minmax(0,1fr) auto; }
+  .pg-index .pg-row .vprice { grid-column: 1 / -1; text-align: left; }
+  .pg-index .pg-row > div:last-child { grid-column: 1 / -1; }
+
+  /* —— admin 管理台 —— */
+  .pg-admin .board { column-count: 1; }
+  .pg-admin .card-head, .pg-admin .card-foot { flex-wrap: wrap; row-gap: 8px; }
+  .pg-admin .status-row label { flex-wrap: wrap; }
+  /* 采购清单卡片行：收窄间距（保持 4 track，避免打乱子项流） */
+  .pg-admin .card .item { gap: 6px; padding: 11px 12px; }
+  .pg-admin .card .item .amount { white-space: normal; word-break: break-word; text-align: right; }
+  /* 出游采购组总览卡 */
+  .pg-admin .grow { flex-wrap: wrap; row-gap: 8px; }
+  .pg-admin .grow > .badge { margin-left: auto; }
+  .pg-admin .gcode, .pg-admin .gmems, .pg-admin .gacts { flex-wrap: wrap; }
+  .pg-admin .gfoot { flex-wrap: wrap; row-gap: 8px; }
+  .pg-admin .gacts { width: 100%; justify-content: flex-start; }
+  .pg-admin .grow2 { grid-template-columns: 36px minmax(0, 1fr); }
+  .pg-admin .grow2 .gi-check { grid-column: 1 / -1; flex-direction: row; justify-content: flex-end; align-items: center; }
+  .pg-admin .gg-head { grid-template-columns: 36px minmax(0, 1fr); }
+  .pg-admin .gg-total { grid-column: 1 / -1; text-align: left; white-space: normal; }
+  .pg-admin .gg-total .cny { display: inline; margin-left: 6px; }
+  /* 商品库行 / 设置行 */
+  .pg-admin .prod-item { grid-template-columns: 20px 40px minmax(0, 1fr) auto auto; gap: 8px; padding: 11px 12px; }
+  .pg-admin .settings-row { gap: 9px; }
+  .pg-admin .settings-row label { flex: 1 1 100%; }
+  .pg-admin .settings-row input, .pg-admin .settings-row select { width: 100% !important; max-width: none; }
+  .pg-admin .group-line input { width: 100%; }
+
+  /* —— purchaser 出游采购工作台 —— */
+  .pg-purchaser .group-head { flex-wrap: wrap; row-gap: 8px; padding: 14px 14px 11px; }
+  .pg-purchaser .group-head > .badge { margin-left: auto; }
+  .pg-purchaser .invite { flex-wrap: wrap; }
+  .pg-purchaser .cc-row { flex-direction: column; align-items: stretch; }
+  .pg-purchaser .cc-row label { width: 100%; }
+  .pg-purchaser .cc-row input { width: 100%; min-width: 0; }
+  .pg-purchaser .cc-row #g-title { width: 100%; min-width: 0; }
+  .pg-purchaser .member-chips { row-gap: 4px; }
+  .pg-purchaser .pull-opts { max-height: none; }
+  .pg-purchaser .pull-bar { flex-wrap: wrap; }
+  .pg-purchaser .items .item { grid-template-columns: 1fr; gap: 8px; padding: 12px 16px; }
+
+  /* —— member 成员清单 —— */
+  .pg-member .mcard { flex-wrap: wrap; gap: 10px; padding: 13px 14px; }
+  .pg-member .m-extra { margin-left: 0; text-align: left; width: 100%; border-top: 1px dashed var(--line-soft); padding-top: 8px; }
+  .pg-member .item { grid-template-columns: auto 44px minmax(0, 1fr); gap: 8px; padding: 11px 14px; }
+  .pg-member .b-thumb { width: 44px; height: 44px; }
+  .pg-member .stats { gap: 6px; }
+  .pg-member .stat { padding: 7px 10px; }
+  .pg-member .pg-head { grid-template-columns: 44px minmax(0, 1fr); }
+  .pg-member .pg-total { grid-column: 1 / -1; text-align: left; white-space: normal; }
+
+  /* —— login —— */
+  .pg-login .card { padding: 26px 22px 24px; }
+}
+
+/* ============ ≤560：窄手机最紧凑 ============ */
+@media (max-width: 560px) {
+  .page { padding: 16px 12px 30px; }
+  header { margin-bottom: 16px; }
+  h1 { font-size: 20px; }
+
+  /* 长文本断词，避免撑破网格 */
+  .pname, .pg-name, .item-name, .gi-name, .gi-note, .pnote, .item-note { word-break: break-word; }
+  .amount, .pg-total, .gg-total, .p-price { white-space: normal; word-break: break-word; }
+
+  /* admin 商品库行：最紧凑五列（checkbox / 缩略图 / 名称 / 价格 / 操作） */
+  .pg-admin .prod-item { grid-template-columns: 20px 40px minmax(0, 1fr) auto auto; gap: 6px; padding: 10px 10px; }
+  .pg-admin .prod-item .p-actions { flex-wrap: wrap; justify-content: flex-end; }
+  .pg-admin .card-foot > span { max-width: 60%; }
+
+  /* index：手工添加按钮不折行 */
+  .pg-index .join-row button { white-space: nowrap; }
+  .pg-index .manual-img-row .img-choose { width: 100%; justify-content: center; }
+  .pg-index .v-row { grid-template-columns: minmax(0,1fr) 56px 30px; }
+  .pg-index .box-head { flex-wrap: wrap; row-gap: 6px; }
+  .pg-index .box-head > div { min-width: 0; flex: 1 1 100%; }
+
+  /* purchaser：勾选行紧凑 */
+  .pg-purchaser .check, .pg-member .check { font-size: 11px; }
+
+  /* member 信息可断行 */
+  .pg-member .m-mail { word-break: break-all; }
+  .notice { right: 12px; left: 12px; bottom: 12px; text-align: center; }
+}
+
+/* ==========================================================================
+   商品缩略图点击放大（灯箱）——全站通用，非作用域
+   由 auth.js 注入 .zoom-mask（fixed 覆盖层 + 放大图 + 关闭按钮 + 说明文字）。
+   缩略图容器带 data-ini 标记时，点击图片即打开；点遮罩/×/Esc 关闭。
+   ========================================================================== */
+.zoom-mask {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: rgba(0, 0, 0, 0.82);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  padding: 22px;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.24s ease, visibility 0.24s ease, transform 0.24s ease;
+}
+.zoom-mask.show {
+  opacity: 1;
+  visibility: visible;
+}
+.zoom-img {
+  max-width: min(92vw, 1200px);
+  max-height: 78vh;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  border-radius: 8px;
+  box-shadow: 0 18px 60px rgba(0, 0, 0, 0.5);
+  background: #fff;
+}
+.zoom-cap {
+  color: #f2f2f2;
+  font-size: 14px;
+  letter-spacing: 0.4px;
+  text-align: center;
+  word-break: break-word;
+  max-width: 90vw;
+  padding: 0 8px;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
+  min-height: 1em;
+}
+.zoom-close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  width: 42px;
+  height: 42px;
+  border: none;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.92);
+  color: #222;
+  font-size: 24px;
+  line-height: 1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.35);
+  transition: background-color 0.15s ease, transform 0.15s ease;
+}
+.zoom-close:hover {
+  background: #fff;
+  transform: scale(1.06);
+}
+@media (max-width: 560px) {
+  .zoom-img { max-height: 70vh; }
+  .zoom-cap { font-size: 13px; }
+  .zoom-close { width: 38px; height: 38px; font-size: 21px; }
+}
+
+/* ==========================================================================
+   品牌 Logo（动感科技版，全站通用，非作用域）
+   结构：.brand > svg.brand-ico（旋转轨道 + 上升箭头 + 环绕亮点）
+        + span.brand-txt（渐变流光文字）
+   覆盖各页内联 .brand/.brand span 基础样式；≤760/≤560 同步放大但不溢出。
+   ========================================================================== */
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  font-size: 21px;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  line-height: 1;
+}
+.brand-ico {
+  width: 32px;
+  height: 32px;
+  flex: none;
+}
+.brand .brand-txt {
+  background: linear-gradient(100deg, #155a43 0%, #2fa377 30%, #8fdcc0 48%, #2fa377 66%, #155a43 100%);
+  background-size: 220% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: brandShimmer 5.5s linear infinite;
+}
+@keyframes brandShimmer {
+  0%   { background-position: 0% 0; }
+  100% { background-position: 220% 0; }
+}
+
+/* login 页品牌在卡片顶部居中：改为块级 flex 并水平居中 */
+.pg-login .brand { justify-content: center; }
+
+/* 后台保持紧凑品牌标识，登录页保留更强的品牌焦点。 */
+.pg-login .brand { font-size: 46px; gap: 14px; }
+.pg-login .brand-ico { width: 60px; height: 60px; }
+.pg-login .sub { margin-top: 10px; }
+@media (max-width: 760px) {
+  .pg-login .brand { font-size: 38px; gap: 11px; }
+  .pg-login .brand-ico { width: 50px; height: 50px; }
+}
+@media (max-width: 560px) {
+  .pg-login .brand { font-size: 32px; gap: 9px; }
+  .pg-login .brand-ico { width: 42px; height: 42px; }
+}
+
+/* 统一价格分组在移动端的降级顺序：名称单独一行，参数双列，操作按钮整行。 */
+@media (max-width: 760px) {
+  .pg-admin .group-line,
+  .pg-purchaser .price-line {
+    grid-template-columns: minmax(130px, 1fr) minmax(125px, 145px) auto;
+  }
+  .pg-admin .group-line > div:first-child,
+  .pg-purchaser .price-line > div:first-child {
+    grid-column: 1 / -1;
+  }
+}
+@media (max-width: 520px) {
+  .pg-admin .group-line,
+  .pg-purchaser .price-line {
+    grid-template-columns: 1fr 1fr;
+  }
+  .pg-admin .group-line > div:first-child,
+  .pg-admin .group-line label,
+  .pg-admin .group-line .p-meta,
+  .pg-purchaser .price-line > div:first-child,
+  .pg-purchaser .price-line label,
+  .pg-purchaser .price-line .price-users {
+    grid-column: 1 / -1;
+  }
+  .pg-admin .group-line .p-btn,
+  .pg-purchaser .price-line .g-btn {
+    width: 100%;
+  }
+}
