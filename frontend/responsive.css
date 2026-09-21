@@ -4,7 +4,7 @@
    作用域：各页 <body class="pg-login|pg-index|pg-admin|pg-purchaser|pg-member">，
            页面私有规则一律挂作用域前缀，避免同名类（.item/.tabs/.filters…）跨页误伤。
    断点：≤1100 中宽桌面留白收紧；≤900 平板/小本；≤760 平板竖/手机；≤560 窄手机。
-   原则：>1100 不产生任何规则（桌面零影响）；只降级，不重排桌面。
+   原则：桌面规则仅限全站共用（焦点、品牌、署名、价格网格、导出按钮）；断点规则只降级，不重排桌面。
    ========================================================================== */
 
 html { -webkit-text-size-adjust: 100%; }
@@ -27,10 +27,126 @@ button:active:not(:disabled) { transform: translateY(1px); }
 .thumb-trigger { cursor: zoom-in; }
 .thumb-trigger:focus-visible { outline: 3px solid rgba(40, 114, 90, .34); outline-offset: 3px; }
 
-/* 管理员与采购员统一价格分组网格。 */
+/* 全部下拉菜单统一风格（对齐「全部状态」筛选下拉）。 */
+select {
+  border:1px solid var(--line);
+  border-radius:5px;
+  background:var(--surface);
+  color:var(--ink);
+  padding:0 10px;
+  height:37px;
+  outline:none;
+}
+select:focus {
+  border-color:var(--green);
+  box-shadow:0 0 0 3px rgba(40,114,90,.1);
+}
+
+/* 管理员与采购员统一价格分组网格和控件层级。 */
 .pg-admin .group-line,
-.pg-purchaser .price-line {
-  grid-template-columns: minmax(160px, 1fr) minmax(125px, 150px) minmax(150px, 170px) auto auto auto;
+.pg-purchaser .group-line {
+  display:grid;
+  grid-template-columns: minmax(160px, 1fr) 140px 200px auto auto;
+  align-items:end;
+  gap:12px;
+  padding:12px 4px;
+}
+.pg-admin .price-group-list + .settings-row,
+.pg-admin .pg-add,
+.pg-purchaser .price-card .pg-add {
+  display:grid;
+  grid-template-columns: minmax(70px, 0.55fr) minmax(110px, 0.8fr) 110px 150px auto;
+  align-items:end;
+  gap:12px;
+}
+.pg-purchaser .price-card .pg-add label,
+.pg-admin .pg-add label {
+  min-width:0;
+}
+.pg-purchaser .price-card .pg-add input,
+.pg-admin .pg-add input,
+.pg-purchaser .price-card .pg-add select,
+.pg-admin .pg-add select {
+  width:100%;
+  min-width:0;
+  height:37px;
+}
+.pg-purchaser .price-card .pg-add select,
+.pg-admin .pg-add select {
+  border:1px solid var(--line);
+  border-radius:5px;
+  background:var(--surface);
+  color:var(--ink);
+  padding:0 10px;
+  height:37px;
+  outline:none;
+}
+.pg-purchaser .price-card .pg-add select:focus,
+.pg-admin .pg-add select:focus {
+  border-color:var(--green);
+  box-shadow:0 0 0 3px rgba(40,114,90,.1);
+}
+.pg-purchaser .price-card .pg-add .parse-btn,
+.pg-admin .pg-add .parse-btn {
+  height:36px;
+  padding:0 18px;
+  justify-self:start;
+}
+.pg-admin .price-group-name,
+.pg-purchaser .price-group-name {
+  display:flex;
+  align-items:center;
+  gap:7px;
+  min-width:0;
+  min-height:32px;
+  color:var(--ink);
+  font-size:13px;
+  font-weight:750;
+}
+.pg-admin .price-group-name .gdef,
+.pg-purchaser .price-group-name .gdef {
+  display:inline-flex;
+  align-items:center;
+  min-height:26px;
+  padding:3px 9px;
+  border:1px solid #eed7a5;
+  border-radius:6px;
+  background:var(--amber-bg);
+  color:#7d5a16;
+  font-size:11px;
+  font-weight:800;
+  white-space:nowrap;
+}
+.pg-admin .price-group-name .p-meta,
+.pg-purchaser .price-group-name .p-meta,
+.pg-purchaser .group-line .p-meta {
+  color:var(--muted);
+  font-size:11px;
+  font-weight:500;
+  white-space:nowrap;
+}
+.pg-admin .group-line label,
+.pg-purchaser .group-line label {
+  gap:5px;
+  color:var(--muted);
+  font-size:11px;
+  font-weight:600;
+}
+.pg-admin .group-line input,
+.pg-purchaser .group-line input {
+  height:32px;
+  padding:0 9px;
+  border:1px solid #d8ddd8;
+  border-radius:6px;
+  background:#fff;
+  color:var(--ink);
+  font-size:12px;
+  box-shadow:0 1px 2px rgba(37,49,45,.03) inset;
+}
+.pg-admin .group-line input:focus,
+.pg-purchaser .group-line input:focus {
+  border-color:var(--green);
+  box-shadow:0 0 0 3px rgba(40,114,90,.1);
 }
 
 /* 小型操作按钮保留紧凑视觉，但扩大触控区域。 */
@@ -60,14 +176,43 @@ button:active:not(:disabled) { transform: translateY(1px); }
 .price-box.original, .price-box.cny { background: transparent; border-color: transparent; }
 .price-box.taxed { font-weight: 750; }
 
-  .pg-index .price-boxes { display:inline-flex; flex-wrap:wrap; gap:3px; vertical-align:middle; }
+.pg-index .price-boxes { display:inline-flex; flex-wrap:wrap; gap:3px; vertical-align:middle; }
 .pg-index .price-box { display:inline-flex; align-items:center; min-height:20px; padding:1px 6px; border:1px solid transparent; border-radius:4px; background:transparent; color:#7b847f; font-size:10.5px; white-space:nowrap; }
 .pg-index .price-box.original, .pg-index .price-box.cny { background:transparent; border-color:transparent; }
 .pg-index .price-box.original { color:var(--ink); }
 .pg-index .price-box.taxed { color:var(--green-dark); background:var(--green-bg); border-color:#c8ded1; }
 .pg-index .price-box.cny { color:#7d5a16; background:var(--amber-bg); border-color:#f0dcae; }
 .pg-index .price-boxes + .price-boxes { margin-left:4px; }
+
+/* 结算、邀请与确认模块：统一文字、输入框和操作控件风格 */
+.settlement-row { display:flex; align-items:center; flex-wrap:wrap; gap:10px; margin-top:9px; color:var(--muted); }
+.settlement-fields { display:flex; align-items:center; flex-wrap:wrap; gap:12px; width:100%; }
+.settlement-field, .gb-transfer { display:inline-flex; align-items:center; gap:8px; color:var(--ink); font-size:12px; font-weight:700; }
+.settlement-label { color:var(--muted); font-size:11px; font-weight:700; letter-spacing:.04em; white-space:nowrap; }
+.settlement-input, .gb-transfer input { width:190px; height:32px; padding:0 10px; border:1px solid #d8ddd8; border-radius:6px; background:#fff; color:var(--ink); font-size:12px; outline:none; box-shadow:0 1px 2px rgba(37,49,45,.03) inset; transition:border-color .15s, box-shadow .15s; }
+.settlement-input::placeholder, .gb-transfer input::placeholder { color:#b2bab5; }
+.settlement-input:focus, .gb-transfer input:focus { border-color:var(--green); box-shadow:0 0 0 3px rgba(40,114,90,.1); }
+.settlement-input[readonly] { background:#f3f4f1; color:var(--muted); cursor:not-allowed; }
+.receipt-state { display:inline-flex; align-items:center; gap:8px; color:var(--muted); font-size:12px; white-space:nowrap; }
+.receipt-pill { display:inline-flex; align-items:center; gap:6px; min-height:30px; padding:4px 9px; border:1px solid var(--line); border-radius:6px; background:#fff; color:var(--muted); font-size:12px; font-weight:700; }
+.receipt-pill.on, .receipt-pill:has(input:checked) { border-color:#b8d5c4; background:var(--green-bg); color:var(--green-dark); }
+.receipt-pill input { accent-color:var(--green); margin:0; }
+.invite-row { display:flex; flex-wrap:wrap; gap:8px; margin-top:7px; align-items:center; }
+.invite { display:inline-flex; align-items:center; flex-wrap:wrap; gap:7px; margin-top:0; padding:5px 10px; border-radius:6px; background:var(--amber-bg); color:#7d5a16; font-size:12px; font-weight:700; }
+.invite code { font-size:15px; letter-spacing:2px; color:#5d3f00; font-weight:900; }
+.invite .copy { border:0; background:transparent; color:var(--amber); font-weight:800; cursor:pointer; padding:2px 5px; border-radius:4px; }
+.invite .copy:hover { background:rgba(150,98,9,.12); }
+.invite.invite-link { background:var(--green-bg); color:var(--green-dark); }
+.invite.invite-link .copy { color:var(--green); }
+.invite.invite-link .copy:hover { background:rgba(40,114,90,.12); }
+.g-batch.settlement-window { display:flex; align-items:center; gap:8px; flex-wrap:wrap; background:#fbf8f0; border:1px solid var(--line-soft); border-radius:7px; padding:6px 10px; font-size:12px; }
+.pg-index .settlement-input { width:min(100%, 260px); margin-left:0; }
+.pg-purchaser .receipt-check { min-height:30px; padding:4px 9px; border:1px solid var(--line); border-radius:6px; background:#fff; }
+.pg-purchaser .receipt-check.on { border-color:#b8d5c4; background:var(--green-bg); }
+
 @media (max-width: 560px) {
+  .invite-row { gap:6px; }
+  .invite { min-width:0; }
   .pg-index .price-boxes { display:flex; margin-top:3px; }
   .pg-index .price-box { font-size:10px; padding-left:4px; padding-right:4px; }
 }
@@ -113,6 +258,9 @@ button:active:not(:disabled) { transform: translateY(1px); }
   .pg-index .join-row { flex-wrap: wrap; }
   .pg-index .join-row input { flex-basis: 100%; }
   .pg-index .g-chip { flex-wrap: wrap; row-gap: 4px; }
+  .pg-index .g-drawer-head { flex-wrap: wrap; }
+  .pg-index .g-drawer-toggle { flex-wrap: wrap; row-gap: 4px; min-height: 44px; }
+  .pg-index .g-drawer-head .g-share { margin: 0 10px 8px auto; min-height: 32px; }
   .pg-index .parse-result { flex-wrap: wrap; align-items: flex-start; gap: 9px; }
   .pg-index .parse-result > div[style*="min-width"] { flex: 1 1 calc(100% - 62px); }
   .pg-index .parse-result .p-price { order: 3; margin-left: 0; flex: 1 1 auto; }
@@ -165,16 +313,33 @@ button:active:not(:disabled) { transform: translateY(1px); }
   .pg-purchaser .pull-opts { max-height: none; }
   .pg-purchaser .pull-bar { flex-wrap: wrap; }
   .pg-purchaser .items .item { grid-template-columns: 1fr; gap: 8px; padding: 12px 16px; }
+  .pg-purchaser .items .item.sub { grid-template-columns: 1fr; }
+  .pg-purchaser .pgroup { margin: 8px 10px 10px; }
+  .pg-purchaser .pg-head { grid-template-columns: 44px minmax(0, 1fr); padding: 12px; }
+  .pg-purchaser .pg-total { grid-column: 1 / -1; text-align: left; white-space: normal; }
+  .pg-purchaser .pull-panel { padding: 12px 14px 14px; }
+  .pg-purchaser .g-batches { margin: 10px 14px 0; }
+  .pg-purchaser .gb-transfer { flex: 1 1 100%; }
+  .pg-purchaser .gb-transfer input { flex: 1; min-width: 120px; }
+  .pg-purchaser .g-batch .receipt-state, .pg-purchaser .g-batch .check, .pg-purchaser .g-batch .receipt-pill { margin-left: 0; }
+  .pg-admin .gb-transfer { flex: 1 1 100%; }
+  .pg-admin .gb-transfer input { flex: 1; min-width: 120px; }
+  .pg-purchaser .group-foot { padding: 12px 14px 14px; }
+  .pg-purchaser .group-foot .g-actions { justify-content: flex-start; }
 
   /* —— member 成员清单 —— */
   .pg-member .mcard { flex-wrap: wrap; gap: 10px; padding: 13px 14px; }
   .pg-member .m-extra { margin-left: 0; text-align: left; width: 100%; border-top: 1px dashed var(--line-soft); padding-top: 8px; }
-  .pg-member .item { grid-template-columns: auto 44px minmax(0, 1fr); gap: 8px; padding: 11px 14px; }
+  .pg-member .item { grid-template-columns: 56px 44px minmax(0, 1fr); gap: 8px; padding: 11px 14px; }
+  .pg-member .item.sub { grid-template-columns: 56px minmax(0, 1fr); }
   .pg-member .b-thumb { width: 44px; height: 44px; }
   .pg-member .stats { gap: 6px; }
   .pg-member .stat { padding: 7px 10px; }
   .pg-member .pg-head { grid-template-columns: 44px minmax(0, 1fr); }
   .pg-member .pg-total { grid-column: 1 / -1; text-align: left; white-space: normal; }
+  .pg-member .bhead { grid-template-columns: 1fr; }
+  .pg-member .bh-acts { justify-content: flex-start; }
+  .pg-member .pgroup { margin: 8px 10px; }
 
   /* —— login —— */
   .pg-login .card { padding: 26px 22px 24px; }
@@ -333,32 +498,103 @@ button:active:not(:disabled) { transform: translateY(1px); }
   .pg-login .brand-ico { width: 42px; height: 42px; }
 }
 
+/* 内页页脚署名：相对视口水平居中（不用 flex，避免 p/span 收缩贴左） */
+.page-credit {
+  display: block;
+  box-sizing: border-box;
+  align-self: stretch;
+  width: 100%;
+  max-width: 100%;
+  margin: 24px 0 40px;
+  padding: 0 16px;
+  text-align: center;
+  clear: both;
+  user-select: none;
+}
+.page-credit .credit-line {
+  display: block;
+  width: 22px;
+  height: 1px;
+  margin: 0 auto 8px;
+  background: #c4b89a;
+}
+.page-credit .credit-txt {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: .4em;
+  font-size: 11.5px;
+  letter-spacing: .1em;
+  color: #8a938d;
+  text-align: center;
+}
+.page-credit .credit-mark { font-size: 13px; letter-spacing: 0; line-height: 1; }
+.page-credit .credit-txt b {
+  font-family: "Songti SC", "STSong", "Noto Serif SC", "SimSun", serif;
+  font-style: normal;
+  font-weight: 600;
+  letter-spacing: .14em;
+  color: #4f5b55;
+}
+
+/* 导出对账单按钮：写在 CSS 里，避免 export.js 注入前成员页按钮无样式。 */
+.xrecon-btn {
+  border: 1px solid var(--line, #e6dfd3);
+  background: #fff;
+  color: var(--green, #28725a);
+  border-radius: 5px;
+  padding: 6px 12px;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.xrecon-btn:hover {
+  border-color: var(--green, #28725a);
+  color: var(--green-dark, #1e5e49);
+}
+
 /* 统一价格分组在移动端的降级顺序：名称单独一行，参数双列，操作按钮整行。 */
+@media (max-width: 1100px) {
+  .pg-admin .pg-add,
+  .pg-purchaser .price-card .pg-add {
+    grid-template-columns: 1fr 1fr;
+  }
+  .pg-admin .pg-add .parse-btn,
+  .pg-purchaser .price-card .pg-add .parse-btn {
+    grid-column: 1 / -1;
+    width: 100%;
+  }
+}
 @media (max-width: 760px) {
   .pg-admin .group-line,
-  .pg-purchaser .price-line {
+  .pg-purchaser .group-line {
     grid-template-columns: minmax(130px, 1fr) minmax(125px, 145px) auto;
   }
   .pg-admin .group-line > div:first-child,
-  .pg-purchaser .price-line > div:first-child {
+  .pg-purchaser .group-line > div:first-child {
     grid-column: 1 / -1;
+  }
+  .pg-admin .pg-add,
+  .pg-purchaser .price-card .pg-add {
+    grid-template-columns: 1fr;
   }
 }
 @media (max-width: 520px) {
   .pg-admin .group-line,
-  .pg-purchaser .price-line {
+  .pg-purchaser .group-line {
     grid-template-columns: 1fr 1fr;
   }
   .pg-admin .group-line > div:first-child,
   .pg-admin .group-line label,
   .pg-admin .group-line .p-meta,
-  .pg-purchaser .price-line > div:first-child,
-  .pg-purchaser .price-line label,
-  .pg-purchaser .price-line .price-users {
+  .pg-purchaser .group-line > div:first-child,
+  .pg-purchaser .group-line label,
+  .pg-purchaser .group-line .p-meta {
     grid-column: 1 / -1;
   }
   .pg-admin .group-line .p-btn,
-  .pg-purchaser .price-line .g-btn {
+  .pg-purchaser .group-line .p-btn {
     width: 100%;
   }
 }

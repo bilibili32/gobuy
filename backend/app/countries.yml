@@ -1,0 +1,42 @@
+# 国家价格参数索引（唯一权威来源）
+# 新建价格分组时选择国家，会继承本文件的税率 / 汇率 / 货币符号 / 比价网站提示。
+# - tax_rate:        默认税率（%），含税价 = 原价 × (1 + tax_rate/100)
+# - exchange_rate_cny: 1 本币 = x 元人民币（折算到人民币时使用）
+# - scrapers:        该国可用的比价网站解析器标识（仅作索引与前端展示；实际抓取路由仍按域名分发）
+
+countries:
+  - code: jp
+    name: 日本
+    currency: JPY
+    symbol: "¥"
+    tax_rate: 10.0
+    exchange_rate_cny: 0.048
+    scrapers: [kakaku, kitamura]
+  - code: us
+    name: 美国
+    currency: USD
+    symbol: "$"
+    tax_rate: 8.0
+    exchange_rate_cny: 7.20
+    scrapers: [amazon]
+  - code: kr
+    name: 韩国
+    currency: KRW
+    symbol: "₩"
+    tax_rate: 10.0
+    exchange_rate_cny: 0.0052
+    scrapers: [gmarket]
+  - code: hk
+    name: 中国香港
+    currency: HKD
+    symbol: "HK$"
+    tax_rate: 0.0
+    exchange_rate_cny: 0.92
+    scrapers: []
+  - code: cn
+    name: 中国大陆
+    currency: CNY
+    symbol: "¥"
+    tax_rate: 13.0
+    exchange_rate_cny: 1.0
+    scrapers: []

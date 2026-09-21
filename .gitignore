@@ -1,0 +1,13 @@
+.env
+.env.cloud
+.env.production
+backups/
+*.log
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.DS_Store
+.venv/
+venv/
+*.code-workspace
+

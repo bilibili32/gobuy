@@ -5,6 +5,44 @@
 
 ## v0.2（开发中）
 
+### 2026-09-08 — 用户页批次列表：锁定批只读可查看，提交后切到下一批新清单
+
+按实测反馈补齐用户侧「批次列表 + 切换」：锁定批次仍能看见、不能编辑；管理员/采购员解锁后原条目保留并恢复可编辑；1 号清单锁定后自动生成 2 号清单并可继续加购。
+
+后端：
+- 新增 `GET /api/carts/me/batches`（我的全部批次摘要）与 `GET /api/carts/me/{cart_id}`（任意本人批次明细，锁定批只读）。`/batches` 必须声明在 `/{cart_id}` 之前，避免被路径参数吃掉。
+- 加购/提交/撤回/重开请求体增加可选 `cart_id`；缺省保持旧客户端行为（最新草稿 / 最新 submitted·failed）。
+- 统一 helper `editable_cart_for`：指定 cart_id 必须是本人且 `draft`，否则 404/409。
+
+前端（`index.html`）：
+- 「我的清单」增加批次条：第 N 批 / 新清单 chip，锁定批可点开只读，草稿批可编辑。
+- 提交若封板（`locked`）则自动切到最新草稿，可继续添加商品。
+- 加购/提交/撤回/重开带当前 `cart_id`；非草稿前端拦截。
+
+验证：冒烟 8.55.3b（列表/按 id 查看/指定锁定批加购 409）；指定新草稿加购后删除测试条目，避免占用空占位草稿破坏「解锁后当前草稿即第2批」。镜像重建后全量冒烟 **277 项通过，0 项失败**（此前基线 261）。
+
+### 2026-09-08 — 出游组批次机制（出游开始后提交即封板，逐批收单）
+
+出游采购组到达 `start_date` 当天起进入采购期：需求人每「提交」一次清单即锁定为一批，冻结单价，系统自动为其开立下一批空草稿继续追加；采购员/管理员可在组内按批次锁定或解锁。
+
+数据模型与后端：
+- 新增 Alembic 迁移 `0007_cart_batch_no.py`：`carts.batch_no`（INTEGER NOT NULL 默认 0）。0 = 尚未提交的草稿；提交时分配 `>=1`，同一用户同一组内每次封板递增。
+- 提交语义收口：`start_date` 到达前提交 → `submitted`（可自行撤回）；到达后提交即封板 → `locked`（冻结单价，见 `apply_status_change`），并自动为下一批占位空草稿（`draft_cart` 取/建，仅限进行中且已开始的组，见 `ensure_next_draft`）。
+- 已开始组内已提交/已封板批不得自行撤回/删改：`withdraw` 对组已开始且已归组批次返回 409（提示联系采购员或管理员解锁）。
+- 新增组内批次状态端点 `PATCH /api/groups/{group_id}/carts/{cart_id}/status`：允许 `submitted->locked`（锁定收单）、`locked->draft`（解锁恢复可编辑，同时清理比它新的空占位草稿 `prune_empty_drafts`）；权限 = 该组采购员或管理员，需求人一律 403，已完成组 409。
+- 批次数从组详情/工作台聚合输出：`group_detail_payload` 的 `batches` 列表带 `batch_no/cart_id/status/count/submitted_at/locked_at`，条目级带 `batch_no/cart_status`。
+- **修复同会话关系陈旧 bug**：`submit_my_cart` 此前只写 `cart.group_id`，未同步 `cart.group` 关系（加载时仍为 None），导致封板后 `ensure_next_draft` 被 `cart.group is None` 守卫短路、不自动开下一批草稿（冒烟 3 项失败定位到此）。修复：写 FK 的同时显式 `cart.group = target_group` 保持关系一致。
+
+前端：
+- purchaser.html：组卡片按成员/批次渲染「第 N 批」+ 状态徽章 + 件数，「锁定该批 / 解锁（可编辑）」按钮走组内批次端点。
+- member.html：成员清单按批次分组展示（`第 N 批`，头部带提交/封板时间），采购员（本组创建者）与管理员可锁定/解锁每批。
+- admin.html：采购清单视图展示归属 chip「组名 · 第 N 批」，组视图沿用批次聚合。
+
+验证：
+- 后端 Python、冒烟脚本语法检查通过；镜像重建启动成功；`/health` 返回 ok。
+- `scripts/smoke_test.sh` 新增 8.55 批次机制段（封板批次号递增、自动下一批空草稿、组内锁定/解锁、多批聚合、越权与状态机护栏等断言）。
+- 全量冒烟测试：**261 项通过，0 项失败**（此前基线 213）。
+
 ### 2026-09-06 — 工作台布局与可访问性优化
 
 - 统一管理员与采购员价格分组的桌面、平板和手机网格结构，移动端按名称、参数、操作的顺序自然降级。
@@ -34,9 +72,12 @@
 
 按用户需求「当前保存一个节点」建立冻结快照，作为后续问题修复的回滚基线。
 
-- 已建立开发节点快照（源码、迁移和部署文件），数据库快照、服务器地址、账号信息和构建日志不随公开源码发布。
-- 公开源码仅保留通用部署说明和环境变量模板，真实环境变量必须由部署者自行填写。
-- 公开发布前已移除本地数据库备份、运行日志、缓存和 Python 编译产物。
+- 快照目录：`backups/procurement-app/2026-09-05_v0.2-node`（rsync 全量 47 个源码文件 + `MANIFEST.sha256` 51 条校验通过 + `NODE.md`）。
+- 附加归档：本地数据库快照 `snapshot/local-db-20260905.dump` 与统计 `snapshot/db-state.txt`；云服务器成品包 `release-procurement-app-cloud-v0.2-20260905.tar.gz`。
+- 快照时本地数据库状态：1 用户（admin@example.com / ADMIN）、3 商品、2 清单、3 条目、0 出游采购组、7 条审计事件。
+- 快照时上云状态：腾讯云 + 宝塔，域名 `buy.lydsars.online`，目录 `/home/ubuntu/outbuy`，用 `docker-compose.cloud.yml` + `--env-file .env.cloud`，服务器上已移除 caddy、frontend 绑定 `127.0.0.1:8080:80` 由宝塔 Nginx 反代。
+- `NODE.md` 中登记了 5 项待修复问题（管理员 bootstrap 仅首次生效、注册密码 ≥10 位与管理员建号 ≥6 位不一致且前端错误显示 `[object Object]`、`down -v` 后 DATABASE_URL 未同步导致 InvalidPasswordError、frontend `wget --spider` 健康检查恒 unhealthy、8080 端口冲突）。
+- 一致性校验：`diff -rq` 显示快照与工作目录仅差两个被排除的构建日志（`build.log`、`build-api.log`）。
 
 ### 2026-09-05 — 云部署准备与实验数据清理
 
@@ -44,7 +85,7 @@
 - 生产编排使用 Caddy 自动 HTTPS，仅暴露 80/443；PostgreSQL、Redis、crawl 数据和 Caddy 状态使用命名卷持久化。
 - 修正 `deploy/backup.sh`：显式使用生产 Compose 与 `.env.production`，避免从项目根目录运行时误用开发配置。
 - 更新根 `README.md` 与 `.gitignore`，补齐当前功能和生产部署说明，并忽略云/生产环境密钥文件。
-- 本地开发数据库清理记录仅保留在内部工作区；公开源码不包含任何数据库快照、账号、邮箱或备份文件。
+- 清理本地实验数据库：删除全部非管理员账号及其清单、商品组、旧批次、关联审计数据，仅保留 `admin@example.com`；清理前备份为 `backups/pre-clean-20260905.dump`。
 - 校验结果：三份 Compose 配置解析通过，Shell/前端脚本语法检查通过；当前数据库仅 1 个管理员、2 张管理员清单、3 个管理员商品、7 条管理员审计事件。
 
 ### 2026-09-05 — 登录页 Logo 专属放大 + 副标题改为「顺手的事」

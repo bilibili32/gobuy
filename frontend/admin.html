@@ -11,21 +11,21 @@
     header { display:flex; align-items:center; justify-content:space-between; gap:16px; margin-bottom:28px; } .brand { font-size:18px; font-weight:800; } .brand span { color:var(--green); } .admin { display:flex; gap:10px; align-items:center; color:var(--muted); font-size:13px; } .avatar { width:31px; height:31px; display:grid; place-items:center; border-radius:50%; background:#dcebe2; color:var(--green); font-size:11px; font-weight:800; } .logout { border:1px solid var(--line); background:#fff; color:var(--muted); border-radius:4px; padding:6px 12px; font-weight:700; } .logout:hover { color:var(--red); border-color:var(--red); }
     h1 { margin:0; font-size:27px; line-height:1.2; } .sub { margin:7px 0 0; color:var(--muted); } .head { display:flex; align-items:end; justify-content:space-between; gap:20px; margin-bottom:21px; }
     .summary { display:flex; gap:8px; align-items:center; color:var(--muted); font-size:12px; } .summary b { color:var(--ink); } .filters { display:flex; align-items:center; gap:8px; margin-bottom:19px; } .filters input,.filters select { height:37px; border:1px solid var(--line); border-radius:5px; background:var(--surface); padding:0 10px; color:var(--ink); outline:none; } .filters input { flex:1; min-width:130px; max-width:370px; } .filters input:focus,.filters select:focus { border-color:var(--green); box-shadow:0 0 0 3px rgba(40,114,90,.1); } .edit-toggle { display:flex; align-items:center; gap:8px; margin-left:auto; color:var(--muted); font-size:12px; font-weight:700; white-space:nowrap; } .edit-toggle input { appearance:none; width:34px; height:19px; margin:0; border-radius:999px; background:#cbd2cc; position:relative; transition:.18s; } .edit-toggle input::after { content:""; position:absolute; width:13px; height:13px; left:3px; top:3px; border-radius:50%; background:#fff; transition:.18s; } .edit-toggle input:checked { background:var(--green); } .edit-toggle input:checked::after { transform:translateX(15px); } .edit-toggle b { color:var(--amber); } .edit-toggle input:checked + b { color:var(--green); }
-    .board { column-count:3; column-gap:17px; } .card { break-inside:avoid; overflow:hidden; margin:0 0 17px; border:1px solid var(--line); border-radius:8px; background:var(--surface); } .card-head { display:flex; align-items:center; gap:10px; padding:16px 16px 12px; } .person { width:34px; height:34px; display:grid; place-items:center; border-radius:50%; background:#e6ede8; color:#416151; font-size:11px; font-weight:800; } .name { font-weight:800; } .email { color:var(--muted); font-size:11px; } .badge { margin-left:auto; border-radius:999px; padding:4px 8px; font-size:11px; font-weight:750; white-space:nowrap; } .submitted { color:var(--blue); background:var(--blue-bg); } .locked { color:var(--amber); background:var(--amber-bg); } .success { color:var(--green); background:var(--green-bg); } .failed { color:var(--red); background:var(--red-bg); }
-    .status-row { padding:0 16px 13px; border-bottom:1px solid var(--line); } .status-row label { display:flex; align-items:center; justify-content:space-between; gap:9px; color:var(--muted); font-size:12px; } .status-row select { min-width:118px; border:1px solid var(--line); border-radius:4px; background:#fff; color:var(--ink); padding:6px; } .status-row .terminal { color:var(--muted); font-size:12px; }
+    .board { column-count:3; column-gap:17px; } .card { break-inside:avoid; overflow:hidden; margin:0 0 17px; border:1px solid var(--line); border-radius:8px; background:var(--surface); box-shadow:0 1px 2px rgba(37,49,45,.04); } .card-head { display:flex; align-items:center; gap:10px; padding:16px 16px 12px; } .person { width:34px; height:34px; display:grid; place-items:center; border-radius:50%; background:#e6ede8; color:#416151; font-size:11px; font-weight:800; } .name { font-weight:800; } .email { color:var(--muted); font-size:11px; } .badge { margin-left:auto; border-radius:999px; padding:4px 8px; font-size:11px; font-weight:750; white-space:nowrap; } .submitted { color:var(--blue); background:var(--blue-bg); } .locked { color:var(--amber); background:var(--amber-bg); } .success { color:var(--green); background:var(--green-bg); } .failed { color:var(--red); background:var(--red-bg); }
+    .status-row { padding:0 16px 13px; border-bottom:1px solid var(--line); } .status-row label { display:flex; align-items:center; justify-content:space-between; gap:9px; color:var(--muted); font-size:12px; } .status-row select { min-width:118px; height:37px; border:1px solid var(--line); border-radius:5px; background:var(--surface); color:var(--ink); padding:0 10px; } .status-row .terminal { color:var(--muted); font-size:12px; } .status-row .batch-chip { margin-left:auto; border-radius:999px; padding:3px 9px; background:#eef1ec; color:#496258; font-size:11px; font-weight:700; white-space:nowrap; } .status-row label { flex-wrap:wrap; }
     .items { padding:2px 0; } .item { display:grid; grid-template-columns:30px 1fr auto auto; align-items:center; gap:9px; padding:12px 16px; border-bottom:1px solid var(--line-soft); } .item:last-child { border-bottom:0; } .icon { width:30px; height:30px; display:grid; place-items:center; border-radius:5px; background:#edf0eb; color:#486355; font-size:9px; font-weight:800; } .item-name { font-size:12px; font-weight:750; } .item-meta { color:var(--muted); font-size:11px; margin-top:1px; } .amount { display:flex; align-items:center; gap:4px; } .qty { min-width:21px; text-align:center; color:var(--muted); font-size:12px; } .mini { width:21px; height:21px; padding:0; border:1px solid #d8ddd9; border-radius:3px; background:#fff; color:#4d5d55; line-height:1; } .mini:hover { border-color:var(--green); color:var(--green); } .remove { color:#9d615a; }
     .purchased { display:flex; align-items:center; gap:6px; padding:3px 6px 3px 3px; color:var(--muted); font-size:11px; white-space:nowrap; cursor:pointer; user-select:none; } .purchased input { appearance:none; width:17px; height:17px; margin:0; border:1.5px solid #c9d2cc; border-radius:4px; background:#fff; position:relative; cursor:pointer; transition:.15s; flex:none; } .purchased input:hover { border-color:var(--green); } .purchased input:checked { background:var(--green); border-color:var(--green); } .purchased input:checked::after { content:"✓"; position:absolute; left:3.5px; top:-1px; color:#fff; font-size:11px; font-weight:800; } .purchased.on { color:var(--green); font-weight:700; } .item-checks { display:flex; flex-direction:column; gap:3px; align-items:flex-end; } .purchased.conf input:checked { background:var(--blue); border-color:var(--blue); } .purchased.conf.on { color:var(--blue); } .color-chip { display:inline-block; padding:1px 7px; border-radius:999px; background:#eef1ec; color:#496258; font-size:10px; font-weight:700; white-space:nowrap; } .item-note { color:#7d6a3c; font-size:11px; margin-top:3px; line-height:1.5; word-break:break-all; } .pg { margin:10px 12px; border:1px solid var(--line); border-radius:8px; overflow:hidden; } .pg-head { display:grid; grid-template-columns:34px minmax(0,1fr) auto; gap:9px; align-items:center; padding:10px 12px; background:#fbf8f0; border-bottom:1px dashed var(--line); } .g-thumb { width:34px; height:34px; display:grid; place-items:center; border-radius:5px; background:#edf0eb; color:#486355; font-size:9px; font-weight:800; overflow:hidden; } .g-thumb img { width:100%; height:100%; object-fit:cover; display:block; } .pg-total { text-align:right; white-space:nowrap; } .pg-total .cny { font-size:10px; color:var(--muted); } .pg-row { display:grid; grid-template-columns:minmax(0,1fr) auto auto; gap:8px; align-items:center; padding:8px 12px; border-bottom:1px solid var(--line-soft); } .pg-row:last-child { border-bottom:0; } .vcell { display:flex; align-items:center; gap:6px; min-width:0; } .vcell b { font-size:12px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; } .vdot { width:12px; height:12px; border-radius:3px; border:1px solid rgba(0,0,0,.12); flex:none; } .vqty { color:var(--muted); font-size:10.5px; white-space:nowrap; }
     .card-foot { display:flex; align-items:center; justify-content:space-between; padding:13px 16px; background:#fffdf9; border-top:1px solid var(--line); } .card-foot span { color:var(--muted); font-size:12px; } .card-foot b { font-size:16px; } .edit-control:disabled { cursor:not-allowed; opacity:.38; } .notice { position:fixed; right:22px; bottom:22px; padding:11px 14px; background:#28463a; color:#fff; border-radius:5px; opacity:0; transform:translateY(8px); pointer-events:none; transition:opacity .2s ease, transform .2s ease; z-index:10; } .notice.show { opacity:1; transform:translateY(0); }
     .empty { padding:34px 16px; text-align:center; color:var(--muted); font-size:13px; } .loading { padding:34px 16px; text-align:center; color:var(--muted); font-size:13px; }
-    .parse-card { margin-bottom:19px; border:1px solid var(--line); border-radius:8px; background:var(--surface); padding:14px 16px; } .parse-head { font-weight:800; font-size:13px; margin-bottom:10px; } .parse-tip { color:var(--muted); font-weight:400; font-size:12px; margin-left:8px; } .parse-row { display:flex; gap:8px; } .parse-row input { flex:1; min-width:0; height:37px; border:1px solid var(--line); border-radius:5px; background:#fff; padding:0 10px; color:var(--ink); outline:none; } .parse-row input:focus { border-color:var(--green); box-shadow:0 0 0 3px rgba(40,114,90,.1); } .parse-btn { border:none; background:var(--green); color:#fff; border-radius:5px; padding:0 16px; font-weight:700; white-space:nowrap; } .parse-btn:hover { background:var(--green-dark); } .parse-btn:disabled { opacity:.5; cursor:not-allowed; } .parse-result { display:flex; gap:14px; align-items:center; margin-top:13px; padding:12px; border:1px solid var(--line-soft); border-radius:6px; background:#fffdf9; } .parse-result img { width:64px; height:64px; object-fit:contain; border:1px solid var(--line-soft); border-radius:5px; background:#fff; flex:none; } .parse-result .p-name { font-weight:800; font-size:13px; } .parse-result .p-meta { color:var(--muted); font-size:12px; margin-top:3px; } .parse-result .p-price { font-size:18px; font-weight:800; color:var(--green); margin-left:auto; white-space:nowrap; } .parse-err { margin-top:10px; color:var(--red); font-size:12px; } .icon { overflow:hidden; } .icon img { width:100%; height:100%; object-fit:cover; display:block; }
+    .parse-card { margin-bottom:19px; border:1px solid var(--line); border-radius:8px; background:var(--surface); padding:14px 16px; box-shadow:0 1px 2px rgba(37,49,45,.04); } .parse-head { font-weight:800; font-size:13px; margin-bottom:10px; } .parse-tip { color:var(--muted); font-weight:400; font-size:12px; margin-left:8px; } .parse-row { display:flex; gap:8px; } .parse-row input { flex:1; min-width:0; height:37px; border:1px solid var(--line); border-radius:5px; background:#fff; padding:0 10px; color:var(--ink); outline:none; } .parse-row input:focus { border-color:var(--green); box-shadow:0 0 0 3px rgba(40,114,90,.1); } .parse-btn { border:none; background:var(--green); color:#fff; border-radius:5px; padding:0 16px; font-weight:700; white-space:nowrap; } .parse-btn:hover { background:var(--green-dark); } .parse-btn:disabled { opacity:.5; cursor:not-allowed; } .parse-result { display:flex; gap:14px; align-items:center; margin-top:13px; padding:12px; border:1px solid var(--line-soft); border-radius:6px; background:#fffdf9; } .parse-result img { width:64px; height:64px; object-fit:contain; border:1px solid var(--line-soft); border-radius:5px; background:#fff; flex:none; } .parse-result .p-name { font-weight:800; font-size:13px; } .parse-result .p-meta { color:var(--muted); font-size:12px; margin-top:3px; } .parse-result .p-price { font-size:18px; font-weight:800; color:var(--green); margin-left:auto; white-space:nowrap; } .parse-err { margin-top:10px; color:var(--red); font-size:12px; } .icon { overflow:hidden; } .icon img { width:100%; height:100%; object-fit:cover; display:block; }
     .tabs { display:flex; gap:4px; margin-bottom:19px; border-bottom:1px solid var(--line); } .tab { border:none; background:none; padding:10px 16px; font-weight:750; color:var(--muted); border-bottom:2px solid transparent; margin-bottom:-1px; transition:color .15s ease, background-color .15s ease; } .tab:hover { color:var(--ink); background:#f2f6f1; } .tab.active { color:var(--green); border-bottom-color:var(--green); background:var(--green-bg); }
-    .prod-list { display:flex; flex-direction:column; gap:9px; } .prod-item { display:grid; grid-template-columns:20px 44px minmax(0,1fr) auto auto; align-items:center; gap:13px; padding:12px 14px; border:1px solid var(--line); border-radius:8px; background:var(--surface); } .p-thumb { width:44px; height:44px; display:grid; place-items:center; border-radius:5px; background:#edf0eb; color:#486355; font-size:10px; font-weight:800; overflow:hidden; } .p-thumb img { width:100%; height:100%; object-fit:cover; display:block; } .p-name { font-weight:750; font-size:13px; } .p-meta { color:var(--muted); font-size:11px; margin-top:2px; } .p-price { font-weight:800; white-space:nowrap; } .p-actions { display:flex; gap:6px; } .p-btn { border:1px solid var(--line); background:#fff; border-radius:4px; padding:5px 10px; font-size:12px; font-weight:700; color:var(--ink); } .p-btn:hover { border-color:var(--green); color:var(--green); } .p-btn.danger { color:var(--red); } .p-btn.danger:hover { border-color:var(--red); color:var(--red); } .p-btn.tax { color:var(--amber); } .p-btn.tax.on { color:var(--green); border-color:var(--green); } .cny-equiv { color:var(--muted); font-size:11px; font-weight:500; }
-    .settings-card { margin-bottom:19px; border:1px solid var(--line); border-radius:8px; background:var(--surface); padding:14px 16px; } .settings-head { font-weight:800; font-size:13px; margin-bottom:11px; } .settings-tip { color:var(--muted); font-weight:400; font-size:12px; margin-left:8px; } .settings-row { display:flex; gap:12px; align-items:flex-end; flex-wrap:wrap; } .settings-row label { display:flex; flex-direction:column; gap:5px; font-size:12px; color:var(--muted); } .settings-row input { height:34px; width:150px; border:1px solid var(--line); border-radius:5px; background:#fff; padding:0 9px; color:var(--ink); outline:none; } .settings-row input:focus { border-color:var(--green); box-shadow:0 0 0 3px rgba(40,114,90,.1); } .settings-row select { height:34px; border:1px solid var(--line); border-radius:5px; background:#fff; padding:0 8px; color:var(--ink); outline:none; }
-    .batch-card { border:1px solid var(--line); border-radius:8px; background:var(--surface); padding:14px 16px; margin-bottom:10px; } .batch-row { display:flex; align-items:center; justify-content:space-between; gap:12px; } .batch-items { color:var(--muted); font-size:12px; margin-top:8px; line-height:1.6; } .batch-assign { display:flex; gap:8px; margin-top:12px; align-items:center; } .batch-assign select { flex:1; min-width:0; height:34px; border:1px solid var(--line); border-radius:5px; background:#fff; padding:0 8px; color:var(--ink); outline:none; } .user-list { display:flex; flex-direction:column; gap:7px; } .user-row { display:flex; align-items:center; justify-content:space-between; gap:10px; font-size:13px; } .user-row select { height:30px; border:1px solid var(--line); border-radius:5px; background:#fff; padding:0 6px; color:var(--ink); }
+    .prod-list { display:flex; flex-direction:column; gap:9px; } .prod-item { display:grid; grid-template-columns:20px 44px minmax(0,1fr) auto auto; align-items:center; gap:13px; padding:12px 14px; border:1px solid var(--line); border-radius:8px; background:var(--surface); box-shadow:0 1px 2px rgba(37,49,45,.04); } .p-thumb { width:44px; height:44px; display:grid; place-items:center; border-radius:5px; background:#edf0eb; color:#486355; font-size:10px; font-weight:800; overflow:hidden; } .p-thumb img { width:100%; height:100%; object-fit:cover; display:block; } .p-name { font-weight:750; font-size:13px; } .p-meta { color:var(--muted); font-size:11px; margin-top:2px; } .p-price { font-weight:800; white-space:nowrap; } .p-actions { display:flex; gap:6px; } .p-btn { border:1px solid var(--line); background:#fff; border-radius:4px; padding:5px 10px; font-size:12px; font-weight:700; color:var(--ink); } .p-btn:hover { border-color:var(--green); color:var(--green); } .p-btn.danger { color:var(--red); } .p-btn.danger:hover { border-color:var(--red); color:var(--red); } .p-btn.tax { color:var(--amber); } .p-btn.tax.on { color:var(--green); border-color:var(--green); } .cny-equiv { color:var(--muted); font-size:11px; font-weight:500; }
+    .settings-card { margin-bottom:19px; border:1px solid var(--line); border-radius:8px; background:var(--surface); padding:14px 16px; box-shadow:0 1px 2px rgba(37,49,45,.04); } .settings-head { font-weight:800; font-size:13px; margin-bottom:11px; } .settings-tip { color:var(--muted); font-weight:400; font-size:12px; margin-left:8px; } .settings-row { display:flex; gap:12px; align-items:flex-end; flex-wrap:wrap; } .settings-row label { display:flex; flex-direction:column; gap:5px; font-size:12px; color:var(--muted); } .settings-row input { height:34px; width:150px; border:1px solid var(--line); border-radius:5px; background:#fff; padding:0 9px; color:var(--ink); outline:none; } .settings-row input:focus { border-color:var(--green); box-shadow:0 0 0 3px rgba(40,114,90,.1); } .settings-row select { height:37px; border:1px solid var(--line); border-radius:5px; background:var(--surface); padding:0 10px; color:var(--ink); outline:none; }
+    .batch-card { border:1px solid var(--line); border-radius:8px; background:var(--surface); padding:14px 16px; margin-bottom:10px; box-shadow:0 1px 2px rgba(37,49,45,.04); } .batch-row { display:flex; align-items:center; justify-content:space-between; gap:12px; } .batch-items { color:var(--muted); font-size:12px; margin-top:8px; line-height:1.6; } .batch-assign { display:flex; gap:8px; margin-top:12px; align-items:center; } .batch-assign select { flex:1; min-width:0; height:37px; border:1px solid var(--line); border-radius:5px; background:var(--surface); padding:0 10px; color:var(--ink); outline:none; } .user-list { display:flex; flex-direction:column; gap:7px; } .user-row { display:flex; align-items:center; justify-content:space-between; gap:10px; font-size:13px; } .user-row select { height:37px; border:1px solid var(--line); border-radius:5px; background:var(--surface); padding:0 10px; color:var(--ink); }
     .user-grid { display:flex; flex-direction:column; gap:7px; }
     .user-line { display:flex; align-items:center; gap:10px; padding:9px 11px; border:1px solid var(--line-soft); border-radius:6px; background:#fff; flex-wrap:wrap; }
     .user-line .u-main { min-width:0; flex:1 1 220px; }
-    .user-line select { height:30px; border:1px solid var(--line); border-radius:5px; background:#fff; padding:0 6px; color:var(--ink); max-width:150px; }
+    .user-line select { height:37px; border:1px solid var(--line); border-radius:5px; background:var(--surface); padding:0 10px; color:var(--ink); max-width:150px; }
     .tag { border-radius:999px; padding:2px 9px; font-size:11px; font-weight:700; white-space:nowrap; }
     .tag.admin { color:#fff; background:var(--blue); } .tag.off { color:var(--muted); background:#e7e5e0; }
     .group-line { display:grid; grid-template-columns:minmax(150px,1fr) 150px 170px auto auto auto; align-items:end; gap:10px; padding:10px 0; border-bottom:1px dashed var(--line-soft); }
@@ -34,17 +34,17 @@
     .group-line input { height:32px; width:100%; border:1px solid var(--line); border-radius:5px; padding:0 8px; color:var(--ink); outline:none; }
     .group-line input:focus { border-color:var(--green); box-shadow:0 0 0 3px rgba(40,114,90,.1); }
     .group-line > div:first-child { min-width:0; }
-    .group-line > div:first-child .p-meta { display:block; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .group-line > div:first-child .p-meta { white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
     .group-line .p-btn { white-space:nowrap; }
     .price-stack { display:inline-flex; flex-direction:column; align-items:flex-end; gap:2px; min-width:150px; }
     .price-stack > span { display:block; font-size:11px; line-height:1.35; white-space:nowrap; }
     .price-stack > span:nth-child(2) { color:var(--green-dark); }
     .price-stack > span:nth-child(3) { color:#7d5a16; }
-    .gdef { color:var(--amber); font-weight:750; }
-    @media(max-width:760px) { .group-line { grid-template-columns:minmax(130px,1fr) 125px 145px auto; } .group-line > div:first-child { grid-column:1 / -1; } .group-line label:first-of-type { grid-column:1 / 2; } }
-    @media(max-width:520px) { .group-line { grid-template-columns:1fr 1fr; } .group-line label, .group-line > div:first-child, .group-line .p-meta { grid-column:1 / -1; } .group-line .p-btn { width:100%; } }
+    .price-group-name { display:flex; align-items:center; gap:7px; min-width:0; min-height:32px; color:var(--ink); font-size:13px; font-weight:750; }
+    .price-group-name input { width:50%; flex:none; font-weight:750; }
+    .gdef { display:inline-flex; align-items:center; min-height:26px; padding:3px 9px; border:1px solid #eed7a5; border-radius:6px; background:var(--amber-bg); color:#7d5a16; font-size:11px; font-weight:800; white-space:nowrap; }
     /* 出游采购组：管理员建组表单 / 拉人面板 / 行内改标题日期 */
-    .create-card { border:1px solid var(--line); border-radius:8px; background:var(--surface); padding:14px 16px; margin-bottom:12px; } .cc-head { font-weight:800; font-size:13px; margin-bottom:6px; } .cc-tip { color:var(--muted); font-size:12px; margin:0 0 12px; } .cc-row { display:flex; flex-wrap:wrap; gap:11px; align-items:flex-end; } .cc-row label { display:flex; flex-direction:column; gap:5px; font-size:11.5px; color:var(--muted); } .cc-row input { height:34px; min-width:150px; border:1px solid var(--line); border-radius:5px; background:#fff; padding:0 9px; color:var(--ink); outline:none; } .cc-row input:focus { border-color:var(--green); box-shadow:0 0 0 3px rgba(40,114,90,.1); } .cc-row input#ag-title { min-width:210px; }
+    .create-card { border:1px solid var(--line); border-radius:8px; background:var(--surface); padding:14px 16px; margin-bottom:12px; box-shadow:0 1px 2px rgba(37,49,45,.04); } .cc-head { font-weight:800; font-size:13px; margin-bottom:6px; } .cc-tip { color:var(--muted); font-size:12px; margin:0 0 12px; } .cc-row { display:flex; flex-wrap:wrap; gap:11px; align-items:flex-end; } .cc-row label { display:flex; flex-direction:column; gap:5px; font-size:11.5px; color:var(--muted); } .cc-row input { height:34px; min-width:150px; border:1px solid var(--line); border-radius:5px; background:#fff; padding:0 9px; color:var(--ink); outline:none; } .cc-row input:focus { border-color:var(--green); box-shadow:0 0 0 3px rgba(40,114,90,.1); } .cc-row input#ag-title { min-width:210px; }
     .g-btn { border:1px solid var(--line); background:#fff; color:var(--muted); border-radius:5px; padding:7px 12px; font-size:12px; font-weight:700; white-space:nowrap; } .g-btn:hover { border-color:var(--green); color:var(--green); } .g-btn.primary { background:var(--green); border-color:var(--green); color:#fff; } .g-btn.primary:hover { background:var(--green-dark); color:#fff; } .g-btn.danger { color:var(--red); } .g-btn.danger:hover { border-color:var(--red); color:var(--red); }
     .pull-panel { border-top:1px dashed var(--line-soft); margin-top:12px; padding:11px 19px 13px; } .pull-head { font-size:12px; color:var(--muted); margin-bottom:8px; font-weight:700; } .pull-opts { display:flex; flex-wrap:wrap; gap:7px; max-height:130px; overflow:auto; } .opt-chip { display:inline-flex; align-items:center; gap:6px; padding:5px 10px; border:1px solid var(--line); border-radius:999px; background:#fff; color:var(--ink); font-size:12px; cursor:pointer; user-select:none; } .opt-chip:hover { border-color:var(--green); } .opt-chip.sel { background:var(--green-bg); border-color:var(--green); color:var(--green-dark); font-weight:700; } .opt-chip input { position:absolute; width:1px; height:1px; opacity:0; } .opt-chip:focus-within { border-color:var(--green); box-shadow:0 0 0 3px rgba(40,114,90,.1); } .pull-bar { display:flex; gap:9px; align-items:center; flex-wrap:wrap; margin-top:10px; } .pull-tip { color:var(--muted); font-size:11.5px; }
     .g-edit { border:1px dashed var(--line); border-radius:7px; background:#fbfaf6; padding:11px 13px; margin:10px 19px 0; } .g-edit-row { display:flex; flex-wrap:wrap; gap:11px; align-items:flex-end; } .g-edit-row label { display:flex; flex-direction:column; gap:5px; font-size:11.5px; color:var(--muted); } .g-edit-row input { height:34px; min-width:150px; border:1px solid var(--line); border-radius:5px; background:#fff; padding:0 9px; color:var(--ink); outline:none; } .g-edit-row input:focus { border-color:var(--green); box-shadow:0 0 0 3px rgba(40,114,90,.1); } .g-edit-row input#ge-title { min-width:210px; } .g-edit-acts { display:flex; gap:8px; margin-top:10px; }
@@ -85,12 +85,33 @@
   </style>
   <style>
     /* —— 出游采购组：管理台只读总览 —— */
-    .gcard { margin-bottom:12px; border:1px solid var(--line); border-radius:8px; background:var(--surface); padding:14px 16px 8px; }
+    .gcard { margin-bottom:12px; border:1px solid var(--line); border-radius:8px; background:var(--surface); padding:14px 16px 8px; box-shadow:0 1px 2px rgba(37,49,45,.04); }
     .grow { display:flex; align-items:flex-start; justify-content:space-between; gap:12px; }
     .gtitle { font-weight:800; font-size:14px; } .gmeta { color:var(--muted); font-size:11.5px; margin-top:3px; line-height:1.7; }
     .badge.gopen { color:var(--amber); background:var(--amber-bg); } .badge.gdone { color:var(--green); background:var(--green-bg); }
     .gcode { display:inline-flex; align-items:center; gap:7px; margin-top:7px; padding:4px 10px; border-radius:6px; background:var(--amber-bg); color:#7d5a16; font-size:12px; font-weight:700; } .gcode code { font-size:15px; letter-spacing:2px; color:#5d3f00; font-weight:900; } .gcode button { border:0; background:transparent; color:var(--amber); font-weight:800; cursor:pointer; padding:0 2px; }
-    .gmems { display:flex; flex-wrap:wrap; gap:5px; margin-top:8px; } .gmchip { padding:2px 9px; border-radius:999px; background:#eef1ec; color:#496258; font-size:11px; font-weight:700; } a.gmchip { text-decoration:none; cursor:pointer; transition:background-color .15s ease, transform .15s ease; } a.gmchip:hover { background:#d5e2da; color:var(--green-dark); box-shadow:0 0 0 1px rgba(40,114,90,.25); }
+    .invite-row { display:flex; flex-wrap:wrap; gap:8px; margin-top:7px; align-items:center; }
+    .invite { display:inline-flex; align-items:center; flex-wrap:wrap; gap:7px; margin-top:0; padding:5px 10px; border-radius:6px; background:var(--amber-bg); color:#7d5a16; font-size:12px; font-weight:700; }
+    .invite code { font-size:15px; letter-spacing:2px; color:#5d3f00; font-weight:900; }
+    .invite .copy { border:0; background:transparent; color:var(--amber); font-weight:800; cursor:pointer; padding:2px 5px; border-radius:4px; }
+    .invite .copy:hover { background:rgba(150,98,9,.12); }
+    .invite.invite-link { background:var(--green-bg); color:var(--green-dark); }
+    .invite.invite-link .copy { color:var(--green); }
+    .invite.invite-link .copy:hover { background:rgba(40,114,90,.12); }
+    .g-batches { display:flex; flex-direction:column; gap:6px; }
+    .g-batch { display:flex; align-items:center; gap:8px; flex-wrap:wrap; background:#fbf8f0; border:1px solid var(--line-soft); border-radius:7px; padding:6px 10px; font-size:12px; }
+    .gb-who { font-weight:800; } .gb-no { color:var(--muted); }
+    .gb-badge { border-radius:999px; padding:1px 8px; font-size:10.5px; font-weight:750; white-space:nowrap; }
+    .gb-badge.submitted { color:#336fa9; background:#e8f0f8; } .gb-badge.locked { color:#966209; background:#fff0d5; } .gb-badge.success { color:#28725a; background:#e5f0e9; } .gb-badge.failed { color:#a3463f; background:#f8e7e4; }
+    .gb-meta { color:var(--muted); font-size:11px; }
+    .gb-transfer { display:inline-flex; align-items:center; gap:8px; color:var(--ink); font-size:12px; font-weight:700; }
+    .gb-transfer .settlement-label { color:var(--muted); font-size:11px; font-weight:700; letter-spacing:.04em; white-space:nowrap; }
+    .gb-transfer input { width:190px; height:32px; padding:0 10px; border:1px solid #d8ddd8; border-radius:6px; background:#fff; color:var(--ink); font-size:12px; outline:none; box-shadow:0 1px 2px rgba(37,49,45,.03) inset; }
+    .gb-transfer input:focus { border-color:var(--green); box-shadow:0 0 0 3px rgba(40,114,90,.1); }
+    .receipt-pill { display:inline-flex; align-items:center; gap:6px; min-height:30px; padding:4px 9px; border:1px solid var(--line); border-radius:6px; background:#fff; color:var(--muted); font-size:12px; font-weight:700; }
+    .receipt-pill.on { border-color:#b8d5c4; background:var(--green-bg); color:var(--green-dark); }
+    .card .settlement-window { margin:10px 16px 0; }
+    .gmems { display:flex; flex-wrap:wrap; gap:5px; margin-top:8px; } .gmchip { display:inline-flex; align-items:center; gap:4px; padding:2px 9px; border-radius:999px; background:#eef1ec; color:#496258; font-size:11px; font-weight:700; } a.gmchip { text-decoration:none; cursor:pointer; transition:background-color .15s ease, transform .15s ease; } a.gmchip:hover { background:#d5e2da; color:var(--green-dark); box-shadow:0 0 0 1px rgba(40,114,90,.25); } .gmchip-x { border:0; background:transparent; color:#a9b3ad; font-size:13px; line-height:1; padding:0 1px; cursor:pointer; border-radius:4px; } .gmchip-x:hover { color:#c25e4e; background:#f6e3de; }
     .gsec { margin-top:10px; border-top:1px dashed var(--line-soft); } .gsec-t { font-size:11px; color:var(--muted); font-weight:700; margin:9px 2px 6px; } .gempty { padding:14px 2px; color:var(--muted); font-size:12px; }
     .grow2 { display:grid; grid-template-columns:36px minmax(0,1fr) auto; gap:10px; align-items:center; padding:7px 2px; border-bottom:1px solid var(--line-soft); } .grow2:last-child { border-bottom:0; }
     .gthumb { width:36px; height:36px; display:grid; place-items:center; border-radius:5px; background:#edf0eb; color:#486355; font-size:9px; font-weight:800; overflow:hidden; } .gthumb img { width:100%; height:100%; object-fit:cover; display:block; }
@@ -98,6 +119,56 @@
     .gi-check { display:flex; flex-direction:column; gap:3px; align-items:flex-end; } .gi-remark { margin-top:5px; } .gi-remark textarea { width:100%; max-width:420px; min-height:30px; padding:5px 8px; border:1px dashed var(--line); border-radius:5px; background:#fffdfa; color:var(--ink); font-size:12px; line-height:1.4; resize:vertical; outline:none; } .gi-remark textarea:focus { border-style:solid; border-color:var(--green); box-shadow:0 0 0 3px rgba(40,114,90,.08); }
     .gg { margin:8px 0; border:1px solid var(--line); border-radius:8px; overflow:hidden; } .gg-head { display:grid; grid-template-columns:36px minmax(0,1fr) auto; gap:10px; align-items:center; padding:9px 11px; background:#fbf8f0; } .gg-total { text-align:right; white-space:nowrap; font-size:12.5px; font-weight:800; } .gg-total .cny { font-size:10px; color:var(--muted); font-weight:500; } .gg-sub { display:grid; grid-template-columns:minmax(0,1fr) auto; gap:8px; align-items:center; padding:8px 11px; border-top:1px solid var(--line-soft); }
     .gfoot { display:flex; align-items:center; justify-content:space-between; margin-top:8px; border-top:1px solid var(--line-soft); padding-top:9px; } .gacts { display:flex; gap:6px; justify-content:flex-end; flex-wrap:wrap; }
+  </style>
+  <style>
+    /* 用户与设置：约束在 .page 内，顶区两列，卡片/行对齐 */
+    #view-users .head { margin-bottom: 18px; }
+    .users-top { display:grid; grid-template-columns:minmax(0,1fr) minmax(260px,320px); gap:16px; margin-bottom:16px; align-items:stretch; }
+    .users-top > .settings-card { margin-bottom:0; }
+    #view-users .settings-card { margin-bottom:16px; border-radius:10px; padding:18px 20px 16px; box-shadow:0 1px 2px rgba(37,49,45,.04); }
+    #view-users .settings-head { font-size:14px; margin-bottom:14px; padding-bottom:10px; border-bottom:1px solid var(--line-soft); }
+    #view-users .settings-tip { margin-left:6px; }
+    #view-users .settings-row { display:grid; grid-template-columns:repeat(auto-fit,minmax(140px,1fr)); gap:12px; align-items:end; }
+    #view-users .settings-row label { min-width:0; }
+    #view-users .settings-row input,
+    #view-users .settings-row select { width:100%; height:37px; }
+    #view-users .settings-row .parse-btn { height:36px; padding:0 18px; justify-self:start; white-space:nowrap; }
+    #view-users .users-form { grid-template-columns:minmax(160px,1.3fr) minmax(110px,1fr) minmax(130px,1fr) 120px minmax(130px,1fr) auto; }
+    #view-users .pg-add { margin-top:12px; border-top:1px dashed var(--line-soft); padding-top:14px; grid-template-columns:minmax(160px,1.4fr) 140px 200px auto; }
+    .sys-row { display:flex; align-items:center; justify-content:space-between; gap:14px; padding:14px; border:1px solid var(--line-soft); border-radius:8px; background:#fbfaf6; cursor:pointer; }
+    .sys-row > span { display:flex; flex-direction:column; gap:3px; min-width:0; }
+    .sys-row b { font-size:13px; color:var(--ink); font-weight:750; }
+    .sys-row .p-meta { font-size:12px; }
+    .sys-row input { appearance:none; width:40px; height:22px; margin:0; border-radius:999px; background:#cbd2cc; position:relative; transition:.18s; flex:none; cursor:pointer; }
+    .sys-row input::after { content:""; position:absolute; width:16px; height:16px; left:3px; top:3px; border-radius:50%; background:#fff; transition:.18s; box-shadow:0 1px 2px rgba(0,0,0,.12); }
+    .sys-row input:checked { background:var(--green); }
+    .sys-row input:checked::after { transform:translateX(18px); }
+    #view-users .user-grid { gap:8px; }
+    #view-users .user-line { gap:12px; padding:12px 14px; border-radius:8px; flex-wrap:nowrap; transition:border-color .15s ease, box-shadow .15s ease, background-color .15s ease; }
+    #view-users .user-line:hover { border-color:#d5e2da; box-shadow:0 2px 10px rgba(37,49,45,.06); background:#fffeff; }
+    #view-users .user-line .u-main { flex:1 1 220px; min-width:180px; }
+    #view-users .user-line select { height:37px; width:118px; max-width:140px; flex:none; }
+    #view-users .user-line .p-actions { margin-left:auto; display:flex; gap:6px; flex:none; flex-wrap:wrap; justify-content:flex-end; }
+    #view-users .group-line { padding:12px 4px; gap:12px; }
+    #view-users .filters { margin-bottom:12px; }
+    @media (max-width:1100px) {
+      .users-top { grid-template-columns:1fr; }
+      #view-users .users-form { grid-template-columns:repeat(3,minmax(0,1fr)); }
+      #view-users .users-form .parse-btn { grid-column:1 / -1; width:100%; }
+      #view-users .pg-add { grid-template-columns:1fr 1fr; }
+      #view-users .pg-add .parse-btn { grid-column:1 / -1; width:100%; }
+      #view-users .user-line { flex-wrap:wrap; }
+      #view-users .user-line .p-actions { width:100%; justify-content:flex-start; }
+    }
+    @media (max-width:760px) {
+      #view-users .users-form, #view-users .pg-add, #view-users .settings-row { grid-template-columns:1fr; }
+      #view-users .settings-row .parse-btn { width:100%; }
+    }
+    .page-credit { display:block; box-sizing:border-box; width:100%; margin:24px 0 40px; padding:0 16px; text-align:center; user-select:none; }
+    .page-credit .credit-line { display:block; width:22px; height:1px; margin:0 auto 8px; background:#c4b89a; }
+    .page-credit .credit-txt { display:inline-flex; align-items:center; justify-content:center; gap:.4em; font-size:11.5px; letter-spacing:.1em; color:#8a938d; text-align:center; }
+    .page-credit .credit-mark { font-size:13px; letter-spacing:0; line-height:1; }
+    .page-credit .credit-txt b { font-family:"Songti SC","STSong","Noto Serif SC","SimSun",serif; font-style:normal; font-weight:600; letter-spacing:.14em; color:#4f5b55; }
   </style>
   <link rel="stylesheet" href="responsive.css">
 </head>
@@ -114,8 +185,8 @@
       <div id="view-carts" data-page-node-id="CUEdpWFIz4ohHNDbQVkKdn">
       <div class="head" data-page-node-id="CfzgMrgFy4ceAjiWU8heEy"><div data-page-node-id="TxLrYrBUCCqP3nr6FtGT3L"><h1 data-page-node-id="BBAHwjAHOUnZK9Q1Wz0Zpz">用户采购清单</h1><p class="sub" data-page-node-id="YUXb8gjuTfmyfzEMoVwK2c">按用户分组处理提交的商品，并维护采购状态。</p></div><div class="summary" data-page-node-id="HS1Lvlpoxk5ljdu8ZTxXXl"><span data-page-node-id="T8NfsjSOtVHkiOP2pQuFri">共 <b id="user-total" data-page-node-id="mudQ71JI5w18Ut5wqtfli3">0</b> 位用户</span><span data-page-node-id="U9n67sKzHLQv1ndX3kuB2q">·</span><span data-page-node-id="rhHhQ3FOHMQUMFrEKDzBL8"><b id="item-total" data-page-node-id="eS2c6F8YCvJNb51xdU3Zcc">0</b> 件待处理商品</span></div></div>
       <section class="parse-card" data-page-node-id="75IOXDUtSGdgkQG3W8xSvA">
-        <div class="parse-head" data-page-node-id="Pz4hcoX0DlcFJSfmNOfaBh">链接解析<span class="parse-tip" data-page-node-id="dQ1DvVRBb5BXyLWqWFr9Tf">粘贴 kakaku.com 或北村相机（kitamuracamera.jp /buy/item/）商品详情页链接，自动解析名称 / 价格 / 缩略图</span></div>
-        <div class="parse-row" data-page-node-id="xSIji0FAzGy2pL9aiKqxER"><input id="parse-url" placeholder="粘贴 kakaku.com 或北村相机商品详情链接" onkeydown="if(event.key==='Enter')parseUrl()" data-page-node-id="QzkoAepcDNdCsuqX3SJuRy"><button class="parse-btn" id="parse-btn" onclick="parseUrl()" data-page-node-id="brwrs5899HqQUJ4xhzqoB5">解析</button></div>
+        <div class="parse-head" data-page-node-id="Pz4hcoX0DlcFJSfmNOfaBh">链接解析<span class="parse-tip" data-page-node-id="dQ1DvVRBb5BXyLWqWFr9Tf">粘贴 kakaku.com / 北村相机（kitamuracamera.jp /buy/item/）或 global.gmarket.co.kr 商品详情页链接，自动解析名称 / 价格 / 缩略图</span></div>
+        <div class="parse-row" data-page-node-id="xSIji0FAzGy2pL9aiKqxER"><input id="parse-url" placeholder="粘贴 kakaku.com / 北村相机 / Gmarket 商品详情链接" onkeydown="if(event.key==='Enter')parseUrl()" data-page-node-id="QzkoAepcDNdCsuqX3SJuRy"><button class="parse-btn" id="parse-btn" onclick="parseUrl()" data-page-node-id="brwrs5899HqQUJ4xhzqoB5">解析</button></div>
         <div id="parse-result" data-page-node-id="N8VsQAXe8SoDG1d67Ln00D"></div>
       </section>
       <div class="filters" data-page-node-id="JvH5ro18oepVifnFimLdwx"><input id="search" placeholder="搜索用户或商品" oninput="render()" data-page-node-id="oUf62XnP29Ih1xUz7TO7gk"><select id="filter" onchange="render()" data-page-node-id="JDdiTR5Y7tupbIoktnTicT"><option value="all" data-page-node-id="h5xhrTkhttgZAlT1kHPAEE">全部采购状态</option><option value="submitted" data-page-node-id="YBSY5mGFHIyS6v288jslfO">待处理</option><option value="locked" data-page-node-id="cRgHHh6me1mE7GCyBTn35V">采购锁定</option><option value="success" data-page-node-id="7Y4yyL26EzbcTRR9O2frgQ">采购成功</option><option value="failed" data-page-node-id="LzEmqQvcF4oVOqrkzTO57l">采购失败</option></select><label class="edit-toggle" data-page-node-id="kEU8aDbH1xTEzUiWFKzvbh"><input id="edit-mode" type="checkbox" onchange="setEditMode()" data-page-node-id="jhtcOzVqWoAtUKn3AuY27t"><b id="edit-label" data-page-node-id="rXG3chYE4DeiSGWIiwCjNL">调整已关闭</b></label></div>
@@ -147,6 +218,7 @@
           <p class="cc-tip">管理员代建组不受「每个采购员累计 3 个」的配额限制；建组后由你担任该组采购员，可拉人、勾选采购、标记完成。</p>
           <div class="cc-row">
             <label>组标题<input id="ag-title" placeholder="例如：9月东京代购"></label>
+            <label>国家<select id="ag-country" autocomplete="off"></select></label>
             <label>开始日期<input id="ag-start" type="date"></label>
             <label>结束日期<input id="ag-end" type="date" autocomplete="off"></label>
             <button class="g-btn primary" onclick="adminCreateGroup()">创建出游组</button>
@@ -155,40 +227,48 @@
         <div class="filters"><input id="grp-search" placeholder="搜索组标题 / 采购员 / 成员" oninput="renderGroups()"><select id="grp-status" onchange="renderGroups()"><option value="all">全部状态</option><option value="open">进行中</option><option value="completed">已完成</option></select></div>
         <section class="prod-list" id="group-list"><div class="loading">加载中…</div></section>
       </div>
-    </main>
-  </div>
-  <div class="notice" id="notice" role="status" aria-live="polite" aria-atomic="true" data-page-node-id="5Gb3BmT9b9RtFshlI9raS1">已更新</div>
       <div id="view-users" style="display:none">
-        <div class="head"><div><h1>用户与设置</h1><p class="sub">创建账号、管理角色与价格组、重置密码、启停账号；删除用户会连同其全部清单一并彻底删除（不可恢复）。</p></div></div>
-        <section class="settings-card">
-          <div class="settings-head">添加用户<span class="settings-tip">创建后即可用该邮箱与初始密码登录</span></div>
-          <div class="settings-row">
-            <label>邮箱<input id="nu-email" type="email" autocomplete="email" placeholder="name@example.com"></label>
-            <label>姓名<input id="nu-name" placeholder="姓名"></label>
-            <label>初始密码<input id="nu-pass" type="password" autocomplete="new-password" placeholder="至少 6 位"></label>
-            <label>角色<select id="nu-role"><option value="user">普通用户</option><option value="purchaser">采购人</option></select></label>
-            <label>价格组<select id="nu-group" autocomplete="off"></select></label>
-            <button class="parse-btn" onclick="createUser()">创建用户</button>
+        <div class="head">
+          <div>
+            <h1>用户与设置</h1>
+            <p class="sub">创建账号、管理角色与价格组、重置密码、启停账号；删除用户会连同其全部清单一并彻底删除（不可恢复）。</p>
           </div>
-        </section>
-        
+          <div class="summary"><span>共 <b id="users-total">0</b> 位用户</span><span>·</span><span><b id="groups-total">0</b> 个价格组</span></div>
+        </div>
+        <div class="users-top">
+          <section class="settings-card">
+            <div class="settings-head">添加用户<span class="settings-tip">创建后即可用该邮箱与初始密码登录</span></div>
+            <div class="settings-row users-form">
+              <label>邮箱<input id="nu-email" type="email" autocomplete="email" placeholder="name@example.com"></label>
+              <label>姓名<input id="nu-name" placeholder="姓名"></label>
+              <label>初始密码<input id="nu-pass" type="password" autocomplete="new-password" placeholder="至少 6 位"></label>
+              <label>角色<select id="nu-role"><option value="user">普通用户</option><option value="purchaser">采购人</option></select></label>
+              <label>价格组<select id="nu-group" autocomplete="off"></select></label>
+              <button class="parse-btn" onclick="createUser()">创建用户</button>
+            </div>
+          </section>
+          <section class="settings-card">
+            <div class="settings-head">系统设置<span class="settings-tip">关闭后登录页不再提供注册</span></div>
+            <label class="sys-row">
+              <span><b>允许用户自助注册</b><span class="p-meta">关闭后账号一律由管理员在后台创建</span></span>
+              <input type="checkbox" id="reg-open" onchange="saveReg(this.checked)">
+            </label>
+          </section>
+        </div>
         <section class="settings-card">
           <div class="settings-head">价格算法分组<span class="settings-tip">每组一套税率 / 汇率；用户清单按其归属组折算，未指派 = 默认组。默认组不可删除，有成员的分组需先调整归属</span></div>
           <div id="price-group-list"></div>
-          <div class="settings-row" style="margin-top:10px;border-top:1px dashed var(--line-soft);padding-top:10px">
+          <div class="settings-row pg-add">
             <label>组名<input id="ng-name" placeholder="如：海外直采组"></label>
+            <label>国家<select id="ng-country" onchange="onNgCountry()"><option value="">选择国家</option></select></label>
             <label>税率（%）<input id="ng-tax" type="number" step="0.1" min="0" max="100" value="10"></label>
-            <label>汇率（1 日元 = 元）<input id="ng-rate" type="number" step="0.0001" min="0.0001" value="0.048" inputmode="decimal"></label>
+            <label>汇率（1 <span id="ng-cur">本币</span> = 元）<input id="ng-rate" type="number" step="0.0001" min="0.0001" value="0.048" inputmode="decimal"></label>
             <button class="parse-btn" onclick="addGroup()">添加分组</button>
           </div>
         </section>
         <section class="settings-card">
-          <div class="settings-head">系统设置<span class="settings-tip">关闭后登录页不再提供注册，账号一律由管理员在后台创建</span></div>
-          <label style="display:flex;align-items:center;gap:9px;color:var(--muted);font-size:13px;cursor:pointer"><input type="checkbox" id="reg-open" style="width:17px;height:17px" onchange="saveReg(this.checked)"> 允许用户自助注册</label>
-        </section>
-<section class="settings-card">
           <div class="settings-head">用户列表<span class="settings-tip">角色 / 归属价格组可直接下拉调整；停用后无法登录，数据保留可再启用</span></div>
-          <div class="filters" style="margin-bottom:10px"><input id="u-search" placeholder="搜索姓名或邮箱" oninput="renderUsers()"><select id="u-status" onchange="renderUsers()"><option value="all">全部状态</option><option value="active">正常</option><option value="stopped">已停用</option></select></div>
+          <div class="filters"><input id="u-search" placeholder="搜索姓名或邮箱" oninput="renderUsers()"><select id="u-status" onchange="renderUsers()"><option value="all">全部状态</option><option value="active">正常</option><option value="stopped">已停用</option></select></div>
           <div class="batch-bar" id="user-batch-bar">
             <label class="sel-all" title="全选当前列表可选用户"><input type="checkbox" class="cb" id="user-sel-all" onchange="toggleAllUsers(this.checked)">全选</label>
             <span class="sel-count" id="user-sel-count">已选 0 人</span>
@@ -198,17 +278,22 @@
           <div class="user-grid" id="user-grid"><div class="loading">加载中…</div></div>
         </section>
       </div>
+    </main>
+  </div>
+  <div class="page-credit"><span class="credit-line"></span><span class="credit-txt"><span class="credit-mark">🕊️</span><b>世界编织者 · 蓝鸠屿 Sarsing</b></span></div>
+  <div class="notice" id="notice" role="status" aria-live="polite" aria-atomic="true" data-page-node-id="5Gb3BmT9b9RtFshlI9raS1">已更新</div>
   <script src="auth.js"></script>
   <script>
     // 与后端 /api/admin/carts/{id}/status 保持一致的状态机（仅管理员视角）
     const TRANSITIONS = {
       draft: ["submitted"],
       submitted: ["draft", "locked", "failed"],
-      locked: ["submitted", "success", "failed"],
+      locked: ["draft", "submitted", "success", "failed"],
       success: [],
       failed: ["draft"],
     };
-    const VERBS = { draft: "退回草稿", submitted: "回到待处理", locked: "锁定", success: "标记成功", failed: "标记失败" };
+    // locked -> draft 即「解锁恢复可编辑」；failed -> draft 是退回重提，语义一致。
+    const VERBS = { draft: "解锁/退回草稿", submitted: "回到待处理", locked: "锁定", success: "标记成功", failed: "标记失败" };
     let carts = [];
     let editMode = false;
     const noticeEl = document.getElementById("notice");
@@ -227,7 +312,7 @@
       try {
         const d = await api("/api/products/parse-url", { method: "POST", body: { url } });
         lastParsed = d;
-        const meta = [d.source ? {kakaku: "kakaku", kitamura: "北村相机"}[d.source] || d.source : null, d.maker, d.currency, d.rating ? "评分 " + d.rating + (d.review_count ? "（" + d.review_count + " 条）" : "") : null]
+        const meta = [d.source ? {kakaku: "kakaku", kitamura: "北村相机", gmarket: "Gmarket"}[d.source] || d.source : null, d.maker, d.currency, d.rating ? "评分 " + d.rating + (d.review_count ? "（" + d.review_count + " 条）" : "") : null]
           .filter(Boolean).join(" · ");
         box.innerHTML = `<div class="parse-result">
           ${d.image_url ? `<img src="${esc(d.image_url)}" alt="${esc(d.name || "商品图片")}" loading="lazy" onerror="this.style.display='none'">` : ""}
@@ -300,7 +385,7 @@
     async function editProduct(id) {
       const p = products.find(x => x.id === id);
       if (!p) return;
-      const hint = p.currency === "JPY" ? "请输入新价格（日元整数）" : "请输入新价格（人民币分）";
+      const hint = p.currency === "JPY" ? "请输入新价格（日元整数）" : (p.currency === "CNY" ? "请输入新价格（人民币分）" : "请输入新价格（本币整数，当前 " + (p.currency || "?") + "）");
       const val = prompt(hint, p.price_cents);
       if (val === null) return;
       const n = parseInt(val, 10);
@@ -355,6 +440,7 @@
         ]);
         gGroups = list || [];
         memberOptions = opts || [];
+        if (!COUNTRIES.length) loadCountries();
         renderGroups();
       } catch (err) {
         const box = document.getElementById("group-list");
@@ -378,7 +464,9 @@
       users = await api("/api/admin/users");
       priceGroups = await api("/api/settings/price-groups");
       document.getElementById("nu-group").innerHTML = userGroupOptions(null);
-      renderUsers(); renderPriceGroups(); loadReg();
+      const ut = document.getElementById("users-total"); if (ut) ut.textContent = users.length;
+      const gt = document.getElementById("groups-total"); if (gt) gt.textContent = (priceGroups || []).length;
+      renderUsers(); renderPriceGroups(); loadReg(); loadCountries();
     }
     // —— 点击用户头像：查看该用户全部清单（弹窗） ——
     async function showUserCarts(userId, name) {
@@ -556,13 +644,12 @@
     function renderPriceGroups() {
       const box = document.getElementById("price-group-list");
       box.innerHTML = (priceGroups || []).map(g => {
-        const members = `（${g.user_count} 人）`;
+        const members = g.user_count ? `（${g.user_count} 人）` : "";
         const nameCtrl = `<input id="pg-name-${g.id}" value="${esc(g.name)}" ${g.is_default ? "disabled" : ""}>`;
-        return `<div class="group-line">
-          <div style="min-width:118px">${g.is_default ? '<span class="gdef">默认组</span>' : esc(g.name)} <span class="p-meta">${g.is_default ? "全局兜底" : ""}${members}</span></div>
-          <label>组名${nameCtrl}</label>
+        return `<div class="group-line ${g.is_default ? "is-default" : ""}">
+          <div class="price-group-name">${g.is_default ? '<span class="gdef">默认组</span><span class="p-meta">全局兜底</span>' : nameCtrl}${g.country_name ? `<span class="p-meta">${esc(g.country_name)}</span>` : ""}<span class="p-meta">${members}</span></div>
           <label>税率（%）<input id="pg-tax-${g.id}" type="number" step="0.1" min="0" max="100" value="${g.tax_rate}"></label>
-          <label>汇率（1 日元 = 元）<input id="pg-rate-${g.id}" type="number" step="0.0001" min="0.0001" value="${g.exchange_rate_jpy_cny}"></label>
+          <label>汇率（1 本币 = 元）<input id="pg-rate-${g.id}" type="number" step="0.0001" min="0.0001" value="${g.exchange_rate_jpy_cny}"></label>
           <button class="p-btn" onclick="updateGroup(${g.id})">保存</button>
           ${g.is_default ? "" : (g.user_count > 0 ? '<span class="p-meta">有成员，先调整归属再删</span>' : `<button class="p-btn danger" onclick="deleteGroup(${g.id})">删除</button>`)}
         </div>`;
@@ -572,17 +659,46 @@
       const name = document.getElementById("ng-name").value.trim();
       const tax = parseFloat(document.getElementById("ng-tax").value);
       const rate = parseFloat(document.getElementById("ng-rate").value);
+      const country = document.getElementById("ng-country").value || null;
       if (!name) { notify("请填写组名"); return; }
       try {
-        await api("/api/settings/price-groups", { method: "POST", body: { name, tax_rate: tax, exchange_rate_jpy_cny: rate } });
+        await api("/api/settings/price-groups", { method: "POST", body: { name, tax_rate: tax, exchange_rate_jpy_cny: rate, country } });
         document.getElementById("ng-name").value = "";
         await loadUsersView(); notify("分组已添加");
       } catch (err) { notify(err.message || "添加失败"); }
     }
+    let COUNTRIES = [];
+    function countryName(code) {
+      const c = (COUNTRIES || []).find(x => x.code === code);
+      return c ? c.name : code;
+    }
+    async function loadCountries() {
+      try { COUNTRIES = await api("/api/settings/countries"); } catch (_) { COUNTRIES = []; }
+      const sel = document.getElementById("ng-country");
+      if (sel) {
+        sel.innerHTML = '<option value="">选择国家</option>' + (COUNTRIES || []).map(c =>
+          `<option value="${c.code}" data-tip="${c.scrapers && c.scrapers.length ? "比价网站：" + c.scrapers.join(" / ") : "暂无比价网站"}">${c.name}（${c.symbol}${c.currency}）</option>`).join("");
+      }
+      const ag = document.getElementById("ag-country");
+      if (ag) {
+        ag.innerHTML = (COUNTRIES || []).map(c =>
+          `<option value="${c.code}" ${c.code === "jp" ? "selected" : ""}>${c.name}（${c.symbol}${c.currency}）</option>`).join("") || '<option value="">未配置国家</option>';
+      }
+    }
+    function onNgCountry() {
+      const code = document.getElementById("ng-country").value;
+      const c = (COUNTRIES || []).find(x => x.code === code);
+      if (!c) return;
+      document.getElementById("ng-tax").value = c.tax_rate;
+      document.getElementById("ng-rate").value = c.exchange_rate_cny;
+      const cur = document.getElementById("ng-cur"); if (cur) cur.textContent = c.currency;
+      const opt = document.getElementById("ng-country").selectedOptions[0];
+      notify("已继承「" + c.name + "」参数" + (opt && opt.dataset.tip ? " · " + opt.dataset.tip : ""));
+    }
     async function updateGroup(id) {
       const g = (priceGroups || []).find(x => x.id === id);
       const body = {
-        name: document.getElementById("pg-name-" + id).value.trim() || (g && g.name),
+        name: (document.getElementById("pg-name-" + id)?.value || "").trim() || (g && g.name),
         tax_rate: parseFloat(document.getElementById("pg-tax-" + id).value),
         exchange_rate_jpy_cny: parseFloat(document.getElementById("pg-rate-" + id).value),
       };
@@ -640,12 +756,15 @@
         return `<article class="gcard">
           <div class="grow"><div style="min-width:0">
             <div class="gtitle">${esc(g.title)}</div>
-            <div class="gmeta">采购员 ${esc(p.full_name || p.email)} · ${esc(gRange(g))} · 共 ${g.total} 件 / 已采购 ${done} 件</div>
-            ${open ? `<div class="gcode">入组邀请码 <code>${esc(g.invite_code)}</code><button onclick="gCopy('${esc(g.invite_code)}', this)">复制</button><button onclick="gCopyLink('${esc(g.invite_code)}', this)" title="复制邀请链接，发同事点开登录/注册后自动入组">复制邀请链接</button></div>` : ""}
-            ${members.length ? `<div class="gmems">${members.map(m => `<a class="gmchip" href="member.html?group_id=${g.id}&member_id=${m.id}" title="查看 ${esc(m.full_name || m.email)} 在本组提交的清单">${esc(m.full_name || m.email)}</a>`).join("")}</div>` : ""}
+            <div class="gmeta">采购员 ${esc(p.full_name || p.email)} · ${esc(gRange(g))} · ${g.country ? countryName(g.country) + " · " : ""}共 ${g.total} 件 / 已采购 ${done} 件</div>
+            ${open ? `<div class="invite-row"><div class="invite"><span>入组邀请码</span><code>${esc(g.invite_code)}</code><button class="copy" onclick="gCopy('${esc(g.invite_code)}', this)">复制邀请码</button></div><div class="invite invite-link"><span>邀请链接</span><button class="copy" onclick="gCopyLink('${esc(g.invite_code)}', this)" title="复制邀请链接，发同事点开登录/注册后自动入组">复制邀请链接</button></div></div>` : ""}
+            ${members.length ? `<div class="gmems">${members.map(m => open
+              ? `<span class="gmchip">${esc(m.full_name || m.email)}<button type="button" class="gmchip-x" onclick="gRemoveMember(${g.id}, ${m.id})" title="移除该成员">×</button></span>`
+              : `<a class="gmchip" href="member.html?group_id=${g.id}&member_id=${m.id}" title="查看 ${esc(m.full_name || m.email)} 在本组提交的清单">${esc(m.full_name || m.email)}</a>`).join("")}</div>` : ""}
           </div><span class="badge ${open ? "gopen" : "gdone"}">${open ? "进行中" : "已完成"}</span></div>
           ${gEditId === g.id ? gEditRow(g) : ""}
           ${open && gPullId === g.id ? gPullPanel(g, members) : ""}
+          ${g.batches && g.batches.length ? `<div class="gsec g-batches"><div class="gsec-t">批次结算</div>${g.batches.map(b => `<div class="g-batch"><span class="gb-who">${esc((b.requester && (b.requester.full_name || b.requester.email)) || "")}</span><span class="gb-no">第 ${b.batch_no || 1} 批</span><span class="gb-badge ${b.status}">${esc(STATUS_LABELS[b.status] || b.status)}</span><span class="gb-meta">${b.count} 件</span>${b.status === "locked" || b.status === "success" ? `<label class="gb-transfer"><span class="settlement-label">转账单号</span><input value="${esc(b.transfer_no || "")}" placeholder="填写单号" onchange="saveTransfer(${b.cart_id}, this.value)"></label><span class="receipt-pill${b.receipt_confirmed ? " on" : ""}">${b.receipt_confirmed ? "已确认" : "未确认"}</span>` : ""}</div>`).join("")}</div>` : ""}
           <div class="gsec">${items.length ? `<div class="gsec-t">组内已提交条目（${g.total} 件）</div>` + gRenderItems(items) : '<div class="gempty">该组还没有成员提交的清单</div>'}</div>
           <div class="gfoot"><div></div><div class="gacts">
             ${open ? `<button class="p-btn" onclick="gToggleEdit(${g.id})">${gEditId === g.id ? "收起编辑" : "改标题 / 日期"}</button>` : ""}
@@ -699,23 +818,35 @@
         await loadGroupsView(); notify("已加入选中需求人");
       } catch (err) { notify(err.message || "操作失败"); }
     }
+    async function gRemoveMember(gid, uid) {
+      const g = gGroups.find(x => x.id === gid);
+      const m = (g && g.members || []).find(x => x.id === uid);
+      if (!g || !m) return;
+      if (!confirm("把「" + (m.full_name || m.email) + "」移出该出游组？其已提交/锁定的清单仍保留，采购员继续处理。")) return;
+      try {
+        await api("/api/groups/" + gid + "/members/" + uid, { method: "DELETE" });
+        await loadGroupsView(); notify("已移除该成员");
+      } catch (err) { notify(err.message || "移除失败"); }
+    }
     async function adminCreateGroup() {
       const title = (document.getElementById("ag-title").value || "").trim();
+      const country = document.getElementById("ag-country").value || null;
       const start = document.getElementById("ag-start").value;
       const end = document.getElementById("ag-end").value;
       if (!title) { notify("请填写组标题"); return; }
       if (!start || !end) { notify("请选择出游开始与结束日期"); return; }
       if (end < start) { notify("结束日期不能早于开始日期"); return; }
       try {
-        await api("/api/groups", { method: "POST", body: { title, start_date: start, end_date: end } });
+        await api("/api/groups", { method: "POST", body: { title, start_date: start, end_date: end, country } });
         document.getElementById("ag-title").value = "";
         document.getElementById("ag-start").value = "";
         document.getElementById("ag-end").value = "";
-        await loadGroupsView(); notify("出游组已创建，邀请码见组卡片；也可复制邀请链接发同事");
+        await loadGroupsView(); notify("出游组已创建，邀请码见组卡片；组内清单默认按" + countryName(country) + "折算");
       } catch (err) { notify(err.message || "创建失败"); }
     }
     function gCheckCell(it) {
       return `<div class="gi-check">
+        <label class="purchased ${it.purchase_confirmed ? 'conf on' : 'conf'}" title="确认采购"><input type="checkbox" ${it.purchase_confirmed ? 'checked' : ''} onchange="gToggleConfirmed(${it.id}, this.checked)">采购确认</label>
         <label class="purchased ${it.purchased ? 'on' : ''}" title="标记是否已采购"><input type="checkbox" ${it.purchased ? 'checked' : ''} onchange="gTogglePurchased(${it.id}, this.checked)">采购</label>
       </div>`;
     }
@@ -800,9 +931,9 @@
     }
     function cartTotal(cart) {
       const items = cart.items || [];
-      const hasJpy = items.some(i => i.product && i.product.currency === "JPY");
+      const hasNative = items.some(i => i.product && i.product.currency && i.product.currency !== "CNY");
       const cny = money(cnyTotal(items), "CNY");
-      if (hasJpy) return cny + ' <span style="color:var(--muted);font-size:12px;font-weight:400">(本币 ' + moneyGroup(items) + ')</span>';
+      if (hasNative) return cny + ' <span style="color:var(--muted);font-size:12px;font-weight:400">(本币 ' + moneyGroup(items) + ')</span>';
       return cny;
     }
 
@@ -834,7 +965,8 @@
         const user = cart.user;
         return `<article class="card">
           <div class="card-head"><span class="person">${initials(user.full_name || user.email)}</span><div><div class="name">${user.full_name || user.email}</div><div class="email">${user.email}</div></div><span class="badge ${cart.status}">${STATUS_LABELS[cart.status]}</span></div>
-          <div class="status-row"><label>采购状态 ${statusSelect(cart)}</label></div>
+          <div class="status-row"><label>采购状态 ${statusSelect(cart)}</label>${cart.group ? `<span class="batch-chip" title="该清单归属的出游采购组与批次（出游开始后每锁一批即开下一批）">${esc(cart.group.title)} · 第 ${cart.batch_no || 1} 批</span>` : ""}</div>
+          ${cart.status === "locked" || cart.status === "success" ? `<div class="g-batch settlement-window"><label class="gb-transfer"><span class="settlement-label">转账单号</span><input value="${esc(cart.transfer_no || "")}" placeholder="填写单号" onchange="saveTransfer(${cart.id}, this.value)"></label><span class="receipt-pill${cart.receipt_confirmed ? " on" : ""}">${cart.receipt_confirmed ? "已确认" : "未确认"}</span></div>` : ""}
           <div class="items">${items.length ? renderAdminItems(items, cart.id) : '<div class="empty">暂无商品</div>'}</div>
           <div class="card-foot"><span>${items.length} 个商品种类 · ${items.reduce((n, i) => n + i.quantity, 0)} 件</span><b>${cartTotal(cart)}</b></div>
         </article>`;
@@ -854,6 +986,7 @@
     function adminColorChip(item) { const c = (item.color || "").trim(); return c ? `<span class="color-chip">${esc(c)}</span>` : ""; }
     function adminChecks(item) {
       return `<div class="item-checks">
+        <label class="purchased ${item.purchase_confirmed ? 'conf on' : 'conf'}" title="确认采购"><input type="checkbox" ${item.purchase_confirmed ? 'checked' : ''} onchange="toggleConfirmed(${item.id}, this.checked)">采购确认</label>
         <label class="purchased ${item.purchased ? 'on' : ''}" title="标记是否已采购"><input type="checkbox" ${item.purchased ? 'checked' : ''} onchange="togglePurchased(${item.id}, this.checked)">采购</label>
       </div>`;
     }
@@ -913,6 +1046,10 @@
     async function toggleConfirmed(itemId, confirmed) {
       await api("/api/admin/cart-items/" + itemId + "/confirmed", { method: "PATCH", body: { confirmed } });
       await loadCarts(); notify(confirmed ? "已确认采购" : "已取消确认采购");
+    }
+    async function saveTransfer(cartId, transferNo) {
+      try { await api("/api/admin/carts/" + cartId + "/transfer", { method: "PATCH", body: { transfer_no: transferNo } }); notify("转账单号已保存"); }
+      catch (err) { notify(err.message || "保存失败"); }
     }
 
     async function loadCarts() {

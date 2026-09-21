@@ -71,11 +71,15 @@ async function requireRole(role) {
 
 function logout() { clearSession(); location.href = "login.html"; }
 
-// 金额：按币种格式化。CNY 后端以「分」存储（除 100），JPY 以「円」整数存储（不除）。
+// 金额：按币种格式化。CNY 后端以「分」存储（除 100），JPY 以「円」整数存储（不除），其他本币按整数显示。
+// 符号表与 backend/app/countries.yml 保持一致（新增国家时同步维护）。
+const CURRENCY_SYMBOL = { CNY: "¥", JPY: "¥", USD: "$", KRW: "₩", HKD: "HK$", EUR: "€", GBP: "£" };
 function money(cents, currency = "CNY") {
   const v = cents ?? 0;
-  if (currency === "JPY") return "¥ " + v.toLocaleString("zh-CN") + " 円";
-  return "¥ " + (v / 100).toLocaleString("zh-CN", { maximumFractionDigits: 2 });
+  const sym = CURRENCY_SYMBOL[currency] || "¥";
+  if (currency === "JPY") return sym + " " + v.toLocaleString("zh-CN") + " 円";
+  if (currency === "CNY") return sym + " " + (v / 100).toLocaleString("zh-CN", { maximumFractionDigits: 2 });
+  return sym + " " + v.toLocaleString("zh-CN");
 }
 
 // 按币种分组合计，避免日元与人民币混加。items 形如 [{unit_price_cents, quantity, product:{currency}}]

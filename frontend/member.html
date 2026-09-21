@@ -9,33 +9,44 @@
     * { box-sizing:border-box; } body { margin:0; min-width:320px; background:var(--bg); color:var(--ink); font:14px/1.45 Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif; }
     button,input,select { font:inherit; } button { cursor:pointer; } a { color:var(--green); }
     .page { max-width:900px; margin:auto; padding:30px 26px 44px; }
-    header { display:flex; align-items:center; justify-content:space-between; gap:18px; margin-bottom:24px; } .brand { font-size:18px; font-weight:800; } .brand span { color:var(--green); } .account { display:flex; gap:10px; align-items:center; color:var(--muted); font-size:13px; } .avatar { width:30px; height:30px; display:grid; place-items:center; border-radius:50%; background:#dfeae2; color:var(--green); font-size:11px; font-weight:800; } .logout { border:1px solid var(--line); background:#fff; color:var(--muted); border-radius:4px; padding:6px 12px; font-weight:700; cursor:pointer; } .logout:hover { color:#a3463f; border-color:#a3463f; }
-    .topline { display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; margin-bottom:14px; } .back { color:var(--muted); text-decoration:none; font-size:13px; font-weight:700; display:inline-flex; align-items:center; gap:5px; } .back:hover { color:var(--green); }
+    header { display:flex; align-items:center; justify-content:space-between; gap:18px; margin-bottom:24px; } .brand { font-size:18px; font-weight:800; } .brand span { color:var(--green); } .account { display:flex; gap:10px; align-items:center; color:var(--muted); font-size:13px; } .avatar { width:30px; height:30px; display:grid; place-items:center; border-radius:50%; background:#dfeae2; color:var(--green); font-size:11px; font-weight:800; } .logout { border:1px solid var(--line); background:#fff; color:var(--muted); border-radius:4px; padding:6px 12px; font-weight:700; cursor:pointer; } .logout:hover { color:var(--red); border-color:var(--red); }
+    .topline { display:flex; flex-direction:column; align-items:flex-start; gap:6px; margin-bottom:16px; } .back { color:var(--muted); text-decoration:none; font-size:13px; font-weight:700; display:inline-flex; align-items:center; gap:5px; } .back:hover { color:var(--green); }
+    .xrecon-title-row { display:flex; align-items:flex-start; justify-content:space-between; gap:12px; flex-wrap:wrap; width:100%; } .xrecon-title-row h1 { margin:0; }
     h1 { margin:0; font-size:24px; }
-    .mcard { display:flex; align-items:center; gap:14px; background:var(--surface); border:1px solid var(--line); border-radius:10px; padding:16px 18px; flex-wrap:wrap; }
+    .mcard { display:flex; align-items:center; gap:14px; background:var(--surface); border:1px solid var(--line); border-radius:10px; padding:16px 18px; flex-wrap:wrap; box-shadow:0 1px 2px rgba(37,49,45,.04); }
     .big-avatar { width:52px; height:52px; border-radius:50%; display:grid; place-items:center; background:#dcebe1; color:var(--green-dark); font-size:18px; font-weight:800; flex:none; }
     .m-name { font-size:17px; font-weight:800; } .m-mail { color:var(--muted); font-size:12.5px; margin-top:2px; } .m-extra { margin-left:auto; text-align:right; color:var(--muted); font-size:12px; line-height:1.8; }
     .badge { border-radius:999px; padding:3px 9px; font-size:11px; font-weight:750; white-space:nowrap; } .badge.open { color:var(--amber); background:var(--amber-bg); } .badge.completed { color:var(--green); background:var(--green-bg); }
-    .stats { display:flex; gap:8px; flex-wrap:wrap; margin:13px 0 16px; } .stat { background:var(--surface); border:1px solid var(--line); border-radius:8px; padding:9px 14px; font-size:12px; color:var(--muted); } .stat b { color:var(--ink); font-size:14px; } .stat .cny { display:inline; color:var(--muted); font-size:11px; font-weight:500; margin-left:5px; }
-    .items { background:var(--surface); border:1px solid var(--line); border-radius:10px; overflow:hidden; }
-    .sec-t { padding:11px 18px 0; font-size:11px; color:var(--muted); font-weight:700; }
-    .item { display:grid; grid-template-columns:auto 52px 1fr; gap:11px; align-items:center; padding:12px 18px; border-bottom:1px solid var(--line-soft); } .item:last-child { border-bottom:0; } .item.done .pname { color:var(--muted); text-decoration:line-through; }
+    .stats { display:flex; gap:8px; flex-wrap:wrap; margin:13px 0 16px; } .stat { background:var(--surface); border:1px solid var(--line); border-radius:8px; padding:9px 14px; font-size:12px; color:var(--muted); box-shadow:0 1px 2px rgba(37,49,45,.04); } .stat b { color:var(--ink); font-size:14px; } .stat .cny { display:block; color:var(--muted); font-size:11px; font-weight:500; margin-top:2px; }
+    .items { background:var(--surface); border:1px solid var(--line); border-radius:10px; overflow:hidden; box-shadow:0 1px 2px rgba(37,49,45,.04); }
+    .sec-t { padding:11px 18px 8px; font-size:11px; color:var(--muted); font-weight:700; }
+    .item { display:grid; grid-template-columns:72px 52px minmax(0,1fr); gap:12px; align-items:start; padding:12px 18px; border-bottom:1px solid var(--line-soft); } .item:last-child { border-bottom:0; } .item.done .pname { color:var(--muted); text-decoration:line-through; } .item.sub { grid-template-columns:72px minmax(0,1fr); }
     .b-thumb { width:52px; height:52px; display:grid; place-items:center; border-radius:6px; background:#eef1ec; color:#496258; font-size:10px; font-weight:800; overflow:hidden; } .b-thumb img { width:100%; height:100%; object-fit:cover; display:block; }
-    .check-col { display:flex; flex-direction:column; gap:7px; align-items:flex-start; }
+    .check-col { display:flex; flex-direction:column; gap:7px; align-items:flex-start; padding-top:2px; }
     .check { display:flex; align-items:center; gap:7px; color:var(--muted); font-size:12px; cursor:pointer; user-select:none; white-space:nowrap; } .check input { appearance:none; width:17px; height:17px; margin:0; border:1.5px solid #c9d2cc; border-radius:4px; background:#fff; position:relative; cursor:pointer; transition:.15s; flex:none; } .check input:hover { border-color:var(--green); } .check input:checked { background:var(--green); border-color:var(--green); } .check input:checked::after { content:"✓"; position:absolute; left:3.5px; top:-1px; color:#fff; font-size:11px; font-weight:800; } .check.on { color:var(--green); font-weight:700; }
     .check.c-conf input:checked { background:var(--amber); border-color:var(--amber); } .check.c-conf.on { color:var(--amber); font-weight:700; }
-    .info { min-width:0; } .pname { font-weight:750; font-size:13.5px; } .pmeta { color:var(--muted); font-size:11px; margin-top:3px; line-height:1.7; word-break:break-all; } .pnote { margin-top:4px; font-size:11px; color:#7d6a3c; background:var(--amber-bg); border-radius:4px; padding:3px 7px; line-height:1.5; word-break:break-all; } .p-remark { margin-top:6px; } .p-remark textarea { width:100%; max-width:480px; min-height:30px; padding:5px 8px; border:1px dashed var(--line); border-radius:5px; background:#fffdfa; color:var(--ink); font-size:12px; line-height:1.4; resize:vertical; outline:none; } .p-remark textarea:focus { border-style:solid; border-color:var(--green); box-shadow:0 0 0 3px rgba(40,114,90,.08); }
+    .info { min-width:0; } .pname { font-weight:750; font-size:13.5px; display:flex; flex-wrap:wrap; align-items:center; gap:6px; } .pname .qty { color:var(--muted); font-weight:600; font-size:12px; } .pmeta { color:var(--muted); font-size:11px; margin-top:3px; } .pnote { margin-top:6px; font-size:11px; color:#7d6a3c; background:var(--amber-bg); border-radius:4px; padding:3px 7px; line-height:1.5; word-break:break-word; } .p-remark { margin-top:6px; } .p-remark textarea { width:100%; max-width:480px; min-height:30px; padding:5px 8px; border:1px dashed var(--line); border-radius:5px; background:#fffdfa; color:var(--ink); font-size:12px; line-height:1.4; resize:vertical; outline:none; } .p-remark textarea:focus { border-style:solid; border-color:var(--green); box-shadow:0 0 0 3px rgba(40,114,90,.08); }
+    .color-dot { display:inline-block; width:9px; height:9px; border-radius:50%; flex:none; box-shadow:0 0 0 1px rgba(0,0,0,.08); }
     .color-chip { display:inline-block; padding:1px 7px; border-radius:999px; background:#eef1ec; color:#496258; font-size:10.5px; font-weight:700; white-space:nowrap; }
     .cst { display:inline-block; border-radius:999px; padding:1px 7px; font-size:10px; font-weight:700; } .cst.submitted { color:var(--amber); background:var(--amber-bg); } .cst.locked { color:var(--blue); background:var(--blue-bg); } .cst.success { color:var(--green); background:var(--green-bg); } .cst.failed { color:var(--red); background:var(--red-bg); }
-    .price-boxes { display:inline-flex; flex-wrap:wrap; gap:4px; vertical-align:middle; }
+    .pbatch { border-bottom:1px solid var(--line-soft); } .pbatch:last-child { border-bottom:0; }
+    .bhead { display:grid; grid-template-columns:minmax(0,1fr) auto; gap:8px 14px; align-items:center; padding:10px 18px; background:#fbf8f0; border-bottom:1px solid var(--line-soft); } .bh-main { display:flex; flex-wrap:wrap; align-items:center; gap:8px; min-width:0; } .bno { font-weight:800; font-size:12.5px; } .bh-meta { color:var(--muted); font-size:11px; } .bh-acts { display:flex; gap:8px; flex-shrink:0; align-items:center; } .bh-acts:empty { display:none; }
+    .bbtn { border:1px solid var(--line); background:#fff; color:var(--green); border-radius:5px; padding:4px 12px; font-size:12px; font-weight:700; white-space:nowrap; } .bbtn:hover { border-color:var(--green); color:var(--green-dark); } .bbtn.unlock { color:#966209; } .bbtn.unlock:hover { border-color:#966209; }
+    .price-boxes { display:flex; flex-wrap:wrap; gap:4px; margin-top:5px; }
     .price-box { display:inline-flex; align-items:center; min-height:22px; padding:2px 7px; border:1px solid #e6dfd3; border-radius:4px; background:#fffdfa; color:#7b847f; font-size:11px; white-space:nowrap; }
     .price-box.original { color:var(--ink); }
     .price-box.taxed { color:var(--green-dark); background:var(--green-bg); border-color:#c8ded1; }
     .price-box.cny { color:#7d5a16; background:var(--amber-bg); border-color:#f0dcae; }
-    .pgroup { border-top:1px solid var(--line-soft); } .pg-head { display:grid; grid-template-columns:52px minmax(0,1fr) auto; gap:12px; align-items:center; padding:12px 18px; background:#fbf8f0; border-bottom:1px solid var(--line); } .pg-name { font-weight:800; font-size:13.5px; line-height:1.35; } .pg-sub { color:var(--muted); font-size:11px; margin-top:2px; } .pg-total { text-align:right; white-space:nowrap; font-size:13px; font-weight:800; } .pg-total .cny { font-size:10.5px; color:var(--muted); font-weight:500; }
+    .pgroup { margin:8px 12px 10px; border:1px solid var(--line); border-radius:8px; overflow:hidden; background:#fff; } .pgroup .item:last-child { border-bottom:0; } .pg-head { display:grid; grid-template-columns:52px minmax(0,1fr) auto; gap:12px; align-items:center; padding:12px 14px; background:#fbf8f0; border-bottom:1px solid var(--line); } .pg-name { font-weight:800; font-size:13.5px; line-height:1.35; } .pg-sub { color:var(--muted); font-size:11px; margin-top:2px; display:flex; flex-wrap:wrap; align-items:center; gap:6px; } .pg-total { text-align:right; white-space:nowrap; font-size:13px; font-weight:800; } .pg-total .cny { font-size:10.5px; color:var(--muted); font-weight:500; }
     .empty { padding:44px 16px; text-align:center; color:var(--muted); font-size:13px; } .loading { padding:44px 16px; text-align:center; color:var(--muted); font-size:13px; } .err { padding:30px 16px; text-align:center; color:var(--red); font-size:13.5px; }
     .notice { position:fixed; right:22px; bottom:22px; padding:11px 14px; border-radius:5px; background:#28463a; color:#fff; opacity:0; pointer-events:none; transform:translateY(7px); transition:opacity .2s ease, transform .2s ease; z-index:10; } .notice.show { opacity:1; transform:translateY(0); }
-    @media(max-width:600px) { .page { padding:20px 14px 34px; } .item { grid-template-columns:auto 44px 1fr; gap:8px; } .b-thumb { width:44px; height:44px; } .m-extra { margin-left:0; text-align:left; width:100%; } }
+
+    .page-credit { display:block; box-sizing:border-box; width:100%; margin:24px 0 40px; padding:0 16px; text-align:center; user-select:none; }
+    .page-credit .credit-line { display:block; width:22px; height:1px; margin:0 auto 8px; background:#c4b89a; }
+    .page-credit .credit-txt { display:inline-flex; align-items:center; justify-content:center; gap:.4em; font-size:11.5px; letter-spacing:.1em; color:#8a938d; text-align:center; }
+    .page-credit .credit-mark { font-size:13px; letter-spacing:0; line-height:1; }
+    .page-credit .credit-txt b { font-family:"Songti SC","STSong","Noto Serif SC","SimSun",serif; font-style:normal; font-weight:600; letter-spacing:.14em; color:#4f5b55; }
+
   </style>
   <link rel="stylesheet" href="responsive.css">
 </head>
@@ -68,21 +79,27 @@
     <main data-page-node-id="HplaZWTmS4lXdXhPQSTAtH">
       <div class="topline" data-page-node-id="EUPxJFepQeA0zkidks3fW2">
         <a class="back" id="back-link" href="purchaser.html" aria-label="返回采购工作台" data-page-node-id="f7o8DSYERznvgLw1RNAkCm">← 返回采购工作台</a>
-        <h1 data-page-node-id="czPo9B3gwDuSy7tyDfeNan">成员清单</h1>
-        <span data-page-node-id="qv58x6mHBIEEjcopEI1nqc"></span>
+        <div class="xrecon-title-row">
+          <h1 data-page-node-id="czPo9B3gwDuSy7tyDfeNan">成员清单</h1>
+          <button type="button" class="xrecon-btn" onclick="exportMemberRecon()">导出对账单</button>
+        </div>
       </div>
       <div id="mcard" data-page-node-id="BEofJR98CteHwW2R1R95KG"></div>
-      <div id="stats" data-page-node-id="DiKDIj7HIjmNHImTGyssSQ"></div>
+      <div class="stats" id="stats" data-page-node-id="DiKDIj7HIjmNHImTGyssSQ"></div>
       <div class="items" id="list" data-page-node-id="CDymyAxS2zqZVGppBXosw2"><div class="loading" data-page-node-id="yY8mpGsCwyI2phv3I1qNOq">加载中…</div></div>
     </main>
   </div>
+  <div class="page-credit"><span class="credit-line"></span><span class="credit-txt"><span class="credit-mark">🕊️</span><b>世界编织者 · 蓝鸠屿 Sarsing</b></span></div>
   <div class="notice" id="notice" role="status" aria-live="polite" aria-atomic="true" data-page-node-id="q3zB1H0z4c8CJr7w8EeLYX">已更新</div>
   <script src="auth.js"></script>
+  <script src="export.js"></script>
   <script>
     const esc = escHtml;
     const Q = new URLSearchParams(location.search);
     const gid = parseInt(Q.get("group_id") || "", 10);
     const mid = parseInt(Q.get("member_id") || "", 10);
+    let myUser = null; // 当前登录用户（判断是否本组采购员，用于显示锁定/解锁按钮）
+    let lastExport = null; // { group, member, items } 供分人对账导出
     const noticeEl = document.getElementById("notice");
     function notify(m) { noticeEl.textContent = m; noticeEl.classList.add("show"); setTimeout(() => noticeEl.classList.remove("show"), 2200); }
 
@@ -106,40 +123,42 @@
     function remarkBox(it) {
       return `<div class="p-remark"><textarea rows="1" placeholder="采购侧备注（仅采购/管理员可编辑，需求人只读）" onchange="saveRemark(${it.id}, this.value)">${esc(it.procurement_remark || "")}</textarea></div>`;
     }
+    function priceBoxes(it) {
+      const p = it.product || {};
+      return `<div class="price-boxes" aria-label="只读价格"><span class="price-box original">税前单价 ${money(it.pretax_price_cents ?? it.unit_price_cents, p.currency)}</span><span class="price-box taxed">含税价 ${money(it.taxed_price_cents ?? p.taxed_price_cents, p.currency)}</span><span class="price-box cny">人民币 ${money(it.price_cny_cents ?? p.price_cny_cents, "CNY")}</span></div>`;
+    }
     function rowHtml(it) {
       const p = it.product || {};
       const color = (it.color || "").trim();
-      const nameHtml = esc(p.name) + (color ? ` <span class="color-chip">${esc(color)}</span>` : "");
       const typeBit = (p.category || "").trim();
-      const priceBoxes = `<span class="price-boxes" aria-label="只读价格"><span class="price-box original">税前单价 ${money(it.pretax_price_cents ?? it.unit_price_cents, p.currency)}</span><span class="price-box taxed">含税价 ${money(it.taxed_price_cents ?? p.taxed_price_cents, p.currency)}</span><span class="price-box cny">人民币 ${money(it.price_cny_cents ?? p.price_cny_cents, "CNY")}</span></span>`;
-      const meta = [typeBit ? "类型：" + typeBit : "", "× " + it.quantity, priceBoxes, stBadge(it.cart_status)].filter(Boolean).join(" · ");
       const note = (p.remark || "").trim();
+      const metaBits = [typeBit ? "类型：" + esc(typeBit) : "", "× " + it.quantity, stBadge(it.cart_status)].filter(Boolean).join(" · ");
       return `<div class="item ${it.purchased ? 'done' : ''}">
         ${checks(it)}
         ${itemThumb(it, "b-thumb")}
-        <div class="info"><div class="pname">${nameHtml}</div><div class="pmeta">${meta}</div>${note ? `<div class="pnote">备注：${esc(note)}</div>` : ""}${remarkBox(it)}</div>
+        <div class="info"><div class="pname">${esc(p.name)}${color ? ` <span class="color-chip">${esc(color)}</span>` : ""}</div><div class="pmeta">${metaBits}</div>${priceBoxes(it)}${note ? `<div class="pnote">备注：${esc(note)}</div>` : ""}${remarkBox(it)}</div>
       </div>`;
     }
-    function pgHead(rows) {
+    function pgHead(group) {
+      const rows = group.rows || [];
       const first = rows[0], p = first.product || {}, cur = p.currency;
       const typeBit = (p.category || "").trim();
       const tq = rows.reduce((s, i) => s + i.quantity, 0);
       const sum = rows.reduce((s, i) => s + (i.taxed_price_cents || 0) * i.quantity, 0);
       const sumCny = rows.reduce((s, i) => s + (i.price_cny_cents || 0) * i.quantity, 0);
       const sts = [...new Set(rows.map(i => i.cart_status))].map(stBadge).join("");
-      const headMeta = [typeBit ? `类型：${typeBit}` : "", `共 ${tq} 件`, sts].filter(Boolean).join(" · ");
+      const headMeta = [typeBit ? `类型：${esc(typeBit)}` : "", `共 ${tq} 件`, sts].filter(Boolean).join(" · ");
       return `<div class="pg-head">${itemThumb(first, "b-thumb")}
-        <div style="min-width:0"><div class="pg-name">${esc(p.name)}</div><div class="pg-sub">${esc(headMeta)}</div></div>
+        <div style="min-width:0"><div class="pg-name">${esc(p.name)}</div><div class="pg-sub">${headMeta}</div></div>
         <div class="pg-total">${money(sum, cur)}${sumCny ? `<div class="cny">≈ ${money(sumCny, "CNY")}</div>` : ""}</div>
       </div>`;
     }
     function subRowHtml(it) {
       const color = (it.color || "").trim() || "默认";
-      const dotStyle = it.color ? `background:${pChipColor(it.color)}` : "";
-      return `<div class="item ${it.purchased ? 'done' : ''}">
+      const dotStyle = it.color ? `background:${pChipColor(it.color)}` : "background:#c9d2cc";
+      return `<div class="item sub ${it.purchased ? 'done' : ''}">
         ${checks(it)}
-        <div class="b-thumb" style="background:transparent"></div>
-        <div class="info"><div class="pname"><span style="display:inline-block;width:9px;height:9px;border-radius:50%;${dotStyle};margin-right:6px;vertical-align:1px"></span>${esc(color)}<span style="color:var(--muted);font-weight:600"> × ${it.quantity} · </span><span class="price-boxes" aria-label="只读价格"><span class="price-box original">税前单价 ${money(it.pretax_price_cents ?? it.unit_price_cents, it.product.currency)}</span><span class="price-box taxed">含税价 ${money(it.taxed_price_cents ?? it.product.taxed_price_cents, it.product.currency)}</span><span class="price-box cny">人民币 ${money(it.price_cny_cents ?? it.product.price_cny_cents, "CNY")}</span></span></div>${remarkBox(it)}</div>
+        <div class="info"><div class="pname"><span class="color-dot" style="${dotStyle}"></span>${esc(color)}<span class="qty">× ${it.quantity}</span>${stBadge(it.cart_status)}</div>${priceBoxes(it)}${remarkBox(it)}</div>
       </div>`;
     }
     function renderItems(items) {
@@ -183,9 +202,45 @@
         <span class="stat">已确认采购 <b>${conf}</b> 件</span>
         <span class="stat">金额合计 <b>${nativeSum(items)}</b>${cny ? `<div class="cny">≈ ${money(cny, "CNY")}</div>` : ""}</span>`;
       const box = document.getElementById("list");
-      box.innerHTML = items.length
-        ? `<div class="sec-t">TA 在本组提交的清单条目（点击成员名进入即聚焦此人）</div>` + renderItems(items)
+      // 按批次（清单）分组：出游开始后每锁定一次即追加一批，逐批展示并可锁定/解锁。
+      const byCart = {};
+      for (const it of items) { (byCart[it.cart_id] = byCart[it.cart_id] || []).push(it); }
+      const myBatches = (group.batches || []).filter(b => b.requester && b.requester.id === mid);
+      box.innerHTML = myBatches.length
+        ? `<div class="sec-t">TA 在本组按批次提交的清单（出游开始后每锁一批自动开立下一批）</div>` +
+          myBatches.map(b => {
+            const bitems = byCart[b.cart_id] || [];
+            return `<div class="pbatch"><div class="bhead">
+                <div class="bh-main">
+                  <span class="bno">第 ${b.batch_no || 1} 批</span>
+                  ${stBadge(b.status)}
+                  <span class="bh-meta">${b.count} 件${b.submitted_at ? " · 提交 " + fmtDT(b.submitted_at) : ""}${b.locked_at ? " · 封板 " + fmtDT(b.locked_at) : ""}</span>
+                </div>
+                <span class="bh-acts">${batchActions(group, b)}</span>
+              </div>${bitems.length ? renderItems(bitems) : '<div class="empty" style="padding:12px 18px">该批暂无条目</div>'}</div>`;
+          }).join("")
         : '<div class="empty">该成员还没有向此出游采购组提交清单 —— 可把邀请码发给 TA 自助加入后提交</div>';
+    }
+    // 出游组未结束时：采购员（本组创建者）与管理员可锁定待处理批、解锁已封板批。
+    function batchActions(group, b) {
+      const canManage = group.status === "open" && (currentRole() === "admin" || (myUser && group.purchaser && group.purchaser.id === myUser.id));
+      if (!canManage) return "";
+      if (b.status === "submitted") return `<button class="bbtn" onclick="setBatchStatus(${b.cart_id}, 'locked')">锁定该批</button>`;
+      if (b.status === "locked") return `<button class="bbtn unlock" onclick="setBatchStatus(${b.cart_id}, 'draft')">解锁（恢复可编辑）</button>`;
+      return "";
+    }
+    function fmtDT(s) {
+      if (!s) return "";
+      try { return new Date(s).toLocaleString("zh-CN", { month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit" }); }
+      catch (_) { return s; }
+    }
+    async function setBatchStatus(cartId, status) {
+      if (status === "draft" && !confirm("解锁后该批恢复为草稿，成员可修改数量/删除条目后重新提交；确定解锁？")) return;
+      try {
+        await api(`/api/groups/${gid}/carts/${cartId}/status`, { method: "PATCH", body: { status } });
+        notify(status === "locked" ? "已锁定该批（出游开始后将自动为该成员开立下一批草稿）" : "已解锁，该批恢复为可编辑草稿");
+        await load();
+      } catch (err) { notify(err.message || "操作失败"); }
     }
     async function load() {
       const box = document.getElementById("list");
@@ -198,6 +253,7 @@
         const items = (group.items || []).filter(it => it.requester && it.requester.id === mid);
         const member = (group.members || []).find(m => m.id === mid) || (items[0] && items[0].requester);
         if (!member) { box.innerHTML = '<div class="err">该用户不是本组成员，没有可查看的清单</div>'; return; }
+        lastExport = { group, member, items };
         render(group, member, items);
       } catch (err) {
         box.innerHTML = '<div class="err">' + esc(err.message || "加载失败") + "</div>";
@@ -216,6 +272,21 @@
       catch (err) { notify(err.message || "保存失败"); }
     }
 
+    function exportMemberRecon() {
+      if (!window.ExportRecon) { notify("导出模块未加载"); return; }
+      if (!lastExport || !lastExport.group || !lastExport.member) { notify("请先加载成员清单"); return; }
+      const { group, member, items } = lastExport;
+      const who = (member.full_name || member.email || "成员");
+      const exporter = (myUser && (myUser.full_name || myUser.email)) || "";
+      const myBatches = (group.batches || []).filter(b => b.requester && b.requester.id === mid);
+      ExportRecon.open({
+        title: (group.title || "出游组") + " · " + who + "的对账单",
+        group,
+        exporter,
+        items: items || [],
+        batches: myBatches,
+      });
+    }
     (async function init() {
       const me = await requireAuth();
       if (!me) return;
@@ -226,6 +297,7 @@
       }
       document.getElementById("who").textContent = me.full_name || me.email;
       document.getElementById("avatar").textContent = initials(me.full_name || me.email);
+      myUser = me;
       await load();
     })().catch(err => { document.getElementById("list").innerHTML = '<div class="err">' + esc(err.message) + "</div>"; });
   </script>

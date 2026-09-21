@@ -1,5 +1,8 @@
 import os
 import random
+from pathlib import Path
+
+import yaml
 from contextlib import asynccontextmanager
 from dataclasses import asdict
 from datetime import date, datetime, timezone
@@ -14,6 +17,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
 from .db import SessionLocal, engine, get_session
+from .gmarket import GMARKET_HOSTS, GmarketScraper
 from .kakaku import KakakuScraper, ProductDetail
 from .kitamura import KITAMURA_HOSTS, KitamuraScraper
 from .models import Cart, CartItem, CartStatus, GroupStatus, PriceGroup, ProcurementEvent, ProcurementGroup, Product, Role, Setting, User, group_members
@@ -21,7 +25,7 @@ from .security import create_access_token, decode_access_token, hash_password, v
 
 
 def parse_product_detail(url: str) -> ProductDetail:
-    """按域名分发商品链接到对应站点解析器（kakaku / 北村相机）。
+    """按域名分发商品链接到对应站点解析器（kakaku / 北村相机 / gmarket）。
 
     各解析器内部自带 host 白名单与路径格式校验，防止 SSRF 与无关链接。
     """
@@ -30,7 +34,9 @@ def parse_product_detail(url: str) -> ProductDetail:
         return KakakuScraper(min_interval=0.0).parse_item_url(url)
     if host in KITAMURA_HOSTS:
         return KitamuraScraper(min_interval=0.0).parse_item_url(url)
-    raise ValueError("仅支持 kakaku.com / kitamuracamera.jp（北村相机）商品详情页链接")
+    if host in GMARKET_HOSTS:
+        return GmarketScraper(min_interval=0.0).parse_item_url(url)
+    raise ValueError("仅支持 kakaku.com / kitamuracamera.jp（北村相机）/ global.gmarket.co.kr（韩国 Gmarket）商品详情页链接")
 
 
 class RegisterRequest(BaseModel):
@@ -47,11 +53,15 @@ class LoginRequest(BaseModel):
 class CartItemRequest(BaseModel):
     product_id: int
     quantity: int = Field(default=1, ge=1, le=1000)
+    # 可选：指定加入哪一批草稿（批次切换后的「第 N 批 / 新清单」）。
+    # 缺省 = 最新草稿；指向锁定/他人批次会 409 拒绝。
+    cart_id: int | None = None
 
 
 class CartItemByUrlRequest(BaseModel):
     url: str
     quantity: int = Field(default=1, ge=1, le=1000)
+    cart_id: int | None = None
 
 
 class CartItemManualRequest(BaseModel):
@@ -60,6 +70,9 @@ class CartItemManualRequest(BaseModel):
     quantity: int = Field(default=1, ge=1, le=1000)
     # 可选商品图片：浏览器端压缩后的 dataURL（~50KB，base64 后约 68KB 字符）。
     image_data: str | None = Field(default=None, max_length=400_000)
+    cart_id: int | None = None
+    # 本币币种（ISO 4217，默认 JPY）：手工添加时跟随出游组国家。
+    currency: str | None = Field(default=None, max_length=8)
 
 
 class CartVariantRequest(BaseModel):
@@ -77,6 +90,10 @@ class CartItemManualBatchRequest(BaseModel):
     # 商品级图片 dataURL（浏览器压缩后）；同一商品所有变体共享这张图。
     image_data: str | None = Field(default=None, max_length=400_000)
     variants: list[CartVariantRequest] = Field(min_length=1, max_length=50)
+    # 可选：指定加入哪一批草稿（用户页点开某组后把商品放进该组清单）。
+    cart_id: int | None = None
+    # 本币币种（ISO 4217，默认 JPY）：手工添加时跟随出游组国家。
+    currency: str | None = Field(default=None, max_length=8)
 
 
 class QuantityRequest(BaseModel):
@@ -84,8 +101,13 @@ class QuantityRequest(BaseModel):
 
 
 class CartSubmitRequest(BaseModel):
-    """提交清单到出游组：用户同时属多个进行中组时必须指定 group_id，否则默认其唯一进行中组。"""
+    """提交清单到出游组：用户同时属多个进行中组时必须指定 group_id，否则默认其唯一进行中组。
+
+    cart_id 可选：指定提交哪一批草稿（批次切换后正在编辑的那批）；
+    缺省 = 最新草稿（兼容旧客户端）。
+    """
     group_id: int | None = None
+    cart_id: int | None = None
 
 
 class StatusRequest(BaseModel):
@@ -97,6 +119,14 @@ class PurchasedRequest(BaseModel):
 
 
 class ConfirmedRequest(BaseModel):
+    confirmed: bool
+
+
+class TransferNoRequest(BaseModel):
+    transfer_no: str | None = Field(default=None, max_length=120)
+
+
+class ReceiptConfirmedRequest(BaseModel):
     confirmed: bool
 
 
@@ -140,6 +170,8 @@ class GroupCreateRequest(BaseModel):
     title: str = Field(min_length=1, max_length=120)
     start_date: date
     end_date: date
+    # 组对应国家（countries.yml code，如 jp/kr）：组内清单折算默认用该国税率/汇率；可空 = 沿用原价格组逻辑。
+    country: str | None = Field(default=None, max_length=8)
 
 
 class GroupUpdateRequest(BaseModel):
@@ -181,6 +213,8 @@ class PriceGroupRequest(BaseModel):
     name: str = Field(min_length=1, max_length=64)
     tax_rate: float = Field(ge=0, le=100)
     exchange_rate_jpy_cny: float = Field(gt=0)
+    # 关联国家索引 code（countries.yml），新建分组时选国家继承税率/汇率/货币符号；更新时传空则保留原值。
+    country: str | None = Field(default=None, max_length=8)
 
 
 class PriceGroupMembershipRequest(BaseModel):
@@ -200,6 +234,28 @@ PRICE_GROUPS: dict[int, dict[str, float]] = {}
 DEFAULT_GROUP_ID: int | None = None
 REGISTRATION_OPEN: bool = True
 _FALLBACK_PARAMS: dict[str, float] = {"tax_rate": 10.0, "exchange_rate_jpy_cny": 0.048}
+
+# 国家价格参数索引（countries.yml，启动时加载，唯一权威来源）。
+COUNTRIES_FILE = Path(__file__).resolve().parent / "countries.yml"
+COUNTRIES: list[dict] = []
+
+
+def load_countries() -> list[dict]:
+    """读取国家价格参数索引（税率/汇率/货币符号/比价网站）。失败时保持空列表，不阻断服务启动。"""
+    global COUNTRIES
+    try:
+        raw = yaml.safe_load(COUNTRIES_FILE.read_text(encoding="utf-8")) or {}
+        COUNTRIES = raw.get("countries", []) or []
+    except Exception:
+        COUNTRIES = []
+    return COUNTRIES
+
+
+def country_by_code(code: str | None) -> dict | None:
+    """按国家索引 code 查找配置；无 code 回退日本（现网默认）。"""
+    if not code:
+        return next((c for c in COUNTRIES if c.get("code") == "jp"), None)
+    return next((c for c in COUNTRIES if c.get("code") == code), None)
 
 
 async def refresh_runtime_settings() -> None:
@@ -229,6 +285,26 @@ def _group_params(group_id: int | None) -> dict[str, float]:
     return _FALLBACK_PARAMS
 
 
+def _country_params(code: str | None) -> dict[str, float] | None:
+    """按国家索引取折算参数（tax_rate / exchange_rate_jpy_cny）；国家未配置返回 None。"""
+    c = country_by_code(code)
+    if not c:
+        return None
+    return {
+        "tax_rate": float(c.get("tax_rate") or _FALLBACK_PARAMS["tax_rate"]),
+        "exchange_rate_jpy_cny": float(c.get("exchange_rate_cny") or _FALLBACK_PARAMS["exchange_rate_jpy_cny"]),
+    }
+
+
+def _cart_params(cart: Cart) -> dict[str, float]:
+    """清单折算参数：所属出游组选了国家 → 优先用该国税率/汇率；否则按用户价格组。"""
+    if cart.group is not None and cart.group.country:
+        country = _country_params(cart.group.country)
+        if country:
+            return country
+    return _group_params(cart.user.price_group_id if cart.user else None)
+
+
 def default_params() -> dict[str, float]:
     """默认组参数（无归属商品的浏览 / 商品库场景）。"""
     return _group_params(None)
@@ -244,12 +320,13 @@ def effective_price(price_cents: int, currency: str, tax_included: bool, params:
 
     ``tax_included`` 保留为旧版 API/数据库字段，避免已有客户端和数据结构不兼容；
     新价格展示不再根据该旧标记反推或覆盖原价。JPY 以日元为最小单位，CNY 以分为最小单位。
+    非 CNY 币种统一按 ``exchange_rate_jpy_cny``（语义为「1 本币 = x 元人民币」，历史字段名保留）折算。
     """
     del tax_included  # 兼容旧调用，当前产品统一按税前原价计算。
     p = params or default_params()
     pretax = price_cents
     taxed = round(price_cents * (1 + p["tax_rate"] / 100.0))
-    if currency == "JPY":
+    if currency != "CNY":
         cny = round(taxed * p["exchange_rate_jpy_cny"] * 100)
     else:
         cny = taxed
@@ -283,7 +360,7 @@ def _item_price(item: CartItem) -> int:
 
 def cart_payload(cart: Cart) -> dict:
     # 折算参数取「清单归属用户」的价格组：同一张单，提交人与审批人看到的金额一致。
-    params = _group_params(cart.user.price_group_id if cart.user else None)
+    params = _cart_params(cart)
     items = []
     for item in cart.items:
         calc = effective_price(_item_price(item), item.product.currency, item.product.tax_included, params)
@@ -309,7 +386,14 @@ def cart_payload(cart: Cart) -> dict:
     return {
         "id": cart.id,
         "user": {"id": cart.user.id, "email": cart.user.email, "full_name": cart.user.full_name},
-        "group": {"id": group.id, "title": group.title} if group else None,
+        "group": (
+            {"id": group.id, "title": group.title, "started": group_started(group)}
+            if group
+            else None
+        ),
+        "batch_no": cart.batch_no,
+        "transfer_no": cart.transfer_no,
+        "receipt_confirmed": cart.receipt_confirmed,
         "status": cart.status.value,
         "created_at": cart.created_at,
         "submitted_at": cart.submitted_at,
@@ -356,6 +440,7 @@ def member_payload(user: User) -> dict:
 
 def group_payload(group: ProcurementGroup) -> dict:
     """组的基础信息 + 成员列表（不含条目，列表页用）。"""
+    info = country_by_code(group.country) if group.country else None
     return {
         "id": group.id,
         "title": group.title,
@@ -365,6 +450,8 @@ def group_payload(group: ProcurementGroup) -> dict:
         "end_date": group.end_date.isoformat(),
         "created_at": group.created_at,
         "completed_at": group.completed_at,
+        "country": group.country,
+        **({"country_name": info["name"], "currency": info["currency"], "currency_symbol": info["symbol"], "exchange_rate_cny": info["exchange_rate_cny"]} if info else {}),
         "purchaser": member_payload(group.purchaser),
         "members": [member_payload(m) for m in group.members],
         "member_count": len(group.members),
@@ -379,16 +466,39 @@ def group_detail_payload(group: ProcurementGroup) -> dict:
     """
     base = group_payload(group)
     items = []
-    for cart in group.carts:
-        if cart.status == CartStatus.DRAFT:
-            continue
-        params = _group_params(cart.user.price_group_id if cart.user else None)
+    batches = []
+    # 组内按（需求人, 批次）排序，稳定展示「每人第 1/2/3…批」的追加顺序。
+    ordered = sorted(
+        (c for c in group.carts if c.status != CartStatus.DRAFT and c.user is not None),
+        key=lambda c: (c.user_id, c.batch_no or 1, c.id),
+    )
+    for cart in ordered:
+        batch_no = cart.batch_no or 1
+        params = _cart_params(cart)
+        batches.append(
+            {
+                "cart_id": cart.id,
+                "batch_no": batch_no,
+                "status": cart.status.value,
+                "transfer_no": cart.transfer_no,
+                "receipt_confirmed": cart.receipt_confirmed,
+                "submitted_at": cart.submitted_at,
+                "locked_at": cart.locked_at,
+                "requester": {
+                    "id": cart.user.id,
+                    "full_name": cart.user.full_name,
+                    "email": cart.user.email,
+                },
+                "count": len(cart.items),
+            }
+        )
         for item in cart.items:
             calc = effective_price(_item_price(item), item.product.currency, item.product.tax_included, params)
             items.append(
                 {
                     "id": item.id,
                     "cart_id": cart.id,
+                    "batch_no": batch_no,
                     "cart_status": cart.status.value,
                     "quantity": item.quantity,
                     "color": item.color,
@@ -409,6 +519,7 @@ def group_detail_payload(group: ProcurementGroup) -> dict:
                 }
             )
     base["items"] = items
+    base["batches"] = batches
     base["total"] = len(items)
     base["purchased"] = sum(1 for i in items if i["purchased"])
     return base
@@ -439,11 +550,18 @@ def user_payload(user: User, cart_count: int | None = None) -> dict:
 
 # 状态机：允许的状态跳转。
 # draft -> submitted -> locked -> success / failed
-# 附加：用户撤回(submitted->draft)、管理员解锁(locked->submitted)、失败退回(failed->draft)。
+# 附加：
+#   - 用户撤回(submitted->draft，仅组开始日期前可用)
+#   - 管理员/采购员锁定(submitted->locked / draft->locked)
+#   - 解锁为「可编辑草稿」(locked->draft，用户可改后可重新提交)
+#   - 管理员退回处理队列(locked->submitted，仅采购侧可再处理)
+#   - 失败退回(failed->draft)
+# start_date 到达后用户「提交即封板」：draft 直接 -> locked（见 submit_my_cart），
+# 每锁定一次即为该用户创建/保留下一批空草稿。
 CART_TRANSITIONS: dict[CartStatus, set[CartStatus]] = {
-    CartStatus.DRAFT: {CartStatus.SUBMITTED},
+    CartStatus.DRAFT: {CartStatus.SUBMITTED, CartStatus.LOCKED},
     CartStatus.SUBMITTED: {CartStatus.DRAFT, CartStatus.LOCKED, CartStatus.FAILED},
-    CartStatus.LOCKED: {CartStatus.SUBMITTED, CartStatus.SUCCESS, CartStatus.FAILED},
+    CartStatus.LOCKED: {CartStatus.DRAFT, CartStatus.SUBMITTED, CartStatus.SUCCESS, CartStatus.FAILED},
     CartStatus.SUCCESS: set(),
     CartStatus.FAILED: {CartStatus.DRAFT},
 }
@@ -484,7 +602,38 @@ async def load_cart(session: AsyncSession, cart_id: int, for_update: bool = Fals
     return (await session.execute(statement)).scalar_one_or_none()
 
 
-async def draft_cart(session: AsyncSession, user_id: int) -> Cart:
+async def draft_cart(session: AsyncSession, user_id: int, group_id: int | None = None) -> Cart:
+    """取/建一张草稿。group_id 为空：旧行为（最新任意草稿，没有则新建未归组）。
+
+    group_id 有值（用户页点开某组）：优先该组已有草稿；否则认领最新未归组草稿并预写 group_id；
+    再没有则新建一张已预归组的空草稿。锁定后 ensure_next_draft 仍走无 group_id 路径，
+    保证「下一批草稿未归组」；打开组时再认领。
+    """
+    if group_id is not None:
+        grouped = (
+            await session.execute(
+                select(Cart)
+                .where(Cart.user_id == user_id, Cart.status == CartStatus.DRAFT, Cart.group_id == group_id)
+                .order_by(Cart.id.desc())
+            )
+        ).scalars().first()
+        if grouped:
+            return grouped
+        ungrouped = (
+            await session.execute(
+                select(Cart)
+                .where(Cart.user_id == user_id, Cart.status == CartStatus.DRAFT, Cart.group_id.is_(None))
+                .order_by(Cart.id.desc())
+            )
+        ).scalars().first()
+        if ungrouped:
+            ungrouped.group_id = group_id
+            await session.flush()
+            return ungrouped
+        cart = Cart(user_id=user_id, status=CartStatus.DRAFT, group_id=group_id)
+        session.add(cart)
+        await session.flush()
+        return cart
     statement = select(Cart).where(Cart.user_id == user_id, Cart.status == CartStatus.DRAFT).order_by(Cart.id.desc())
     cart = (await session.execute(statement)).scalars().first()
     if cart:
@@ -492,6 +641,23 @@ async def draft_cart(session: AsyncSession, user_id: int) -> Cart:
     cart = Cart(user_id=user_id, status=CartStatus.DRAFT)
     session.add(cart)
     await session.flush()
+    return cart
+
+
+async def editable_cart_for(session: AsyncSession, user: User, cart_id: int | None) -> Cart:
+    """定位「可编辑」的草稿批次（加购/提交入口统一校验）。
+
+    cart_id 为空：取最新草稿，没有则新建（旧客户端行为不变）；
+    cart_id 指定：必须是本人且状态为草稿——指向已锁定/已提交/他人批次一律拒绝，
+    只允许通过只读查看接口浏览。返回的 cart 已带 group/items/product 完整关系。
+    """
+    if cart_id is None:
+        return await draft_cart(session, user.id)
+    cart = await load_cart(session, cart_id)
+    if not cart or cart.user_id != user.id:
+        raise HTTPException(status_code=404, detail="清单不存在")
+    if cart.status != CartStatus.DRAFT:
+        raise HTTPException(status_code=409, detail="该批次已提交或锁定，只能查看不能编辑；请切换到可编辑的新清单草稿")
     return cart
 
 
@@ -510,6 +676,64 @@ async def user_open_groups(session: AsyncSession, user_id: int) -> list[Procurem
         .order_by(ProcurementGroup.end_date.asc())
     )
     return list((await session.execute(statement)).scalars().all())
+
+
+def group_started(group: ProcurementGroup) -> bool:
+    """出游组是否已进入采购期：start_date 到达当天即视为已开始。"""
+    return group.start_date <= date.today()
+
+
+async def next_batch_no(session: AsyncSession, user_id: int, group_id: int) -> int:
+    """分配某用户在某出游组内的下一个批次序号（>=1）。"""
+    max_batch = (
+        await session.execute(
+            select(func.max(Cart.batch_no)).where(Cart.user_id == user_id, Cart.group_id == group_id)
+        )
+    ).scalar()
+    return (max_batch or 0) + 1
+
+
+async def ensure_next_draft(session: AsyncSession, cart: Cart) -> Cart | None:
+    """出游开始后每次「封板/锁定」为该用户确保存在一张可继续追加的草稿批次。
+
+    规则：仅当该批已归属一个进行中的出游组、组已到开始日期、批次号已分配时，
+    才调用 draft_cart 取/建下一批空草稿；未开始前下一批由用户首次加购时惰性创建。
+    """
+    if cart.batch_no is None or cart.batch_no <= 0 or cart.group is None:
+        return None
+    group = cart.group
+    if group.status != GroupStatus.OPEN or not group_started(group):
+        return None
+    return await draft_cart(session, cart.user_id)
+
+
+async def prune_empty_drafts(session: AsyncSession, user_id: int, keep_id: int, group_id: int | None = None) -> None:
+    """解锁某批（locked->draft）后，删除该用户比它更新的「空草稿」。
+
+    空草稿 = batch_no=0、没有任何条目的草稿（即之前每次锁定自动生成的占位下一批）。
+    group_id 有值时：清未归组或同组空草稿（打开组会预写 group_id，否则解锁后看不到旧批）。
+    group_id 为空时：仍只清未归组空草稿。正在填写（有条目）的新草稿不会被动。
+    """
+    group_filter = (
+        or_(Cart.group_id.is_(None), Cart.group_id == group_id) if group_id is not None else Cart.group_id.is_(None)
+    )
+    candidates = (
+        await session.execute(
+            select(Cart.id).where(
+                Cart.user_id == user_id,
+                Cart.status == CartStatus.DRAFT,
+                Cart.batch_no == 0,
+                group_filter,
+                Cart.id > keep_id,
+            )
+        )
+    ).scalars().all()
+    for cart_id in candidates:
+        has_item = (
+            await session.execute(select(CartItem.id).where(CartItem.cart_id == cart_id).limit(1))
+        ).scalars().first()
+        if not has_item:
+            await session.execute(delete(Cart).where(Cart.id == cart_id))
 
 
 async def current_user(
@@ -562,7 +786,7 @@ async def seed_data() -> None:
         # 兜底：确保存在一个默认价格组（正常由 Alembic 0002 迁移创建）。
         default_group = (await session.execute(select(PriceGroup).where(PriceGroup.is_default.is_(True)))).scalar_one_or_none()
         if not default_group and not (await session.execute(select(PriceGroup.id).limit(1))).first():
-            session.add(PriceGroup(name="默认组", tax_rate=10.0, exchange_rate_jpy_cny=0.048, is_default=True))
+            session.add(PriceGroup(name="默认组", tax_rate=10.0, exchange_rate_jpy_cny=0.048, is_default=True, country="jp"))
         await session.commit()
 
 
@@ -570,6 +794,7 @@ async def seed_data() -> None:
 async def lifespan(_: FastAPI):
     # 表结构由 Alembic 迁移管理（容器启动时 `alembic upgrade head`），这里只做数据种子与缓存初始化。
     await seed_data()
+    load_countries()
     await refresh_runtime_settings()
     yield
     await engine.dispose()
@@ -632,11 +857,11 @@ async def parse_product_url(body: ParseUrlRequest, _: User = Depends(current_use
     except ValueError as exc:
         raise HTTPException(status_code=400, detail=str(exc))
     except Exception:
-        raise HTTPException(status_code=502, detail="链接解析失败，请确认是 kakaku.com / kitamuracamera.jp 商品详情页且网络可达")
+        raise HTTPException(status_code=502, detail="链接解析失败，请确认是 kakaku.com / kitamuracamera.jp / global.gmarket.co.kr 商品详情页且网络可达")
     return asdict(detail)
 
 
-@app.post("/api/products", status_code=status.HTTP_201_CREATED)
+#@app.post("/api/products", status_code=status.HTTP_201_CREATED)
 async def create_product(body: ProductCreateRequest, admin: User = Depends(admin_user), session: AsyncSession = Depends(get_session)) -> dict:
     if body.source_url:
         existing = (await session.execute(select(Product).where(Product.source_url == body.source_url))).scalar_one_or_none()
@@ -717,9 +942,29 @@ async def update_price_settings(body: SettingsRequest, admin: User = Depends(adm
 
 
 @app.get("/api/carts/me")
-async def get_my_cart(user: User = Depends(current_user), session: AsyncSession = Depends(get_session)) -> dict:
-    # 当前清单 = 最新的非 success 清单，供用户在提交/锁定/失败后仍能看到自己的请求状态；
-    # 仅当最新清单已 success，或尚无清单时，才开启一张新草稿。
+async def get_my_cart(
+    group_id: int | None = Query(default=None),
+    user: User = Depends(current_user),
+    session: AsyncSession = Depends(get_session),
+) -> dict:
+    # group_id：用户页点开某组时取/建该组草稿（校验进行中成员）。缺省保持旧行为。
+    if group_id is not None:
+        groups = await user_open_groups(session, user.id)
+        if group_id not in {g.id for g in groups}:
+            raise HTTPException(status_code=403, detail="只能打开自己加入的进行中出游组")
+        cart = await draft_cart(session, user.id, group_id)
+        await session.commit()
+        return cart_payload(await load_cart(session, cart.id))
+    # 优先返回最新草稿批次（解锁后批次回到 draft，应让用户继续编辑）；
+    # 否则返回最新非 success 清单；两者都没有才开启一张新草稿。
+    draft = (
+        await session.execute(
+            select(Cart).where(Cart.user_id == user.id, Cart.status == CartStatus.DRAFT).order_by(Cart.id.desc())
+        )
+    ).scalars().first()
+    if draft:
+        await session.commit()
+        return cart_payload(await load_cart(session, draft.id))
     statement = select(Cart).where(Cart.user_id == user.id).order_by(Cart.id.desc())
     latest = (await session.execute(statement)).scalars().first()
     cart = latest if latest and latest.status != CartStatus.SUCCESS else None
@@ -731,12 +976,67 @@ async def get_my_cart(user: User = Depends(current_user), session: AsyncSession 
     return cart_payload(await load_cart(session, cart.id))
 
 
+@app.get("/api/carts/me/batches")
+async def get_my_batches(user: User = Depends(current_user), session: AsyncSession = Depends(get_session)) -> list[dict]:
+    """我的全部批次（按创建先后）：供「批次条」渲染与切换。
+
+    每批给状态/条目数/归属组；草稿可为未归组的「新清单」，锁定/待处理批次亦在此可见（只读）。
+    列表由小到大排（第1批、第2批…、新清单在末尾），不含条目明细——点选后走 /carts/me/{id}。
+    """
+    rows = (
+        await session.execute(
+            select(Cart)
+            .where(Cart.user_id == user.id)
+            .options(selectinload(Cart.group))
+            .order_by(Cart.id.asc())
+        )
+    ).scalars().all()
+    counts: dict[int, int] = {}
+    if rows:
+        counts = dict(
+            (
+                await session.execute(
+                    select(CartItem.cart_id, func.count(CartItem.id))
+                    .where(CartItem.cart_id.in_([c.id for c in rows]))
+                    .group_by(CartItem.cart_id)
+                )
+            ).all()
+        )
+    return [
+        {
+            "id": c.id,
+            "batch_no": c.batch_no,
+            "status": c.status.value,
+            "count": counts.get(c.id, 0),
+            "group": (
+                {"id": c.group.id, "title": c.group.title, "started": group_started(c.group)}
+                if c.group
+                else None
+            ),
+            "created_at": c.created_at,
+            "submitted_at": c.submitted_at,
+            "locked_at": c.locked_at,
+        }
+        for c in rows
+    ]
+
+
+@app.get("/api/carts/me/{cart_id}")
+async def get_my_cart_detail(cart_id: int, user: User = Depends(current_user), session: AsyncSession = Depends(get_session)) -> dict:
+    """按批次读取我的清单明细：任意状态（草稿/待处理/已锁定/成功/失败）均可查看，
+    锁定/待处理批次只读展示、不能编辑。他人清单一律 404。"""
+    cart = await load_cart(session, cart_id)
+    if not cart or cart.user_id != user.id:
+        raise HTTPException(status_code=404, detail="清单不存在")
+    return cart_payload(cart)
+
+
 @app.post("/api/carts/me/items", status_code=status.HTTP_201_CREATED)
 async def add_cart_item(body: CartItemRequest, user: User = Depends(current_user), session: AsyncSession = Depends(get_session)) -> dict:
     product = await session.get(Product, body.product_id)
     if not product:
         raise HTTPException(status_code=404, detail="Product not found")
-    cart = await draft_cart(session, user.id)
+    cart = await editable_cart_for(session, user, body.cart_id)
     item = (await session.execute(select(CartItem).where(CartItem.cart_id == cart.id, CartItem.product_id == product.id))).scalar_one_or_none()
     if item:
         item.quantity += body.quantity
@@ -754,7 +1054,7 @@ async def add_cart_item_by_url(body: CartItemByUrlRequest, user: User = Depends(
     except ValueError as exc:
         raise HTTPException(status_code=400, detail=str(exc))
     except Exception:
-        raise HTTPException(status_code=502, detail="链接解析失败，请确认是 kakaku.com / kitamuracamera.jp 商品详情页且网络可达")
+        raise HTTPException(status_code=502, detail="链接解析失败，请确认是 kakaku.com / kitamuracamera.jp / global.gmarket.co.kr 商品详情页且网络可达")
     if detail.price_yen is None:
         raise HTTPException(status_code=422, detail="未能解析出商品价格，请确认链接正确")
     product = (await session.execute(select(Product).where(Product.source_url == detail.url))).scalar_one_or_none()
@@ -765,12 +1065,12 @@ async def add_cart_item_by_url(body: CartItemByUrlRequest, user: User = Depends(
             source_url=detail.url,
             image_url=detail.image_url,
             price_cents=detail.price_yen,
-            currency="JPY",
+            currency=(detail.currency or "JPY").upper(),
             tax_included=True,
         )
         session.add(product)
         await session.flush()
-    cart = await draft_cart(session, user.id)
+    cart = await editable_cart_for(session, user, body.cart_id)
     item = (await session.execute(select(CartItem).where(CartItem.cart_id == cart.id, CartItem.product_id == product.id))).scalar_one_or_none()
     if item:
         item.quantity += body.quantity
@@ -782,17 +1082,17 @@ async def add_cart_item_by_url(body: CartItemByUrlRequest, user: User = Depends(
 
 @app.post("/api/carts/me/items/manual", status_code=status.HTTP_201_CREATED)
 async def add_cart_item_manual(body: CartItemManualRequest, user: User = Depends(current_user), session: AsyncSession = Depends(get_session)) -> dict:
-    """手工添加商品：按名称/价格(日元)/数量直接加入当前草稿清单。"""
+    """手工添加商品：按名称/价格(本币)/数量直接加入当前草稿清单。"""
     product = Product(
         name=body.name.strip(),
         source_name="手工添加",
         price_cents=body.price_yen,
-        currency="JPY",
+        currency=(body.currency or "JPY").upper(),
         tax_included=True,
     )
     session.add(product)
     await session.flush()
-    cart = await draft_cart(session, user.id)
+    cart = await editable_cart_for(session, user, body.cart_id)
     item = CartItem(cart_id=cart.id, product_id=product.id, quantity=body.quantity, image_data=body.image_data)
     session.add(item)
     await session.commit()
@@ -813,12 +1113,12 @@ async def add_cart_item_manual_batch(body: CartItemManualBatchRequest, user: Use
         image_data=body.image_data,
         source_name="手工添加",
         price_cents=body.price_yen,
-        currency="JPY",
+        currency=(body.currency or "JPY").upper(),
         tax_included=True,
     )
     session.add(product)
     await session.flush()
-    cart = await draft_cart(session, user.id)
+    cart = await editable_cart_for(session, user, body.cart_id)
     for variant in body.variants:
         color = variant.color.strip() if variant.color and variant.color.strip() else None
         session.add(
@@ -859,6 +1159,8 @@ async def submit_my_cart(body: CartSubmitRequest | None = None, user: User = Dep
     - 用户属于 1 个进行中（未过 end_date）组 → 默认归该组；
     - 属于多个 → 必须显式传 group_id（属于其一）；
     - 不属于任何进行中组 → 422 提示先加入出游组。
+    - start_date 到达前：提交 → submitted（可撤回）；
+    - start_date 到达后：提交即封板 → locked（冻结单价），并自动开下一批草稿。
     body 可省略（默认 group_id=None），兼容旧客户端直接 POST。
     """
     groups = await user_open_groups(session, user.id)
@@ -871,25 +1173,62 @@ async def submit_my_cart(body: CartSubmitRequest | None = None, user: User = Dep
         target_id = groups[0].id
     if target_id not in {g.id for g in groups}:
         raise HTTPException(status_code=403, detail="只能提交给自己加入的进行中出游组")
-    cart = await draft_cart(session, user.id)
-    cart = await load_cart(session, cart.id, for_update=True)
+    target_group = next(g for g in groups if g.id == target_id)
+    if body and body.cart_id is not None:
+        # 指定提交批次：仅允许本人且为草稿状态（批次切换后提交当前正在编辑的那批）
+        cart = await load_cart(session, body.cart_id, for_update=True)
+        if not cart or cart.user_id != user.id:
+            raise HTTPException(status_code=404, detail="清单不存在")
+        if cart.status != CartStatus.DRAFT:
+            raise HTTPException(status_code=409, detail="只有草稿状态的新清单可以提交；该批次已提交/已锁定，请直接查看")
+    else:
+        cart = await draft_cart(session, user.id)
+        cart = await load_cart(session, cart.id, for_update=True)
     if not cart.items:
         raise HTTPException(status_code=422, detail="Cart must contain at least one item")
     cart.group_id = target_id
-    cart.status = CartStatus.SUBMITTED
+    # 同步同一会话内的关系属性：cart 加载时 group 尚为 None，仅写 group_id 会让
+    # cart.group 保持旧值，导致下方 ensure_next_draft 的 `cart.group is None` 守卫误判，
+    # 出游开始后的「提交即封板」就不会自动开下一批空草稿。
+    cart.group = target_group
     cart.submitted_at = datetime.now(timezone.utc)
-    session.add(ProcurementEvent(cart_id=cart.id, actor_id=user.id, event_type="submitted", details=f"group:{target_id}"))
+    if cart.batch_no == 0:
+        cart.batch_no = await next_batch_no(session, user.id, target_id)
+    started = group_started(target_group)
+    if started:
+        # 提交即封板：锁定当前批次（冻结单价），并自动开启下一批草稿
+        apply_status_change(cart, CartStatus.LOCKED)
+        await ensure_next_draft(session, cart)
+        event_type = "submitted_locked"
+    else:
+        apply_status_change(cart, CartStatus.SUBMITTED)
+        event_type = "submitted"
+    session.add(ProcurementEvent(cart_id=cart.id, actor_id=user.id, event_type=event_type, details=f"group:{target_id}:batch:{cart.batch_no}"))
     await session.commit()
     return cart_payload(await load_cart(session, cart.id))
 
 
 @app.post("/api/carts/me/withdraw")
-async def withdraw_my_cart(user: User = Depends(current_user), session: AsyncSession = Depends(get_session)) -> dict:
-    statement = select(Cart.id).where(Cart.user_id == user.id, Cart.status == CartStatus.SUBMITTED).order_by(Cart.id.desc())
-    cart_id = (await session.execute(statement)).scalars().first()
-    if cart_id is None:
-        raise HTTPException(status_code=404, detail="No submitted cart to withdraw")
-    cart = await load_cart(session, cart_id, for_update=True)
+async def withdraw_my_cart(body: CartSubmitRequest | None = None, user: User = Depends(current_user), session: AsyncSession = Depends(get_session)) -> dict:
+    """撤回某一批「待处理」清单（出游开始前才允许）。
+
+    body.cart_id 缺省 = 撤回最新待处理批次（旧行为）；指定则撤回那一批本人清单。
+    """
+    if body and body.cart_id is not None:
+        cart = await load_cart(session, body.cart_id, for_update=True)
+        if not cart or cart.user_id != user.id:
+            raise HTTPException(status_code=404, detail="清单不存在")
+        if cart.status != CartStatus.SUBMITTED:
+            raise HTTPException(status_code=409, detail="该批次不是待处理状态，无法撤回")
+    else:
+        statement = select(Cart.id).where(Cart.user_id == user.id, Cart.status == CartStatus.SUBMITTED).order_by(Cart.id.desc())
+        cart_id = (await session.execute(statement)).scalars().first()
+        if cart_id is None:
+            raise HTTPException(status_code=404, detail="No submitted cart to withdraw")
+        cart = await load_cart(session, cart_id, for_update=True)
+    if cart.group and group_started(cart.group):
+        # 出游已开始：提交过的批次已封板，不允许自行撤回/删改，只能联系采购员或管理员解锁
+        raise HTTPException(status_code=409, detail="出游采购已经开始，该批次已封板不可撤回或修改；如需调整请联系采购员或管理员解锁")
     apply_status_change(cart, CartStatus.DRAFT)
     cart.group_id = None
     session.add(ProcurementEvent(cart_id=cart.id, actor_id=user.id, event_type="withdrawn"))
@@ -1030,13 +1369,87 @@ async def admin_delete_item(item_id: int, admin: User = Depends(admin_user), ses
     await session.commit()
 
 
+@app.patch("/api/admin/carts/{cart_id}/transfer")
+async def update_transfer_no(cart_id: int, body: TransferNoRequest, user: User = Depends(current_user), session: AsyncSession = Depends(get_session)) -> dict:
+    cart = await load_cart(session, cart_id, for_update=True)
+    if not cart:
+        raise HTTPException(status_code=404, detail="Cart not found")
+    group = cart.group
+    allowed = user.role == Role.ADMIN or (not cart.receipt_confirmed and cart.user_id == user.id) or (user.role == Role.PURCHASER and group is not None and group.purchaser_id == user.id)
+    if not allowed:
+        raise HTTPException(status_code=403, detail="只有管理员、当前组采购员或清单所属用户可以修改转账单号")
+    cart.transfer_no = (body.transfer_no or "").strip() or None
+    session.add(ProcurementEvent(cart_id=cart.id, actor_id=user.id, event_type="cart_transfer_no_updated", details=cart.transfer_no or ""))
+    await session.commit()
+    return cart_payload(await load_cart(session, cart.id))
+
+
+@app.patch("/api/admin/carts/{cart_id}/receipt-confirmed")
+async def update_receipt_confirmed(cart_id: int, body: ReceiptConfirmedRequest, user: User = Depends(current_user), session: AsyncSession = Depends(get_session)) -> dict:
+    cart = await load_cart(session, cart_id, for_update=True)
+    if not cart:
+        raise HTTPException(status_code=404, detail="Cart not found")
+    group = cart.group
+    if user.role != Role.PURCHASER or group is None or group.purchaser_id != user.id:
+        raise HTTPException(status_code=403, detail="只有当前组采购员可以修改查收确认")
+    if cart.status not in (CartStatus.LOCKED, CartStatus.SUCCESS):
+        raise HTTPException(status_code=409, detail="当前清单尚不能确认查收")
+    cart.receipt_confirmed = body.confirmed
+    session.add(ProcurementEvent(cart_id=cart.id, actor_id=user.id, event_type="cart_receipt_confirmed" if body.confirmed else "cart_receipt_unconfirmed", details=str(body.confirmed)))
+    await session.commit()
+    return cart_payload(await load_cart(session, cart.id))
+
+
 @app.patch("/api/admin/carts/{cart_id}/status")
 async def admin_update_status(cart_id: int, body: StatusRequest, admin: User = Depends(admin_user), session: AsyncSession = Depends(get_session)) -> dict:
     cart = await load_cart(session, cart_id, for_update=True)
     if not cart:
         raise HTTPException(status_code=404, detail="Cart not found")
+    prev = cart.status
     apply_status_change(cart, body.status)
+    if body.status == CartStatus.LOCKED:
+        # 出游开始后的每次锁定都会为需求人开启下一批空草稿
+        await ensure_next_draft(session, cart)
+    elif prev == CartStatus.LOCKED and body.status == CartStatus.DRAFT:
+        # 解锁恢复可编辑：清理比它更新的空草稿，避免旧批次被占位草稿挤出当前编辑位
+        await prune_empty_drafts(session, cart.user_id, cart.id, cart.group_id)
     session.add(ProcurementEvent(cart_id=cart.id, actor_id=admin.id, event_type="status_changed", details=body.status.value))
+    await session.commit()
+    return cart_payload(await load_cart(session, cart.id))
+
+
+@app.patch("/api/groups/{group_id}/carts/{cart_id}/status")
+async def group_cart_status(group_id: int, cart_id: int, body: StatusRequest, user: User = Depends(current_user), session: AsyncSession = Depends(get_session)) -> dict:
+    """出游组内批次状态的锁定/解锁（采购工作台与成员清单页使用）。
+
+    权限：管理员可操作任意组；采购员仅能操作自己创建的组。仅限进行中的组。
+    允许操作：submitted->locked（锁定）、locked->draft（解锁恢复可编辑，出游开始后也会触发下一批）。
+    需求人（普通用户）调用一律 403。
+    """
+    group = await session.get(ProcurementGroup, group_id)
+    if not group:
+        raise HTTPException(status_code=404, detail="Group not found")
+    if user.role != Role.ADMIN and not (user.role == Role.PURCHASER and group.purchaser_id == user.id):
+        raise HTTPException(status_code=403, detail="只有该出游组的采购员或管理员可以锁定/解锁批次")
+    if group.status != GroupStatus.OPEN:
+        raise HTTPException(status_code=409, detail="出游组已结束收单，不能再变更批次状态")
+    cart = await load_cart(session, cart_id, for_update=True)
+    if not cart or cart.group_id != group.id:
+        raise HTTPException(status_code=404, detail="Cart not found in group")
+    scoped = {
+        CartStatus.SUBMITTED: {CartStatus.LOCKED},
+        CartStatus.DRAFT: {CartStatus.LOCKED},
+        CartStatus.LOCKED: {CartStatus.DRAFT},
+    }
+    if body.status not in scoped.get(cart.status, set()):
+        raise HTTPException(status_code=409, detail=f"Cannot change {cart.status.value} to {body.status.value} on group cart")
+    prev = cart.status
+    apply_status_change(cart, body.status)
+    if body.status == CartStatus.LOCKED:
+        await ensure_next_draft(session, cart)
+    elif prev == CartStatus.LOCKED and body.status == CartStatus.DRAFT:
+        await prune_empty_drafts(session, cart.user_id, cart.id, cart.group_id)
+    session.add(ProcurementEvent(cart_id=cart.id, actor_id=user.id, event_type="group_status_changed", details=f"group:{group_id}:{body.status.value}"))
     await session.commit()
     return cart_payload(await load_cart(session, cart.id))
 
@@ -1181,6 +1594,7 @@ async def admin_delete_user(user_id: int, admin: User = Depends(admin_user), ses
 
 
 def _price_group_payload(group: PriceGroup, user_count: int = 0) -> dict:
+    info = country_by_code(group.country)
     return {
         "id": group.id,
         "name": group.name,
@@ -1188,7 +1602,15 @@ def _price_group_payload(group: PriceGroup, user_count: int = 0) -> dict:
         "exchange_rate_jpy_cny": group.exchange_rate_jpy_cny,
         "is_default": group.is_default,
         "user_count": user_count,
+        "country": group.country,
+        **({"country_name": info["name"], "currency": info["currency"], "currency_symbol": info["symbol"]} if info else {}),
     }
+
+
+@app.get("/api/settings/countries")
+async def list_countries(_: User = Depends(price_manager_user)) -> list[dict]:
+    """国家价格参数索引（countries.yml），供新建价格分组时选择国家继承税率/汇率/货币符号。"""
+    return COUNTRIES
 
 
 @app.get("/api/settings/price-groups")
@@ -1209,6 +1631,7 @@ async def my_price_group(user: User = Depends(current_user), session: AsyncSessi
     if group is None:
         group = (await session.execute(select(PriceGroup).where(PriceGroup.is_default.is_(True)))).scalar_one_or_none()
     if group is None:
+        info = country_by_code("jp")
         return {
             "id": None,
             "name": "默认组",
@@ -1217,6 +1640,8 @@ async def my_price_group(user: User = Depends(current_user), session: AsyncSessi
             "is_default": True,
             "assigned": False,
             "user_count": 0,
+            "country": "jp",
+            **({"country_name": info["name"], "currency": info["currency"], "currency_symbol": info["symbol"]} if info else {}),
         }
     return {**_price_group_payload(group), "assigned": assigned}
 
@@ -1226,7 +1651,8 @@ async def create_price_group(body: PriceGroupRequest, _: User = Depends(price_ma
     name = body.name.strip()
     if (await session.execute(select(PriceGroup).where(PriceGroup.name == name))).scalar_one_or_none():
         raise HTTPException(status_code=409, detail="已存在同名价格组")
-    group = PriceGroup(name=name, tax_rate=body.tax_rate, exchange_rate_jpy_cny=body.exchange_rate_jpy_cny, is_default=False)
+    country = body.country.strip().lower() if body.country else None
+    group = PriceGroup(name=name, tax_rate=body.tax_rate, exchange_rate_jpy_cny=body.exchange_rate_jpy_cny, is_default=False, country=country)
     session.add(group)
     await session.commit()
     await refresh_runtime_settings()
@@ -1246,6 +1672,8 @@ async def update_price_group(group_id: int, body: PriceGroupRequest, _: User = D
     group.name = name
     group.tax_rate = body.tax_rate
     group.exchange_rate_jpy_cny = body.exchange_rate_jpy_cny
+    if body.country is not None:
+        group.country = body.country.strip().lower() or None
     await session.commit()
     await refresh_runtime_settings()
     return _price_group_payload(group)
@@ -1324,12 +1752,15 @@ async def create_group(body: GroupCreateRequest, user: User = Depends(current_us
             break
     else:  # pragma: no cover - 4 位码空间足够大，几乎不可能 50 次全撞
         raise HTTPException(status_code=500, detail="邀请码生成失败，请重试")
+    if body.country and not country_by_code(body.country):
+        raise HTTPException(status_code=422, detail=f"国家 {body.country} 未在 countries.yml 中配置")
     group = ProcurementGroup(
         title=body.title.strip(),
         purchaser_id=user.id,
         invite_code=code,
         start_date=body.start_date,
         end_date=body.end_date,
+        country=body.country or None,
         status=GroupStatus.OPEN,
     )
     session.add(group)
@@ -1440,6 +1871,60 @@ async def join_group(body: GroupJoinRequest, user: User = Depends(current_user),
     group.members.append(user)
     await session.commit()
     group_id = group.id
+    return group_payload(await load_group(session, group_id))
+
+
+@app.post("/api/groups/{group_id}/leave")
+async def leave_group(group_id: int, user: User = Depends(current_user), session: AsyncSession = Depends(get_session)) -> dict:
+    """需求人主动退出出游采购组。
+
+    不影响该用户在本组已提交/已锁定的清单（采购员继续处理）；
+    未提交的草稿若归到本组则解除归组，避免退组后继续向该组提交。
+    """
+    group = await load_group(session, group_id)
+    if not group:
+        raise HTTPException(status_code=404, detail="出游组不存在")
+    if user.id == group.purchaser_id:
+        raise HTTPException(status_code=400, detail="你是该组采购员，不能退出；可改由其他采购员接管或删除组")
+    if user not in group.members:
+        raise HTTPException(status_code=409, detail="你不在该出游组中")
+    group.members.remove(user)
+    await session.execute(
+        update(Cart)
+        .where(Cart.user_id == user.id, Cart.group_id == group_id, Cart.status == CartStatus.DRAFT)
+        .values(group_id=None)
+    )
+    await session.commit()
+    return {"ok": True, "message": "已退出出游组"}
+
+
+@app.delete("/api/groups/{group_id}/members/{user_id}")
+async def remove_group_member(group_id: int, user_id: int, user: User = Depends(current_user), session: AsyncSession = Depends(get_session)) -> dict:
+    """采购员 / 管理员把需求人移出出游组（仅进行中组可操作）。
+
+    已提交/锁定清单保留归属，采购员继续处理；草稿解除归组。
+    """
+    group = await load_group(session, group_id)
+    if not group:
+        raise HTTPException(status_code=404, detail="出游组不存在")
+    if user.role != Role.ADMIN and group.purchaser_id != user.id:
+        raise HTTPException(status_code=403, detail="只能管理自己创建的出游组")
+    if group.status == GroupStatus.COMPLETED:
+        raise HTTPException(status_code=400, detail="组已完成，不能移除成员")
+    target = await session.get(User, user_id)
+    if not target:
+        raise HTTPException(status_code=404, detail="用户不存在")
+    if target.id == group.purchaser_id:
+        raise HTTPException(status_code=400, detail="不能移除组采购员")
+    if target not in group.members:
+        raise HTTPException(status_code=409, detail="该用户不在组内")
+    group.members.remove(target)
+    await session.execute(
+        update(Cart)
+        .where(Cart.user_id == target.id, Cart.group_id == group_id, Cart.status == CartStatus.DRAFT)
+        .values(group_id=None)
+    )
+    await session.commit()
     return group_payload(await load_group(session, group_id))
 
 

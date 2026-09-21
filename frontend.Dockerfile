@@ -7,5 +7,6 @@ COPY frontend/login.html /usr/share/nginx/html/login.html
 COPY frontend/purchaser.html /usr/share/nginx/html/purchaser.html
 COPY frontend/member.html /usr/share/nginx/html/member.html
 COPY frontend/auth.js /usr/share/nginx/html/auth.js
+COPY frontend/export.js /usr/share/nginx/html/export.js
 COPY frontend/responsive.css /usr/share/nginx/html/responsive.css
 COPY frontend/vendor /usr/share/nginx/html/vendor

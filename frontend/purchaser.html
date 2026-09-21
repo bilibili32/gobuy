@@ -7,30 +7,74 @@
   <style>
     :root { --bg:#f6f2e9; --surface:#fffdfa; --ink:#25312d; --muted:#7b847f; --line:#e6dfd3; --line-soft:#f0ece5; --green:#28725a; --green-dark:#1e5e49; --green-bg:#e5f0e9; --amber:#966209; --amber-bg:#fff0d5; --blue:#336fa9; --blue-bg:#e8f0f8; --red:#a3463f; --red-bg:#f8e7e4; }
     * { box-sizing:border-box; } body { margin:0; min-width:320px; background:var(--bg); color:var(--ink); font:14px/1.45 Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif; }
-    button,input,select { font:inherit; } button { cursor:pointer; } .page { max-width:980px; margin:auto; padding:36px 28px 44px; }
-    header { display:flex; align-items:center; justify-content:space-between; gap:18px; margin-bottom:28px; } .brand { font-size:18px; font-weight:800; } .brand span { color:var(--green); } .account { display:flex; gap:10px; align-items:center; color:var(--muted); font-size:13px; } .avatar { width:30px; height:30px; display:grid; place-items:center; border-radius:50%; background:#dfeae2; color:var(--green); font-size:11px; font-weight:800; } .logout { border:1px solid var(--line); background:#fff; color:var(--muted); border-radius:4px; padding:6px 12px; font-weight:700; cursor:pointer; } .logout:hover { color:#a3463f; border-color:#a3463f; }
+    button,input,select { font:inherit; } button { cursor:pointer; } .page { max-width:1180px; margin:auto; padding:36px 28px 44px; }
+    header { display:flex; align-items:center; justify-content:space-between; gap:18px; margin-bottom:28px; } .brand { font-size:18px; font-weight:800; } .brand span { color:var(--green); } .account { display:flex; gap:10px; align-items:center; color:var(--muted); font-size:13px; } .avatar { width:30px; height:30px; display:grid; place-items:center; border-radius:50%; background:#dfeae2; color:var(--green); font-size:11px; font-weight:800; } .logout { border:1px solid var(--line); background:#fff; color:var(--muted); border-radius:4px; padding:6px 12px; font-weight:700; cursor:pointer; } .logout:hover { color:var(--red); border-color:var(--red); }
     h1 { margin:0; font-size:27px; } .sub { margin:7px 0 0; color:var(--muted); } .summary { margin-top:14px; color:var(--muted); font-size:12px; } .summary b { color:var(--ink); }
-    .groups { display:flex; flex-direction:column; gap:16px; margin-top:20px; } .group { background:var(--surface); border:1px solid var(--line); border-radius:10px; overflow:hidden; }
-    .group-head { display:flex; align-items:center; justify-content:space-between; gap:12px; padding:16px 19px 13px; border-bottom:1px solid var(--line); } .group-title { font-weight:800; font-size:15px; } .group-meta { color:var(--muted); font-size:12px; margin-top:2px; } .badge { border-radius:999px; padding:4px 9px; font-size:11px; font-weight:750; white-space:nowrap; } .badge.open { color:var(--amber); background:var(--amber-bg); } .badge.completed { color:var(--green); background:var(--green-bg); }
-    .g-actions { display:flex; gap:7px; align-items:center; } .g-btn { border:1px solid var(--line); background:#fff; color:var(--muted); border-radius:5px; padding:6px 11px; font-size:12px; font-weight:700; white-space:nowrap; } .g-btn:hover { border-color:var(--green); color:var(--green); } .g-btn.danger:hover { border-color:#a3463f; color:#a3463f; } .g-btn.primary { background:var(--green); border-color:var(--green); color:#fff; } .g-btn.primary:hover { background:var(--green-dark); }
-    .invite { display:inline-flex; align-items:center; gap:7px; margin-top:7px; padding:5px 10px; border-radius:6px; background:var(--amber-bg); color:#7d5a16; font-size:12px; font-weight:700; } .invite code { font-size:15px; letter-spacing:2px; color:#5d3f00; font-weight:900; } .invite .copy { border:0; background:transparent; color:var(--amber); font-weight:800; cursor:pointer; padding:2px 5px; border-radius:4px; } .invite .copy:hover { background:rgba(150,98,9,.12); }
-    .member-chips { display:flex; flex-wrap:wrap; gap:6px; margin-top:9px; } .mchip { display:inline-flex; align-items:center; gap:5px; padding:2px 9px 2px 7px; border-radius:999px; background:#eef1ec; color:#496258; font-size:11px; font-weight:700; } .mchip b { font-weight:800; }
-    .items { padding:4px 0; } .item { display:grid; grid-template-columns:118px 52px 1fr; gap:10px; align-items:center; padding:13px 19px; border-bottom:1px solid var(--line-soft); } .item:last-child { border-bottom:0; } .item.done .name { color:var(--muted); text-decoration:line-through; }
+    .groups { display:flex; flex-direction:column; gap:16px; margin-top:20px; } .group { background:var(--surface); border:1px solid var(--line); border-radius:10px; overflow:hidden; box-shadow:0 1px 2px rgba(37,49,45,.04); }
+    .group-head { display:flex; align-items:flex-start; justify-content:space-between; gap:12px; padding:16px 19px 13px; border-bottom:1px solid var(--line); } .group-head > div { min-width:0; flex:1; } .group-head > .badge { flex:none; margin-top:2px; } .group-title { font-weight:800; font-size:15px; word-break:break-word; } .group-meta { color:var(--muted); font-size:12px; margin-top:2px; } .badge { border-radius:999px; padding:4px 9px; font-size:11px; font-weight:750; white-space:nowrap; } .badge.open { color:var(--amber); background:var(--amber-bg); } .badge.completed { color:var(--green); background:var(--green-bg); }
+    .g-actions { display:flex; gap:7px; align-items:center; } .group-foot { display:flex; align-items:center; justify-content:flex-end; padding:12px 19px 14px; border-top:1px solid var(--line-soft); } .group-foot .g-actions { width:100%; justify-content:flex-end; flex-wrap:wrap; } .g-btn { border:1px solid var(--line); background:#fff; color:var(--muted); border-radius:5px; padding:6px 11px; font-size:12px; font-weight:700; white-space:nowrap; } .g-btn:hover { border-color:var(--green); color:var(--green); } .g-btn.danger:hover { border-color:#a3463f; color:#a3463f; } .g-btn.primary { background:var(--green); border-color:var(--green); color:#fff; } .g-btn.primary:hover { background:var(--green-dark); }
+    .invite { display:inline-flex; align-items:center; flex-wrap:wrap; gap:7px; margin-top:7px; padding:5px 10px; border-radius:6px; background:var(--amber-bg); color:#7d5a16; font-size:12px; font-weight:700; } .invite code { font-size:15px; letter-spacing:2px; color:#5d3f00; font-weight:900; } .invite .copy { border:0; background:transparent; color:var(--amber); font-weight:800; cursor:pointer; padding:2px 5px; border-radius:4px; } .invite .copy:hover { background:rgba(150,98,9,.12); }
+    .member-chips { display:flex; flex-wrap:wrap; gap:6px; margin-top:9px; } .mchip { display:inline-flex; align-items:center; gap:5px; padding:2px 9px 2px 7px; border-radius:999px; background:#eef1ec; color:#496258; font-size:11px; font-weight:700; } .mchip b { font-weight:800; } .mchip-x { border:0; background:transparent; color:#a9b3ad; font-size:13px; line-height:1; padding:0 1px; cursor:pointer; border-radius:4px; } .mchip-x:hover { color:#c25e4e; background:#f6e3de; }
+    .g-batches { display:flex; flex-direction:column; gap:6px; margin:12px 19px 0; }
+    .g-batch { display:flex; align-items:center; gap:8px; flex-wrap:wrap; background:#fbf8f0; border:1px solid var(--line-soft); border-radius:7px; padding:6px 10px; font-size:12px; }
+    .gb-who { font-weight:800; } .gb-no { color:var(--muted); }
+    .gb-badge { border-radius:999px; padding:1px 8px; font-size:10.5px; font-weight:750; white-space:nowrap; }
+    .gb-badge.submitted { color:#336fa9; background:#e8f0f8; } .gb-badge.locked { color:#966209; background:#fff0d5; } .gb-badge.success { color:#28725a; background:#e5f0e9; } .gb-badge.failed { color:#a3463f; background:#f8e7e4; }
+    .gb-meta { color:var(--muted); font-size:11px; }
+    .gb-transfer { display:inline-flex; align-items:center; gap:8px; color:var(--ink); font-size:12px; font-weight:700; }
+    .gb-transfer .settlement-label { color:var(--muted); font-size:11px; font-weight:700; letter-spacing:.04em; white-space:nowrap; }
+    .gb-transfer input { width:190px; height:32px; padding:0 10px; border:1px solid #d8ddd8; border-radius:6px; background:#fff; color:var(--ink); font-size:12px; outline:none; box-shadow:0 1px 2px rgba(37,49,45,.03) inset; }
+    .gb-transfer input:focus { border-color:var(--green); box-shadow:0 0 0 3px rgba(40,114,90,.1); }
+    .bbtn { border:1px solid var(--line); background:#fff; color:var(--green); border-radius:5px; padding:3px 10px; font-size:12px; font-weight:700; white-space:nowrap; } .bbtn:hover { border-color:var(--green); color:var(--green-dark); } .bbtn.unlock { color:#966209; } .bbtn.unlock:hover { border-color:#966209; }
+    .g-batch-actions { margin-left:auto; display:flex; gap:6px; }
+    .items { padding:4px 0; } .item { display:grid; grid-template-columns:72px 52px minmax(0,1fr); gap:12px; align-items:start; padding:13px 19px; border-bottom:1px solid var(--line-soft); } .item:last-child { border-bottom:0; } .item.done .name { color:var(--muted); text-decoration:line-through; } .item.sub { grid-template-columns:72px minmax(0,1fr); }
     .b-thumb { width:52px; height:52px; display:grid; place-items:center; border-radius:6px; background:#eef1ec; color:#496258; font-size:10px; font-weight:800; overflow:hidden; } .b-thumb img { width:100%; height:100%; object-fit:cover; display:block; }
     .check { display:flex; align-items:center; gap:7px; color:var(--muted); font-size:12px; cursor:pointer; user-select:none; white-space:nowrap; } .check input { appearance:none; width:17px; height:17px; margin:0; border:1.5px solid #c9d2cc; border-radius:4px; background:#fff; position:relative; cursor:pointer; transition:.15s; flex:none; } .check input:hover { border-color:var(--green); } .check input:checked { background:var(--green); border-color:var(--green); } .check input:checked::after { content:"✓"; position:absolute; left:3.5px; top:-1px; color:#fff; font-size:11px; font-weight:800; } .check.on { color:var(--green); font-weight:700; }
-    .info .name { font-weight:700; font-size:13px; } .info .meta { color:var(--muted); font-size:11px; margin-top:2px; } .check-col { display:flex; flex-direction:column; gap:7px; align-items:flex-start; } .check.c-conf input:checked { background:var(--amber); border-color:var(--amber); } .check.c-conf.on { color:var(--amber); font-weight:700; } .pgroup { border:1px solid var(--line); border-radius:8px; margin:0; overflow:hidden; } .pgroup + .pgroup, .pgroup + .item { border-top:0; } .pg-head { display:grid; grid-template-columns:52px minmax(0,1fr) auto; gap:12px; align-items:center; padding:12px 19px; background:#fbf8f0; border-bottom:1px solid var(--line); } .pg-name { font-weight:800; font-size:13.5px; line-height:1.35; } .pg-sub { color:var(--muted); font-size:11px; margin-top:2px; } .pg-note { margin-top:5px; font-size:11px; color:#7d6a3c; background:var(--amber-bg); border-radius:4px; padding:4px 7px; line-height:1.5; word-break:break-all; } .pg-total { text-align:right; white-space:nowrap; font-size:13px; font-weight:800; } .pg-total .cny { font-size:10.5px; color:var(--muted); font-weight:500; } .color-chip { display:inline-block; padding:1px 7px; border-radius:999px; background:#eef1ec; color:#496258; font-size:10.5px; font-weight:700; white-space:nowrap; } .item-note { margin-top:3px; font-size:11px; color:#7d6a3c; line-height:1.5; word-break:break-all; } .p-remark { margin-top:6px; } .p-remark textarea { width:100%; max-width:480px; min-height:30px; padding:5px 8px; border:1px dashed var(--line); border-radius:5px; background:#fffdfa; color:var(--ink); font-size:12px; line-height:1.4; resize:vertical; outline:none; } .p-remark textarea:focus { border-style:solid; border-color:var(--green); box-shadow:0 0 0 3px rgba(40,114,90,.08); }
+    .info { min-width:0; } .info .name { font-weight:700; font-size:13px; } .info .meta { color:var(--muted); font-size:11px; margin-top:2px; } .check-col { display:flex; flex-direction:column; gap:7px; align-items:flex-start; padding-top:2px; } .check.c-conf input:checked { background:var(--amber); border-color:var(--amber); } .check.c-conf.on { color:var(--amber); font-weight:700; } .pgroup { margin:10px 14px 12px; border:1px solid var(--line); border-radius:8px; overflow:hidden; background:#fff; } .pgroup .item { padding-left:14px; padding-right:14px; } .pgroup .item:last-child { border-bottom:0; } .pg-head { display:grid; grid-template-columns:52px minmax(0,1fr) auto; gap:12px; align-items:center; padding:12px 14px; background:#fbf8f0; border-bottom:1px solid var(--line); } .pg-name { font-weight:800; font-size:13.5px; line-height:1.35; } .pg-sub { color:var(--muted); font-size:11px; margin-top:2px; } .pg-note { margin-top:5px; font-size:11px; color:#7d6a3c; background:var(--amber-bg); border-radius:4px; padding:4px 7px; line-height:1.5; word-break:break-all; } .pg-total { text-align:right; white-space:nowrap; font-size:13px; font-weight:800; } .pg-total .cny { font-size:10.5px; color:var(--muted); font-weight:500; } .color-chip { display:inline-block; padding:1px 7px; border-radius:999px; background:#eef1ec; color:#496258; font-size:10.5px; font-weight:700; white-space:nowrap; } .item-note { margin-top:3px; font-size:11px; color:#7d6a3c; line-height:1.5; word-break:break-all; } .p-remark { margin-top:6px; } .p-remark textarea { width:100%; max-width:480px; min-height:30px; padding:5px 8px; border:1px dashed var(--line); border-radius:5px; background:#fffdfa; color:var(--ink); font-size:12px; line-height:1.4; resize:vertical; outline:none; } .p-remark textarea:focus { border-style:solid; border-color:var(--green); box-shadow:0 0 0 3px rgba(40,114,90,.08); }
     /* 建组表单 */
-    .create-card { background:var(--surface); border:1px solid var(--line); border-radius:10px; padding:17px 19px 19px; margin-top:20px; } .cc-head { font-weight:800; font-size:14px; margin-bottom:6px; } .cc-tip { color:var(--muted); font-size:12px; margin:0 0 12px; } .cc-row { display:flex; flex-wrap:wrap; gap:10px; align-items:flex-end; } .cc-row label { display:flex; flex-direction:column; gap:5px; font-size:11.5px; color:var(--muted); } .cc-row input { height:36px; padding:0 10px; border:1px solid var(--line); border-radius:5px; background:#fff; outline:none; min-width:130px; } .cc-row input:focus { border-color:var(--green); box-shadow:0 0 0 3px rgba(40,114,90,.1); } .cc-row input#g-title { min-width:220px; } .quota { color:var(--amber); font-size:12px; margin-top:9px; font-weight:600; }
-    .price-card { background:var(--surface); border:1px solid var(--line); border-radius:10px; padding:17px 19px 19px; margin-top:16px; } .price-card-head { display:flex; align-items:baseline; justify-content:space-between; gap:12px; flex-wrap:wrap; } .price-card-title { font-weight:800; font-size:14px; } .price-card-tip { color:var(--muted); font-size:12px; } .price-list { margin-top:10px; } .price-line { display:grid; grid-template-columns:minmax(150px,1fr) 150px 170px auto auto auto; align-items:end; gap:10px; padding:10px 0; border-bottom:1px dashed var(--line-soft); } .price-line:last-child { border-bottom:0; } .price-line .price-name { min-width:0; font-weight:750; font-size:13px; } .price-line label { display:flex; flex-direction:column; gap:4px; color:var(--muted); font-size:11px; min-width:0; } .price-line input { height:32px; width:100%; padding:0 8px; border:1px solid var(--line); border-radius:5px; background:#fff; color:var(--ink); outline:none; } .price-line .price-name-input { width:100%; font-weight:750; } .price-line input:focus { border-color:var(--green); box-shadow:0 0 0 3px rgba(40,114,90,.1); } .price-line .price-users { color:var(--muted); font-size:11px; white-space:nowrap; align-self:center; } .price-line .price-default { color:var(--amber); font-size:11px; font-weight:750; } .price-line > div:first-child { min-width:0; }
-    .price-boxes { display:inline-flex; flex-wrap:wrap; gap:4px; vertical-align:middle; }
+    .create-card { background:var(--surface); border:1px solid var(--line); border-radius:10px; padding:17px 19px 19px; margin-top:20px; box-shadow:0 1px 2px rgba(37,49,45,.04); } .cc-head { font-weight:800; font-size:14px; margin-bottom:6px; } .cc-tip { color:var(--muted); font-size:12px; margin:0 0 12px; } .cc-row { display:flex; flex-wrap:wrap; gap:10px; align-items:flex-end; } .cc-row label { display:flex; flex-direction:column; gap:5px; font-size:11.5px; color:var(--muted); } .cc-row input { height:36px; padding:0 10px; border:1px solid var(--line); border-radius:5px; background:#fff; outline:none; min-width:130px; } .cc-row input:focus { border-color:var(--green); box-shadow:0 0 0 3px rgba(40,114,90,.1); } .cc-row input#g-title { min-width:220px; } .quota { color:var(--amber); font-size:12px; margin-top:9px; font-weight:600; }
+    .price-card { background:var(--surface); border:1px solid var(--line); border-radius:10px; padding:17px 19px 19px; margin-top:16px; box-shadow:0 1px 2px rgba(37,49,45,.04); } .price-card-head { display:flex; align-items:baseline; justify-content:space-between; gap:12px; flex-wrap:wrap; } .price-card-title { font-weight:800; font-size:14px; } .price-card-tip { color:var(--muted); font-size:12px; } .price-list { margin-top:10px; }
+    .group-line { display:grid; grid-template-columns:minmax(150px,1fr) 150px 170px auto auto auto; align-items:end; gap:12px; padding:12px 4px; border-bottom:1px dashed var(--line-soft); }
+    .group-line:last-of-type { border-bottom:0; }
+    .group-line label { display:flex; flex-direction:column; gap:4px; font-size:11px; color:var(--muted); min-width:0; }
+    .group-line input { height:32px; width:100%; border:1px solid var(--line); border-radius:5px; padding:0 8px; color:var(--ink); outline:none; background:#fff; }
+    .group-line input:focus { border-color:var(--green); box-shadow:0 0 0 3px rgba(40,114,90,.1); }
+    .group-line > div:first-child { min-width:0; }
+    .group-line > div:first-child .p-meta { white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .group-line .p-btn { white-space:nowrap; }
+    .price-group-name { display:flex; align-items:center; gap:7px; min-width:0; min-height:32px; color:var(--ink); font-size:13px; font-weight:750; }
+    .price-group-name input { width:50%; flex:none; font-weight:750; }
+    .gdef { display:inline-flex; align-items:center; min-height:26px; padding:3px 9px; border:1px solid #eed7a5; border-radius:6px; background:var(--amber-bg); color:#7d5a16; font-size:11px; font-weight:800; white-space:nowrap; }
+    .p-meta { color:var(--muted); font-size:11px; font-weight:500; white-space:nowrap; }
+    .p-btn { border:1px solid var(--line); background:#fff; border-radius:4px; padding:5px 10px; font-size:12px; font-weight:700; color:var(--ink); }
+    .p-btn:hover { border-color:var(--green); color:var(--green); }
+    .p-btn.danger { color:var(--red); }
+    .p-btn.danger:hover { border-color:var(--red); color:var(--red); }
+    .settings-row { display:grid; grid-template-columns:minmax(160px,1.4fr) 140px 200px auto; gap:12px; align-items:end; }
+    .settings-row label { display:flex; flex-direction:column; gap:5px; font-size:12px; color:var(--muted); min-width:0; }
+    .settings-row input { height:36px; width:100%; border:1px solid var(--line); border-radius:5px; background:#fff; padding:0 9px; color:var(--ink); outline:none; }
+    .settings-row input:focus { border-color:var(--green); box-shadow:0 0 0 3px rgba(40,114,90,.1); }
+    .price-card .pg-add { margin-top:12px; border-top:1px dashed var(--line-soft); padding-top:14px; }
+    .parse-btn { border:none; background:var(--green); color:#fff; border-radius:5px; padding:0 18px; height:36px; font-weight:700; white-space:nowrap; justify-self:start; }
+    .parse-btn:hover { background:var(--green-dark); }
+    .invite-row { display:flex; flex-wrap:wrap; gap:8px; margin-top:7px; align-items:center; }
+    .invite-row .invite { margin-top:0; }
+    .invite.invite-link { background:var(--green-bg); color:var(--green-dark); }
+    .invite.invite-link .copy { color:var(--green); }
+    .invite.invite-link .copy:hover { background:rgba(40,114,90,.12); }
+    .price-boxes { display:flex; flex-wrap:wrap; gap:4px; margin-top:5px; }
     .price-box { display:inline-flex; align-items:center; min-height:22px; padding:2px 7px; border:1px solid #e6dfd3; border-radius:4px; background:#fffdfa; color:#7b847f; font-size:11px; white-space:nowrap; }
     .price-box.original { color:var(--ink); }
     .price-box.taxed { color:var(--green-dark); background:var(--green-bg); border-color:#c8ded1; }
     .price-box.cny { color:#7d5a16; background:var(--amber-bg); border-color:#f0dcae; }
-    @media(max-width:760px) { .price-line { grid-template-columns:minmax(130px,1fr) 125px 145px auto; } .price-line > div:first-child { grid-column:1 / -1; } } @media(max-width:520px) { .price-line { grid-template-columns:1fr 1fr; } .price-line > div:first-child, .price-line label, .price-line .price-users { grid-column:1 / -1; } .price-line .g-btn { width:100%; } } .price-empty { color:var(--muted); font-size:12px; padding:8px 0; }
-    .pull-panel { border-top:1px dashed var(--line-soft); margin-top:12px; padding-top:11px; } .pull-head { font-size:12px; color:var(--muted); margin-bottom:8px; font-weight:700; } .pull-opts { display:flex; flex-wrap:wrap; gap:7px; max-height:130px; overflow:auto; } .opt-chip { display:inline-flex; align-items:center; gap:6px; padding:5px 10px; border:1px solid var(--line); border-radius:999px; background:#fff; color:var(--ink); font-size:12px; cursor:pointer; user-select:none; } .opt-chip:hover { border-color:var(--green); } .opt-chip.sel { background:var(--green-bg); border-color:var(--green); color:var(--green-dark); font-weight:700; } .opt-chip input { position:absolute; width:1px; height:1px; opacity:0; } .opt-chip:focus-within { border-color:var(--green); box-shadow:0 0 0 3px rgba(40,114,90,.1); } .pull-bar { display:flex; gap:8px; align-items:center; margin-top:10px; }
+    .price-empty { color:var(--muted); font-size:12px; padding:8px 0; }
+    .pull-panel { border-top:1px dashed var(--line-soft); margin-top:12px; padding:12px 19px 14px; } .pull-head { font-size:12px; color:var(--muted); margin-bottom:8px; font-weight:700; } .pull-opts { display:flex; flex-wrap:wrap; gap:7px; max-height:130px; overflow:auto; } .opt-chip { display:inline-flex; align-items:center; gap:6px; padding:5px 10px; border:1px solid var(--line); border-radius:999px; background:#fff; color:var(--ink); font-size:12px; cursor:pointer; user-select:none; } .opt-chip:hover { border-color:var(--green); } .opt-chip.sel { background:var(--green-bg); border-color:var(--green); color:var(--green-dark); font-weight:700; } .opt-chip input { position:absolute; width:1px; height:1px; opacity:0; } .opt-chip:focus-within { border-color:var(--green); box-shadow:0 0 0 3px rgba(40,114,90,.1); } .pull-bar { display:flex; gap:8px; align-items:center; margin-top:10px; }
     .empty { padding:34px 16px; text-align:center; color:var(--muted); font-size:13px; } .loading { padding:34px 16px; text-align:center; color:var(--muted); font-size:13px; } .notice { position:fixed; right:22px; bottom:22px; padding:11px 14px; border-radius:5px; background:#28463a; color:#fff; opacity:0; pointer-events:none; transform:translateY(7px); transition:opacity .2s ease, transform .2s ease; z-index:10; } .notice.show { opacity:1; transform:translateY(0); }
-    @media(max-width:600px) { .page { padding:24px 16px 36px; } .item { grid-template-columns:1fr; } }
+    .page-credit { display:block; box-sizing:border-box; width:100%; margin:24px 0 40px; padding:0 16px; text-align:center; user-select:none; }
+    .page-credit .credit-line { display:block; width:22px; height:1px; margin:0 auto 8px; background:#c4b89a; }
+    .page-credit .credit-txt { display:inline-flex; align-items:center; justify-content:center; gap:.4em; font-size:11.5px; letter-spacing:.1em; color:#8a938d; text-align:center; }
+    .page-credit .credit-mark { font-size:13px; letter-spacing:0; line-height:1; }
+    .page-credit .credit-txt b { font-family:"Songti SC","STSong","Noto Serif SC","SimSun",serif; font-style:normal; font-weight:600; letter-spacing:.14em; color:#4f5b55; }
   </style>
   <link rel="stylesheet" href="responsive.css" data-page-node-id="C5InS8m5gnaxwmuTI1vp2j">
 </head>
@@ -68,11 +112,12 @@
       <section class="price-card" id="price-card" data-page-node-id="SM9vHEeFqUv090MISa1zTu">
         <div class="price-card-head" data-page-node-id="RInsZj4cLNaxw0BDkWyBpZ"><span class="price-card-title" data-page-node-id="GxVZei3HG2mciZPFnuUXN0">价格分组</span><span class="price-card-tip" data-page-node-id="Edyl50NSjPFWAJ9Ur5pBAQ">采购员可维护税率与日元汇率，影响对应用户清单的人民币折算</span></div>
         <div class="price-list" id="price-list" data-page-node-id="NhEWQsEoIzvpXTqH6GtJ5s"><div class="loading" data-page-node-id="1WFj73WXe71K91CgpjilMS">加载中…</div></div>
-        <div class="cc-row" style="margin-top:8px;padding-top:10px;border-top:1px dashed var(--line-soft)" data-page-node-id="F96HxVloFgPes7ZSr3ZK1C">
-          <label data-page-node-id="mz5ywRV7aI7EPaCx3tjL3F">新增分组<input id="pgn-name" placeholder="如：海外直采组" data-page-node-id="ymKw1vdpNK56Bv93oUU5xr"></label>
+        <div class="settings-row pg-add" data-page-node-id="F96HxVloFgPes7ZSr3ZK1C">
+          <label data-page-node-id="mz5ywRV7aI7EPaCx3tjL3F">组名<input id="pgn-name" placeholder="如：海外直采组" data-page-node-id="ymKw1vdpNK56Bv93oUU5xr"></label>
+          <label data-page-node-id="Qc4tWm3T2kA0dP7rN8jL5v">国家<select id="pgn-country" onchange="onPgCountry()"><option value="">选择国家</option></select></label>
           <label data-page-node-id="hgRX2emGlsMpUs7BGyDg3D">税率（%）<input id="pgn-tax" type="number" step="0.1" min="0" max="100" value="10" data-page-node-id="lJzJuPrtBawgTeTmcec1G7"></label>
-          <label data-page-node-id="3obZinYBHxuiBq0TWIm7eu">汇率（1 日元 = 元）<input id="pgn-rate" type="number" step="0.0001" min="0.0001" value="0.048" inputmode="decimal" data-page-node-id="D9AfoDv2M6DMPq496veod6"></label>
-          <button class="g-btn primary" onclick="addPriceGroup()" data-page-node-id="Brtd4hhK3wyMtrBkAMSSJK">添加分组</button>
+          <label data-page-node-id="3obZinYBHxuiBq0TWIm7eu">汇率（1 <span id="pgn-cur">本币</span> = 元）<input id="pgn-rate" type="number" step="0.0001" min="0.0001" value="0.048" inputmode="decimal" data-page-node-id="D9AfoDv2M6DMPq496veod6"></label>
+          <button class="parse-btn" onclick="addPriceGroup()" data-page-node-id="Brtd4hhK3wyMtrBkAMSSJK">添加分组</button>
         </div>
       </section>
 
@@ -81,6 +126,7 @@
         <p class="cc-tip" data-page-node-id="OzHwENOmjDfzCMzKnpjFyt">标题 + 出游日期区间（开始日期 ~ 结束日期）；创建后自动生成 4 位邀请码，可把需求人批量拉入，或把邀请码发给同事自助加入。</p>
         <div class="cc-row" data-page-node-id="52bUooXV8NZrrM7hkBAgxe">
           <label data-page-node-id="mqk5zSHmRMF760ZKev0Jbb">组标题<input id="g-title" autocomplete="off" placeholder="例如：9月东京代购" data-page-node-id="rCSNHGVRA4HITU4jP5F4FS"></label>
+          <label data-page-node-id="rCSNHGVRA4HITU4jP5F4FS">国家<select id="g-country" autocomplete="off" data-page-node-id="5FwTlV6XwFfp2IRZZVQ9zY"></select></label>
           <label data-page-node-id="5FwTlV6XwFfp2IRZZVQ9zY">开始日期<input id="g-start" type="date" data-page-node-id="ZFp7o3GjWUrsKIDdMabuKW"></label>
           <label data-page-node-id="dnynAE7mmN8sZj87n7U1lC">结束日期<input id="g-end" type="date" autocomplete="off" data-page-node-id="vvdUxQkZg7WW7Ek5qU3njd"></label>
           <button class="g-btn primary" onclick="createGroup()" data-page-node-id="RqU6FUktip5AQU9l39vD69">创建出游组</button>
@@ -91,12 +137,15 @@
       <section class="groups" id="groups" data-page-node-id="kS9ZeAyiTeVU128pNQ92w3"><div class="loading" data-page-node-id="d0Phk1DBhk2n85yRoynxVx">加载中…</div></section>
     </main>
   </div>
+  <div class="page-credit"><span class="credit-line"></span><span class="credit-txt"><span class="credit-mark">🕊️</span><b>世界编织者 · 蓝鸠屿 Sarsing</b></span></div>
   <div class="notice" id="notice" role="status" aria-live="polite" aria-atomic="true" data-page-node-id="RXleRNF1PeCmJR0d3rx5Yt">已更新</div>
   <script src="auth.js"></script>
+  <script src="export.js"></script>
   <script>
     let groups = [];
     let memberOptions = [];
     let priceGroups = [];
+    let meUser = null;
     const noticeEl = document.getElementById("notice");
     function notify(m) { noticeEl.textContent = m; noticeEl.classList.add("show"); setTimeout(() => noticeEl.classList.remove("show"), 2200); }
     const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
@@ -106,22 +155,49 @@
     function renderPriceGroups() {
       const box = document.getElementById("price-list");
       if (!priceGroups.length) { box.innerHTML = '<div class="price-empty">暂无价格分组</div>'; return; }
-      box.innerHTML = priceGroups.map(g => `<div class="price-line">
-        <div class="price-name">${g.is_default ? '<span class="price-default">默认组</span>' : `<input id="pgt-name-${g.id}" class="price-name-input" value="${esc(g.name)}" aria-label="价格分组名称">`}</div>
-        <label>税率（%）<input id="pgt-tax-${g.id}" type="number" step="0.1" min="0" max="100" value="${g.tax_rate}"></label>
-        <label>汇率（1 日元 = 元）<input id="pgt-rate-${g.id}" type="number" step="0.0001" min="0.0001" value="${g.exchange_rate_jpy_cny}"></label>
-        <span class="price-users">${g.user_count || 0} 人使用</span>
-        <button class="g-btn" onclick="savePriceGroup(${g.id})">保存</button>
-        ${g.is_default ? '' : (g.user_count ? '<span class="price-users">有成员，先调整归属</span>' : `<button class="g-btn danger" onclick="removePriceGroup(${g.id})">删除</button>`)}
-      </div>`).join('');
+      box.innerHTML = priceGroups.map(g => {
+        const nameCtrl = `<input id="pgt-name-${g.id}" value="${esc(g.name)}" aria-label="价格分组名称">`;
+        return `<div class="group-line ${g.is_default ? "is-default" : ""}">
+          <div class="price-group-name">${g.is_default ? '<span class="gdef">默认组</span><span class="p-meta">全局兜底</span>' : nameCtrl}${g.country_name ? `<span class="p-meta">${esc(g.country_name)}</span>` : ""}</div>
+          <label>税率（%）<input id="pgt-tax-${g.id}" type="number" step="0.1" min="0" max="100" value="${g.tax_rate}"></label>
+          <label>汇率（1 本币 = 元）<input id="pgt-rate-${g.id}" type="number" step="0.0001" min="0.0001" value="${g.exchange_rate_jpy_cny}"></label>
+          <button class="p-btn" onclick="savePriceGroup(${g.id})">保存</button>
+          ${g.is_default ? "" : (g.user_count > 0 ? '<span class="p-meta">有成员，先调整归属再删</span>' : `<button class="p-btn danger" onclick="removePriceGroup(${g.id})">删除</button>`)}
+        </div>`;
+      }).join("") || '<div class="empty">暂无分组</div>';
     }
-    async function loadPriceGroups() { priceGroups = await api("/api/settings/price-groups"); renderPriceGroups(); }
+    async function loadPriceGroups() { priceGroups = await api("/api/settings/price-groups"); renderPriceGroups(); loadCountries(); }
+    let COUNTRIES = [];
+    function countryName(code) {
+      const c = (COUNTRIES || []).find(x => x.code === code);
+      return c ? c.name : code;
+    }
+    async function loadCountries() {
+      try { COUNTRIES = await api("/api/settings/countries"); } catch (_) { COUNTRIES = []; }
+      const opts = (COUNTRIES || []).map(c =>
+        `<option value="${c.code}" data-tip="${c.scrapers && c.scrapers.length ? "比价网站：" + c.scrapers.join(" / ") : "暂无比价网站"}">${c.name}（${c.symbol}${c.currency}）</option>`).join("");
+      const sel = document.getElementById("pgn-country");
+      if (sel) sel.innerHTML = '<option value="">选择国家</option>' + opts;
+      const ag = document.getElementById("g-country");
+      if (ag) ag.innerHTML = opts || '<option value="">未配置国家</option>';
+    }
+    function onPgCountry() {
+      const code = document.getElementById("pgn-country").value;
+      const c = (COUNTRIES || []).find(x => x.code === code);
+      if (!c) return;
+      document.getElementById("pgn-tax").value = c.tax_rate;
+      document.getElementById("pgn-rate").value = c.exchange_rate_cny;
+      const cur = document.getElementById("pgn-cur"); if (cur) cur.textContent = c.currency;
+      const opt = document.getElementById("pgn-country").selectedOptions[0];
+      notify("已继承「" + c.name + "」参数" + (opt && opt.dataset.tip ? " · " + opt.dataset.tip : ""));
+    }
     async function addPriceGroup() {
       const name = document.getElementById("pgn-name").value.trim();
       const tax = parseFloat(document.getElementById("pgn-tax").value);
       const rate = parseFloat(document.getElementById("pgn-rate").value);
+      const country = document.getElementById("pgn-country").value || null;
       if (!name) { notify("请填写分组名称"); return; }
-      try { await api("/api/settings/price-groups", { method: "POST", body: { name, tax_rate: tax, exchange_rate_jpy_cny: rate } }); document.getElementById("pgn-name").value = ""; await loadPriceGroups(); notify("价格分组已添加"); }
+      try { await api("/api/settings/price-groups", { method: "POST", body: { name, tax_rate: tax, exchange_rate_jpy_cny: rate, country } }); document.getElementById("pgn-name").value = ""; await loadPriceGroups(); notify("价格分组已添加"); }
       catch (err) { notify(err.message || "添加失败"); }
     }
     async function savePriceGroup(id) {
@@ -151,6 +227,7 @@
 
     function render() {
       const box = document.getElementById("groups");
+      if (!COUNTRIES.length) loadCountries();
       document.getElementById("group-total").textContent = groups.length;
       const all = groups.reduce((s, g) => s + (g.total || 0), 0);
       const done = groups.reduce((s, g) => s + (g.purchased || 0), 0);
@@ -164,15 +241,19 @@
         return `<article class="group">
           <div class="group-head"><div>
             <div class="group-title">${esc(g.title)}</div>
-            <div class="group-meta">${esc(dateRange(g))} · 共 ${g.total} 件 · 已采购 ${g.purchased} 件</div>
-            ${g.status === "open" ? `<div class="invite">入组邀请码 <code>${esc(g.invite_code)}</code> <button class="copy" onclick="copyInvite('${esc(g.invite_code)}', this)">复制</button><button class="copy" onclick="copyInviteLink('${esc(g.invite_code)}', this)" title="复制链接，同事点开登录/注册后自动入组">复制邀请链接</button></div>` : ""}
-            ${members.length ? `<div class="member-chips">${members.map(m => `<a class="mchip" href="member.html?group_id=${g.id}&member_id=${m.id}" title="查看 ${esc(m.full_name || m.email)} 在本组提交的清单">${esc(m.full_name || m.email)}</a>`).join("")}</div>` : ""}
+            <div class="group-meta">${esc(dateRange(g))} · ${g.country ? countryName(g.country) + " · " : ""}共 ${g.total} 件 · 已采购 ${g.purchased} 件</div>
+            ${g.status === "open" ? `<div class="invite-row"><div class="invite"><span>入组邀请码</span><code>${esc(g.invite_code)}</code><button class="copy" onclick="copyInvite('${esc(g.invite_code)}', this)">复制邀请码</button></div><div class="invite invite-link"><span>邀请链接</span><button class="copy" onclick="copyInviteLink('${esc(g.invite_code)}', this)" title="复制链接，同事点开登录/注册后自动入组">复制邀请链接</button></div></div>` : ""}
+            ${members.length ? `<div class="member-chips">${members.map(m => g.status === "open"
+              ? `<span class="mchip">${esc(m.full_name || m.email)}<button type="button" class="mchip-x" onclick="removeMember(${g.id}, ${m.id})" title="移除该成员">×</button></span>`
+              : `<a class="mchip" href="member.html?group_id=${g.id}&member_id=${m.id}" title="查看 ${esc(m.full_name || m.email)} 在本组提交的清单">${esc(m.full_name || m.email)}</a>`).join("")}</div>` : ""}
           </div>
           <span class="badge ${g.status}">${g.status === "completed" ? "已完成" : "进行中"}</span></div>
+          ${(g.batches || []).length ? renderBatches(g) : ""}
           ${g.status === "open" ? renderPullBar(g, members) : ""}
           <div class="items">${items.length ? renderGroupItems(items) : '<div class="empty">该组还没有成员提交的清单</div>'}</div>
-          <div class="group-head" style="border-top:1px solid var(--line-soft);border-bottom:0">
-            <div class="g-actions" style="width:100%;justify-content:flex-end">
+          <div class="group-foot">
+            <div class="g-actions">
+              <button class="g-btn" onclick="exportGroupRecon(${g.id})">导出对账单</button>
               ${g.status === "open" ? `<button class="g-btn" onclick="completeGroup(${g.id})">标记完成（结束收单）</button>` : ""}
               <button class="g-btn danger" onclick="deleteGroup(${g.id})">删除组</button>
             </div>
@@ -190,21 +271,62 @@
         <div class="pull-bar"><button class="g-btn primary" onclick="pullMembers(${g.id})">加入选中需求人</button><span style="color:var(--muted);font-size:11.5px">或把上方邀请码发给同事，让 TA 在「我的清单」页自助加入</span></div>` : '<div style="color:var(--muted);font-size:12px">没有可拉入的普通用户（全员都已在组内）</div>'}
       </div>`;
     }
+    async function removeMember(gid, uid) {
+      const g = groups.find(x => x.id === gid);
+      const m = (g && g.members || []).find(x => x.id === uid);
+      if (!g || !m) return;
+      if (!confirm("把「" + (m.full_name || m.email) + "」移出该出游组？其已提交/锁定的清单仍保留，采购员继续处理。")) return;
+      try {
+        await api("/api/groups/" + gid + "/members/" + uid, { method: "DELETE" });
+        await loadAll();
+        notify("已移除该成员");
+      } catch (err) { notify(err.message || "移除失败"); }
+    }
+
+    // 每人每批次的锁定/解锁入口：批次在组开始后按「提交一次锁定一次」递增。
+    function renderBatches(g) {
+      const canManage = g.status === "open";
+      return `<div class="g-batches">${(g.batches || []).map(b => {
+        const who = (b.requester && (b.requester.full_name || b.requester.email)) || "";
+        let act = "";
+        if (canManage && b.status === "submitted") act = `<button class="bbtn" onclick="setBatchStatus(${g.id}, ${b.cart_id}, 'locked')">锁定该批</button>`;
+        else if (canManage && b.status === "locked") act = `<button class="bbtn unlock" onclick="setBatchStatus(${g.id}, ${b.cart_id}, 'draft')">解锁（可编辑）</button>`;
+        return `<div class="g-batch">
+          <span class="gb-who">${esc(who)}</span>
+          <span class="gb-no">第 ${b.batch_no || 1} 批</span>
+          <span class="gb-badge ${b.status}">${esc(STATUS_LABELS[b.status] || b.status)}</span>
+          <span class="gb-meta">${b.count} 件</span>
+          ${b.status === "locked" || b.status === "success" ? `<label class="gb-transfer"><span class="settlement-label">转账单号</span><input value="${esc(b.transfer_no || "")}" placeholder="填写单号" onchange="saveTransfer(${b.cart_id}, this.value)"></label>
+          <label class="check receipt-check ${b.receipt_confirmed ? "on" : ""}"><input type="checkbox" ${b.receipt_confirmed ? "checked" : ""} onchange="toggleReceipt(${b.cart_id}, this.checked)">查收确认</label>` : ""}
+          ${act ? `<span class="g-batch-actions">${act}</span>` : ""}
+        </div>`;
+      }).join("")}</div>`;
+    }
+    async function setBatchStatus(gid, cartId, status) {
+      if (status === "draft" && !confirm("解锁后该批恢复为草稿，成员可修改数量/删除条目后重新提交；确定解锁？")) return;
+      try {
+        await api("/api/groups/" + gid + "/carts/" + cartId + "/status", { method: "PATCH", body: { status } });
+        notify(status === "locked" ? "已锁定该批（出游开始后会自动为成员开立下一批草稿）" : "已解锁，该批恢复为可编辑草稿");
+        await loadAll();
+      } catch (err) { notify(err.message || "操作失败"); }
+    }
 
     async function createGroup() {
       const title = document.getElementById("g-title").value.trim();
+      const country = document.getElementById("g-country").value || null;
       const start = document.getElementById("g-start").value;
       const end = document.getElementById("g-end").value;
       if (!title) { notify("请填写组标题"); return; }
       if (!start || !end) { notify("请选择出游开始与结束日期"); return; }
       if (end < start) { notify("结束日期不能早于开始日期"); return; }
       try {
-        const g = await api("/api/groups", { method: "POST", body: { title, start_date: start, end_date: end } });
+        const g = await api("/api/groups", { method: "POST", body: { title, start_date: start, end_date: end, country } });
         document.getElementById("g-title").value = "";
         document.getElementById("g-start").value = "";
         document.getElementById("g-end").value = "";
         await loadAll();
-        notify("出游组已创建，邀请码见组卡片；也可复制邀请链接发同事");
+        const cname = (COUNTRIES || []).find(x => x.code === country);
+        notify("出游组已创建，邀请码见组卡片；组内清单默认按" + (cname ? cname.name : "原价格组") + "折算");
       } catch (err) { notify(err.message || "创建失败"); }
     }
     async function completeGroup(id) {
@@ -235,6 +357,7 @@
     function pChipColor(color) { for (const [k, v] of P_CHIP_COLORS) { if (color.includes(k)) return v; } return "#5c6b63"; }
     function pChecks(item) {
       return `<span class="check-col">
+        <label class="check ${item.purchase_confirmed ? 'c-conf on' : 'c-conf'}"><input type="checkbox" ${item.purchase_confirmed ? 'checked' : ''} onchange="toggleConfirmed(${item.id}, this.checked)" title="确认采购">采购确认</label>
         <label class="check ${item.purchased ? 'on' : ''}"><input type="checkbox" ${item.purchased ? 'checked' : ''} onchange="togglePurchased(${item.id}, this.checked)" title="标记是否已采购">已采购</label>
       </span>`;
     }
@@ -246,15 +369,20 @@
       const p = item.product;
       return `<span class="price-boxes" aria-label="只读价格"><span class="price-box original">税前单价 ${money(item.pretax_price_cents ?? item.unit_price_cents, p.currency)}</span><span class="price-box taxed">含税价 ${money(item.taxed_price_cents ?? p.taxed_price_cents, p.currency)}</span><span class="price-box cny">人民币 ${money(item.price_cny_cents ?? p.price_cny_cents, "CNY")}</span></span>`;
     }
-    function pSubRow(item) {
+    function pSubRow(item, nested) {
       const color = (item.color || "").trim();
       const colorTxt = color || "默认";
-      const dotStyle = item.color ? `background:${pChipColor(item.color)}` : "";
-      const nameHtml = esc(item.product.name) + (color ? ` <span class="color-chip">${esc(color)}</span>` : "");
-      return `<div class="item ${item.purchased ? 'done' : ''}">
+      const who = esc((item.requester || {}).full_name || (item.requester || {}).email || "");
+      const nameHtml = nested
+        ? `<span class="color-chip">${esc(colorTxt)}</span>`
+        : (esc(item.product.name) + (color ? ` <span class="color-chip">${esc(color)}</span>` : ""));
+      const metaBits = nested
+        ? [`× ${item.quantity}`, who].filter(Boolean)
+        : [color ? esc(colorTxt) : "", `× ${item.quantity}`, who].filter(Boolean);
+      return `<div class="item${nested ? " sub" : ""} ${item.purchased ? "done" : ""}">
         ${pChecks(item)}
-        ${itemThumb(item, "b-thumb")}
-        <div class="info"><div class="name">${nameHtml}</div><div class="meta">${color ? esc(colorTxt) + " · " : ""}× ${item.quantity} · ${pPriceBoxes(item)} · ${esc((item.requester || {}).full_name || (item.requester || {}).email || "")}</div>${pRemark(item)}</div>
+        ${nested ? "" : itemThumb(item, "b-thumb")}
+        <div class="info"><div class="name">${nameHtml}</div><div class="meta">${metaBits.join(" · ")}</div>${pPriceBoxes(item)}${pRemark(item)}</div>
       </div>`;
     }
     function pGroupHead(group) {
@@ -292,8 +420,16 @@
       return out.map(s => {
         if (s.plain) return pSubRow(s.plain);
         if (s.rows.length === 1) return pSubRow(s.rows[0]);
-        return `<div class="pgroup">${pGroupHead(s)}${s.rows.map(pSubRow).join("")}</div>`;
+        return `<div class="pgroup">${pGroupHead(s)}${s.rows.map(it => pSubRow(it, true)).join("")}</div>`;
       }).join("");
+    }
+    async function saveTransfer(cartId, transferNo) {
+      try { await api("/api/admin/carts/" + cartId + "/transfer", { method: "PATCH", body: { transfer_no: transferNo } }); notify("转账单号已保存"); }
+      catch (err) { notify(err.message || "保存失败"); }
+    }
+    async function toggleReceipt(cartId, confirmed) {
+      try { await api("/api/admin/carts/" + cartId + "/receipt-confirmed", { method: "PATCH", body: { confirmed } }); await loadAll(); notify(confirmed ? "已确认查收" : "已取消查收确认"); }
+      catch (err) { notify(err.message || "保存失败"); }
     }
     async function toggleConfirmed(itemId, confirmed) {
       await api("/api/admin/cart-items/" + itemId + "/confirmed", { method: "PATCH", body: { confirmed } });
@@ -308,9 +444,23 @@
       catch (err) { notify(err.message || "保存失败"); }
     }
 
+    function exportGroupRecon(gid) {
+      if (!window.ExportRecon) { notify("导出模块未加载"); return; }
+      const g = groups.find(x => x.id === gid);
+      if (!g) { notify("未找到该组"); return; }
+      const who = (meUser && (meUser.full_name || meUser.email)) || "";
+      ExportRecon.open({
+        title: (g.title || "出游组") + " · 分人对账单",
+        group: g,
+        exporter: who,
+        items: g.items || [],
+        batches: g.batches || [],
+      });
+    }
     (async function init() {
       const me = await requireRole("purchaser");
       if (!me) return;
+      meUser = me;
       document.getElementById("who").textContent = me.full_name || me.email;
       document.getElementById("avatar").textContent = initials(me.full_name || me.email);
       await loadAll();

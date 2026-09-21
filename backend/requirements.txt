@@ -9,3 +9,4 @@ requests==2.32.4
 beautifulsoup4==4.13.4
 lxml==6.0.1
 alembic==1.16.5
+PyYAML==6.0.2

@@ -59,6 +59,8 @@ class PriceGroup(Base):
     name: Mapped[str] = mapped_column(String(64), unique=True, index=True)
     tax_rate: Mapped[float] = mapped_column(Float)
     exchange_rate_jpy_cny: Mapped[float] = mapped_column(Float)
+    # 关联的国家索引 code（countries.yml，如 jp/us/kr），用于新建分组时继承基础参数与前端展示。
+    country: Mapped[str | None] = mapped_column(String(8), nullable=True)
     is_default: Mapped[bool] = mapped_column(Boolean, default=False, server_default=text("false"))
     users: Mapped[list["User"]] = relationship(back_populates="price_group")
 
@@ -115,6 +117,11 @@ class Cart(Base):
     # 出游采购组归属（可空）：用户提交清单时整单归入某个进行中的出游组。
     # 同一张清单同时只归属一个组；撤回/重开后清空可再选择其它组。
     group_id: Mapped[int | None] = mapped_column(ForeignKey("procurement_groups.id"), nullable=True, index=True)
+    # 批次序号（该用户在某出游组内的第几批）：0 = 尚未提交的草稿；提交时分配 >=1。
+    # start_date 到达后，用户每「提交即封板」一次，下一批草稿的 batch_no 递增。
+    batch_no: Mapped[int] = mapped_column(Integer, default=0, server_default=text("0"))
+    transfer_no: Mapped[str | None] = mapped_column(String(120), nullable=True)
+    receipt_confirmed: Mapped[bool] = mapped_column(Boolean, default=False, server_default=text("false"))
     status: Mapped[CartStatus] = mapped_column(Enum(CartStatus), default=CartStatus.DRAFT, index=True)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
     updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
@@ -170,6 +177,8 @@ class ProcurementGroup(Base):
     invite_code: Mapped[str] = mapped_column(String(4))
     start_date: Mapped[date] = mapped_column(Date)
     end_date: Mapped[date] = mapped_column(Date)
+    # 组对应的国家（countries.yml code，如 jp/kr）：创建组时选择；组内清单折算默认用该国税率/汇率。
+    country: Mapped[str | None] = mapped_column(String(8), nullable=True)
     status: Mapped[GroupStatus] = mapped_column(Enum(GroupStatus), default=GroupStatus.OPEN, index=True)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
     completed_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)

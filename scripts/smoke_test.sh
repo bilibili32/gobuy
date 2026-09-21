@@ -11,7 +11,7 @@
 set -euo pipefail
 
 API="${API_BASE:-http://localhost:8000}"
-ADMIN_EMAIL="${BOOTSTRAP_ADMIN_EMAIL:-admin@your-domain.example}"
+ADMIN_EMAIL="${BOOTSTRAP_ADMIN_EMAIL:-admin@example.com}"
 ADMIN_PASSWORD="${BOOTSTRAP_ADMIN_PASSWORD:-}"
 STAMP=$(date +%s)
 USER_EMAIL="smoke${STAMP}@example.com"
@@ -541,6 +541,169 @@ call PATCH "/api/admin/carts/$CART_GM3/status" "$ADMIN_TOKEN" '{"status":"locked
 check "他组用户清单锁定 200" "$CODE" "200"
 call PATCH "/api/admin/carts/$CART_GM3/status" "$ADMIN_TOKEN" '{"status":"success"}'
 check "他组用户清单成功 200" "$CODE" "200"
+
+section "8.55 批次机制（出游开始自动封板 / 组内锁定解锁 / 越权保护）"
+# 批次机制：组到达 start_date 后「提交即封板」，每锁定一次为需求人自动开下一批空草稿。
+TODAY=$(python3 -c "from datetime import date;print(date.today())")
+TOMORROW=$(python3 -c "from datetime import date,timedelta;print(date.today()+timedelta(days=1))")
+TODAY_END=$(python3 -c "from datetime import date,timedelta;print(date.today()+timedelta(days=6))")
+
+# 8.55.1 二号采购员再建「明日开始」组；三号组员加入并在开始前提交（未封板，可撤回）
+GT_TITLE="今日封板测试组"
+call POST /api/groups "$PUR2_TOKEN" "{\"title\":\"$GT_TITLE\",\"start_date\":\"$TOMORROW\",\"end_date\":\"$TODAY_END\"}"
+check "二号采购员建明日开始组 201" "$CODE" "201"
+GT_ID=$(python3 -c 'import json,sys; print(json.load(sys.stdin)["id"])' <<<"$BODY")
+GT_CODE=$(python3 -c 'import json,sys; print(json.load(sys.stdin)["invite_code"])' <<<"$BODY")
+
+call POST /api/groups/join "$GM3_TOKEN" "{\"invite_code\":\"$GT_CODE\"}"
+check "三号组员加入明日组 201" "$CODE" "201"
+check "明日组成员数 1" "$BODY" '"member_count":1'
+
+call POST /api/carts/me/items/manual "$GM3_TOKEN" '{"name":"封板批次商品","price_yen":2200,"quantity":2}'
+check "明日组内加购 201" "$CODE" "201"
+
+call POST /api/carts/me/submit "$GM3_TOKEN" "{\"group_id\":$GT_ID}"
+check "未开始组提交 200" "$CODE" "200"
+check "未开始提交为 submitted" "$BODY" '"status":"submitted"'
+check "未开始批次号 batch_no=1" "$BODY" '"batch_no":1'
+check "未开始组 started=false" "$BODY" '"started":false'
+check "未开始提交未冻结单价" "$BODY" '"price_frozen":false'
+C1_ID=$(python3 -c 'import json,sys; print(json.load(sys.stdin)["id"])' <<<"$BODY")
+
+# 采购员把开始日期改为今天 → 组进入采购期
+call PATCH "/api/groups/$GT_ID" "$PUR2_TOKEN" "{\"start_date\":\"$TODAY\"}"
+check "采购员把开始日期改为今天 200" "$CODE" "200"
+check "开始日期已更新" "$BODY" "\"start_date\":\"$TODAY\""
+
+# 已开始组内的 submitted 批次不可自行撤回 → 409
+call POST /api/carts/me/withdraw "$GM3_TOKEN"
+check "已开始组撤回被拒 409" "$CODE" "409"
+check "提示批次已封板" "$BODY" "封板"
+
+# 8.55.2 组级入口：采购员锁定组内 submitted 批次（submitted->locked）
+call PATCH "/api/groups/$GT_ID/carts/$C1_ID/status" "$PUR2_TOKEN" '{"status":"locked"}'
+check "组内锁定 submitted 批次 200" "$CODE" "200"
+check "组内锁定后状态 locked" "$BODY" '"status":"locked"'
+check "组内锁定保持 batch_no=1" "$BODY" '"batch_no":1'
+check "组内锁定冻结单价" "$BODY" '"price_frozen":true'
+
+# 8.55.3 出游开始后用户提交即自动封板 → 第 2 批，并自动开一张空草稿
+call POST /api/carts/me/items/manual "$GM3_TOKEN" '{"name":"第二批商品","price_yen":1100,"quantity":1}'
+check "第二批加购 201" "$CODE" "201"
+call POST /api/carts/me/submit "$GM3_TOKEN" "{\"group_id\":$GT_ID}"
+check "已开始组提交即封板 200" "$CODE" "200"
+check "第二批自动锁定" "$BODY" '"status":"locked"'
+check "第二批批次号 batch_no=2" "$BODY" '"batch_no":2'
+check "第二批单价冻结" "$BODY" '"price_frozen":true'
+check "封板组 started=true" "$BODY" '"started":true'
+C2_ID=$(python3 -c 'import json,sys; print(json.load(sys.stdin)["id"])' <<<"$BODY")
+
+call GET /api/carts/me "$GM3_TOKEN"
+check "封板后自动下一批草稿 200" "$CODE" "200"
+check "下一批草稿为空" "$BODY" '"items":[]'
+check "下一批草稿 batch_no=0" "$BODY" '"batch_no":0'
+check "下一批草稿未归组" "$BODY" '"group":null'
+DRAFT2_ID=$(python3 -c 'import json,sys; print(json.load(sys.stdin)["id"])' <<<"$BODY")
+
+# 8.55.3b 批次列表 + 按 id 只读查看 + 指定 cart_id 加购校验
+call GET /api/carts/me/batches "$GM3_TOKEN"
+check "批次列表 200" "$CODE" "200"
+BATCH_LIST_OK=$(python3 - <<PY
+import json
+rows = json.loads('''$BODY''')
+ids = {r["id"] for r in rows}
+st = {r["id"]: r["status"] for r in rows}
+bn = {r["id"]: r["batch_no"] for r in rows}
+ok = (int('$C1_ID') in ids and int('$C2_ID') in ids and int('$DRAFT2_ID') in ids
+      and st[int('$C1_ID')] == "locked" and st[int('$C2_ID')] == "locked"
+      and st[int('$DRAFT2_ID')] == "draft" and bn[int('$DRAFT2_ID')] == 0)
+print("OK" if ok else "NO:" + str([(r["id"], r["batch_no"], r["status"], r["count"]) for r in rows]))
+PY
+)
+check "批次列表含第1/2批 locked + 新草稿" "$BATCH_LIST_OK" "OK"
+
+call GET "/api/carts/me/$C1_ID" "$GM3_TOKEN"
+check "按 id 查看已锁定第1批 200" "$CODE" "200"
+check "锁定批仍可见条目" "$BODY" '"status":"locked"'
+check "锁定批商品未消失" "$BODY" "封板批次商品"
+
+call GET "/api/carts/me/$C2_ID" "$GM3_TOKEN"
+check "按 id 查看已锁定第2批 200" "$CODE" "200"
+check "第2批商品仍在" "$BODY" "第二批商品"
+
+call POST /api/carts/me/items/manual "$GM3_TOKEN" "{\"name\":\"不应写入锁定批\",\"price_yen\":100,\"quantity\":1,\"cart_id\":$C1_ID}"
+check "指定锁定批次加购被拒 409" "$CODE" "409"
+
+call POST /api/carts/me/items/manual "$GM3_TOKEN" "{\"name\":\"写入新草稿\",\"price_yen\":330,\"quantity\":1,\"cart_id\":$DRAFT2_ID}"
+check "指定新草稿加购 201" "$CODE" "201"
+check "加购落在新草稿" "$BODY" "写入新草稿"
+check "加购目标仍是草稿" "$BODY" '"status":"draft"'
+# 必须删掉测试条目：非空草稿不会被 prune_empty_drafts 回收，解锁后 /carts/me 会拿到 DRAFT2 而非第2批
+DRAFT2_ITEM=$(python3 -c 'import json,sys; d=json.load(sys.stdin); print(next(it["id"] for it in d["items"] if it["product"]["name"]=="写入新草稿"))' <<<"$BODY")
+call DELETE "/api/carts/me/items/$DRAFT2_ITEM" "$GM3_TOKEN"
+check "清掉新草稿测试条目 204" "$CODE" "204"
+
+# 8.55.4 组详情聚合两个已封板批次（第1批 locked + 第2批 locked），条目带批次标记
+call GET /api/groups/me "$PUR2_TOKEN"
+check "二号采购工作台组列表 200" "$CODE" "200"
+BATCH_OK=$(python3 - <<PY
+import json
+data = json.loads('''$BODY''')
+g = next(x for x in data if x.get("id") == int('$GT_ID'))
+locked = sorted(b["batch_no"] for b in g.get("batches", []) if b.get("status") == "locked")
+print("OK" if locked == [1, 2] else "NO:" + str(locked))
+PY
+)
+check "今日组聚合含第1/2批 locked" "$BATCH_OK" "OK"
+ITM_OK=$(python3 - <<PY
+import json
+data = json.loads('''$BODY''')
+g = next(x for x in data if x.get("id") == int('$GT_ID'))
+it = [i for i in g.get("items", []) if i.get("batch_no") == 2 and i.get("cart_status") == "locked"]
+print("OK" if len(it) == 1 else "NO:" + str(len(it)))
+PY
+)
+check "条目级带 batch_no/cart_status" "$ITM_OK" "OK"
+
+# 8.55.5 组内解锁（locked->draft）：恢复可编辑并清理更新的空草稿
+call PATCH "/api/groups/$GT_ID/carts/$C2_ID/status" "$PUR2_TOKEN" '{"status":"draft"}'
+check "组内解锁第2批 200" "$CODE" "200"
+check "解锁后回到 draft" "$BODY" '"status":"draft"'
+check "解锁保留批次号 batch_no=2" "$BODY" '"batch_no":2'
+check "解锁后解除价格冻结" "$BODY" '"price_frozen":false'
+
+call GET /api/carts/me "$GM3_TOKEN"
+check "解锁后当前草稿即第2批 200" "$CODE" "200"
+check "解锁后批次号 batch_no=2 可编辑" "$BODY" '"batch_no":2'
+check "解锁后第2批商品仍在" "$BODY" "第二批商品"
+call GET "/api/carts/me/$C2_ID" "$GM3_TOKEN"
+check "按 id 切回解锁批 200" "$CODE" "200"
+check "解锁批内容未消失" "$BODY" "第二批商品"
+check "解锁批状态 draft" "$BODY" '"status":"draft"'
+GT_ITEM=$(python3 -c 'import json,sys; print(json.load(sys.stdin)["items"][0]["id"])' <<<"$BODY")
+call PATCH "/api/carts/me/items/$GT_ITEM" "$GM3_TOKEN" '{"quantity":5}'
+check "解锁后可修改数量 200" "$CODE" "200"
+check "数量已改为 5" "$BODY" '"quantity":5'
+
+call POST /api/carts/me/submit "$GM3_TOKEN" "{\"group_id\":$GT_ID}"
+check "解锁后重新提交 200" "$CODE" "200"
+check "重提再次自动封板" "$BODY" '"status":"locked"'
+check "重提保持 batch_no=2" "$BODY" '"batch_no":2'
+
+# 8.55.6 组内入口的权限与状态机护栏
+call PATCH "/api/groups/$GT_ID/carts/$C1_ID/status" "$PURCH_TOKEN" '{"status":"draft"}'
+check "跨采购员不能解锁他组批次 403" "$CODE" "403"
+call PATCH "/api/groups/$GT_ID/carts/$C2_ID/status" "$GM3_TOKEN" '{"status":"draft"}'
+check "需求人不能自行解锁 403" "$CODE" "403"
+call PATCH "/api/groups/$GT_ID/carts/$C1_ID/status" "$PUR2_TOKEN" '{"status":"success"}'
+check "组内入口不允许跳 success 409" "$CODE" "409"
+call PATCH "/api/groups/$GP_ID/carts/$C2_ID/status" "$PUR2_TOKEN" '{"status":"draft"}'
+check "他组清单不能跨组解锁 404" "$CODE" "404"
+call PATCH "/api/groups/$G2_ID/carts/$CART_GM1/status" "$PURCH_TOKEN" '{"status":"locked"}'
+check "已完成组不能变更批次状态 409" "$CODE" "409"
+call PATCH "/api/groups/$GT_ID/carts/$C1_ID/status" "$ADMIN_TOKEN" '{"status":"draft"}'
+check "管理员可代管解锁任意组批次 200" "$CODE" "200"
+check "管理员解锁后回到 draft" "$BODY" '"status":"draft"'
 
 # 收口：一号组标记完成（G0 内有归组清单，不能删但可完成）
 call PATCH "/api/groups/$GROUP_ID" "$PURCH_TOKEN" '{"status":"completed"}'
