@@ -146,9 +146,6 @@ docker compose logs -f
 
 ## 8. 生产部署
 
-如需公网 HTTPS 部署，项目另提供云服务器方案（Caddy 终结 TLS、只暴露 80/443）：
-- 配置模板：`.env.cloud.example`
-- Compose 文件：`docker-compose.cloud.yml`
-- 详细步骤：[`DEPLOY-CLOUD.md`](DEPLOY-CLOUD.md)
+在云服务器上部署同样使用基础版 `docker-compose.yml`，流程与本地完全一致：`cp .env.example .env` 填入实际值，再 `docker compose up -d --build`，然后访问 `http://服务器IP:8080`。
 
-> 云部署使用的 `DOMAIN` / `Caddyfile` 属于环境相关信息，请勿在公开仓库写入真实值。
+> ⚠️ 系统本身不含 HTTPS。如需公网安全访问，请用你的 Nginx / Caddy / 宝塔面板对 `8080` 做反向代理并配置证书，本仓库不内置该部分配置。反向代理用的 `Caddyfile` 等环境相关信息，请勿在公开仓库写入真实域名。

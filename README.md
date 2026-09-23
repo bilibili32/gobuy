@@ -31,6 +31,6 @@ docker compose up -d --build
 
 ## 生产部署
 
-云服务器 Docker 部署使用根目录的 `docker-compose.cloud.yml`，配置模板为 `.env.cloud.example`，完整步骤见 [`DEPLOY-CLOUD.md`](DEPLOY-CLOUD.md)。该方案由 Caddy 提供 HTTPS，只对外暴露 80/443；PostgreSQL、Redis、API 和前端均不映射宿主端口。
+在云服务器上部署同样使用基础版 `docker-compose.yml`，流程与本地一致：`cp .env.example .env` 填入实际值，再 `docker compose up -d --build`。内网直接用 `http://服务器IP:8080` 访问。
 
-项目内 `deploy/` 目录也保留一套带脚本的生产部署方案，适合希望使用 `deploy.sh` 与 `backup.sh` 的场景。
+系统本身不含 HTTPS。如需公网安全访问，请用你的 Nginx / Caddy / 宝塔面板对 8080 做一层反向代理并配置证书（本项目不内置该部分）。完整从零安装步骤见 [`INSTALL.md`](INSTALL.md)。
